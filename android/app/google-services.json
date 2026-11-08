@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "323508564637",
+    "project_id": "sokosafi-b978a",
+    "storage_bucket": "sokosafi-b978a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:323508564637:android:572ff8d8665f8b67615a74",
+        "android_client_info": {
+          "package_name": "com.sokosafi.sokosafi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "323508564637-uq2k4ce3psb1dgtfao5hqtubs94tl559.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyALwuQDbN7WIqM-2wRK0OC00gQHEhdOvYs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "323508564637-uq2k4ce3psb1dgtfao5hqtubs94tl559.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "323508564637-ef9q1m3tj53nos14q509jo24tnu969vi.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.sokosafi.sokosafi"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
