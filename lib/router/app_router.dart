@@ -2,6 +2,8 @@ import 'package:go_router/go_router.dart';
 import 'package:sokosafi/core/widgets/placeholder_screen.dart';
 import 'package:sokosafi/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:sokosafi/features/auth/presentation/screens/splash_screen.dart';
+import 'package:sokosafi/features/business_setup/presentation/screens/business_setup_screen.dart';
+import 'package:sokosafi/features/business_setup/presentation/screens/switch_to_business_screen.dart';
 import 'package:sokosafi/router/app_page.dart';
 import 'package:sokosafi/router/app_routes.dart';
 import 'package:sokosafi/router/auth_redirect.dart';
@@ -80,6 +82,22 @@ GoRouter buildAppRouter(AuthBloc authBloc) {
             title: 'Business dashboard',
             onLogout: () => authBloc.add(const AuthLogoutRequested()),
           ),
+        ),
+      ),
+      // The redirect only lets signed-in users reach these, so the user is
+      // never null here.
+      GoRoute(
+        path: AppRoutes.businessSetup,
+        pageBuilder: (context, state) => buildAppPage(
+          state: state,
+          child: BusinessSetupScreen(ownerId: authBloc.state.user!.uid),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.switchToBusiness,
+        pageBuilder: (context, state) => buildAppPage(
+          state: state,
+          child: SwitchToBusinessScreen(ownerId: authBloc.state.user!.uid),
         ),
       ),
     ],
