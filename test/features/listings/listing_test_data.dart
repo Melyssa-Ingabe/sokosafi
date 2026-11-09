@@ -10,13 +10,14 @@ const String testBusinessId = 'business-1';
 
 Listing buildTestListing({
   String id = 'listing-1',
+  String title = 'Fresh artisan breads',
   int quantity = 20,
   ListingStatus status = ListingStatus.active,
 }) {
   return Listing(
     id: id,
     businessId: testBusinessId,
-    title: 'Fresh artisan breads',
+    title: title,
     description: 'Baguettes and sourdough from this morning',
     category: ListingCategory.bakery,
     originalPrice: 1000,
