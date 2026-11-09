@@ -1,0 +1,151 @@
+rules_version = '2';
+
+// Annie's part: businesses, listings and the users.role field.
+// Nelly merges every member's part into this file. Nothing here is open to
+// signed-out users, and no rule is "allow read, write: if true".
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isSelf(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    // True when the signed-in user owns the given business.
+    function ownsBusiness(businessId) {
+      return signedIn()
+        && exists(/databases/$(database)/documents/businesses/$(businessId))
+        && get(/databases/$(database)/documents/businesses/$(businessId))
+             .data.ownerId == request.auth.uid;
+    }
+
+    // Fields that may never change after a document is created.
+    function keeps(fields) {
+      return !request.resource.data.diff(resource.data)
+        .affectedKeys().hasAny(fields);
+    }
+
+    // ---------------------------------------------------------------
+    // users/{uid}: only the role field is Annie's. Melyssa owns create,
+    // Prince the profile fields and Nelly foodPreferences; their rules
+    // are combined with this one.
+    // ---------------------------------------------------------------
+    match /users/{uid} {
+      // Business setup switches the owner's own role in the same batch
+      // that creates their business. The role only changes which screens
+      // open; every business or listing write is checked against the
+      // businesses document itself, so changing it grants no access.
+      allow update: if isSelf(uid)
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(['role'])
+        && request.resource.data.role in ['customer', 'business'];
+    }
+
+    // ---------------------------------------------------------------
+    // businesses/{businessId}: Annie (setup), Kevine (settings)
+    // ---------------------------------------------------------------
+    function validBusiness(data) {
+      return data.keys().hasOnly([
+          'ownerId', 'name', 'type', 'address', 'lat', 'lng', 'photoUrl',
+          'acceptingOrders', 'pickupStart', 'pickupEnd', 'autoClose',
+          'createdAt'])
+        && data.name is string && data.name.size() >= 2
+        && data.name.size() <= 60
+        && data.type in ['bakery', 'restaurant', 'cafe', 'supermarket',
+                         'hotel', 'cafeteria', 'grocery', 'catering']
+        && data.address is string && data.address.size() > 0
+        && data.lat is number && data.lat >= -90 && data.lat <= 90
+        && data.lng is number && data.lng >= -180 && data.lng <= 180
+        && data.photoUrl is string
+        && data.acceptingOrders is bool
+        && data.pickupStart is string && data.pickupEnd is string
+        && data.autoClose is bool;
+    }
+
+    match /businesses/{businessId} {
+      // Customers need the name, address and location of every business.
+      allow read: if signedIn();
+
+      // A business can only be created for yourself.
+      allow create: if signedIn()
+        && request.resource.data.ownerId == request.auth.uid
+        && request.resource.data.createdAt == request.time
+        && validBusiness(request.resource.data);
+
+      // Only the owner edits, and the business can never be moved to
+      // another owner.
+      allow update: if signedIn()
+        && resource.data.ownerId == request.auth.uid
+        && keeps(['ownerId', 'createdAt'])
+        && validBusiness(request.resource.data);
+
+      // The app has no "delete business"; past orders and reviews point
+      // at it.
+      allow delete: if false;
+    }
+
+    // ---------------------------------------------------------------
+    // listings/{listingId}: Annie (create, edit, delete),
+    // Prince (quantity and status inside the order transaction)
+    // ---------------------------------------------------------------
+    function validListing(data) {
+      return data.keys().hasOnly([
+          'businessId', 'title', 'description', 'category',
+          'originalPrice', 'discountPrice', 'quantity', 'madeAt',
+          'pickupBy', 'imageUrl', 'instructions', 'status', 'createdAt'])
+        && data.title is string && data.title.size() >= 3
+        && data.title.size() <= 60
+        && data.description is string && data.description.size() <= 300
+        && data.category in ['bakery', 'meals', 'cafe', 'grocery']
+        && data.originalPrice is int && data.originalPrice > 0
+        // The discount must be a real saving.
+        && data.discountPrice is int && data.discountPrice > 0
+        && data.discountPrice < data.originalPrice
+        && data.quantity is int && data.quantity >= 0
+        && data.quantity <= 999
+        && data.madeAt is timestamp && data.pickupBy is timestamp
+        && data.madeAt < data.pickupBy
+        && data.imageUrl is string
+        && data.instructions is string && data.instructions.size() <= 120
+        && data.status in ['active', 'soldOut', 'expired'];
+    }
+
+    match /listings/{listingId} {
+      // Customers browse every listing; the feed filters by status.
+      allow read: if signedIn();
+
+      // Only the owner of the business can post for it, with at least one
+      // item and a pick-up time still in the future.
+      allow create: if ownsBusiness(request.resource.data.businessId)
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.quantity >= 1
+        && request.resource.data.pickupBy > request.time
+        && validListing(request.resource.data);
+
+      // The owner edits their listing but cannot move it to another
+      // business.
+      allow update: if ownsBusiness(resource.data.businessId)
+        && keeps(['businessId', 'createdAt'])
+        && validListing(request.resource.data);
+
+      // Ordering (Prince): a signed-in customer may only change quantity and
+      // status, quantity stays between 0 and 999, and the status must match
+      // it (soldOut at 0). Prince can tighten this to his transaction.
+      allow update: if signedIn()
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(['quantity', 'status'])
+        && request.resource.data.quantity is int
+        && request.resource.data.quantity >= 0
+        && request.resource.data.quantity <= 999
+        && request.resource.data.status ==
+             (request.resource.data.quantity == 0 ? 'soldOut' : 'active');
+
+      // The app also refuses while paid orders wait for pickup; that check
+      // needs a query, which rules cannot run.
+      allow delete: if ownsBusiness(resource.data.businessId);
+    }
+  }
+}
