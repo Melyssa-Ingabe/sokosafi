@@ -31,7 +31,7 @@ class ListingFormState extends Equatable {
   final String? madeAtError;
   final String? pickupByError;
 
-  final ListingFeedback? feedback;
+  final FeedbackMessage? feedback;
 
   bool get isSubmitting => status == ListingFormStatus.submitting;
 
@@ -44,7 +44,7 @@ class ListingFormState extends Equatable {
     String? Function()? quantityError,
     String? Function()? madeAtError,
     String? Function()? pickupByError,
-    ListingFeedback? feedback,
+    FeedbackMessage? feedback,
   }) {
     return ListingFormState(
       category: category ?? this.category,

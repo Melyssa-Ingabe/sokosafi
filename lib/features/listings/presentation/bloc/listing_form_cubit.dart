@@ -6,7 +6,7 @@ import 'package:sokosafi/features/listings/domain/entities/listing_input.dart';
 import 'package:sokosafi/features/listings/domain/failures/listing_failure.dart';
 import 'package:sokosafi/features/listings/domain/repositories/listing_repository.dart';
 import 'package:sokosafi/features/listings/domain/validation/listing_validator.dart';
-import 'package:sokosafi/features/listings/presentation/bloc/listing_feedback.dart';
+import 'package:sokosafi/core/bloc/feedback_message.dart';
 
 part 'listing_form_state.dart';
 
@@ -114,7 +114,7 @@ class ListingFormCubit extends Cubit<ListingFormState> {
           quantityError: () => quantityError,
           pickupByError: () => pickupByError,
           madeAtError: () => madeAtError,
-          feedback: ListingFeedback.error('Please fix the highlighted fields'),
+          feedback: FeedbackMessage.error('Please fix the highlighted fields'),
         ),
       );
       return;
@@ -152,7 +152,7 @@ class ListingFormCubit extends Cubit<ListingFormState> {
       emit(
         state.copyWith(
           status: ListingFormStatus.success,
-          feedback: ListingFeedback.success(
+          feedback: FeedbackMessage.success(
             listing == null ? 'Listing published' : 'Listing updated',
           ),
         ),
@@ -161,7 +161,7 @@ class ListingFormCubit extends Cubit<ListingFormState> {
       emit(
         state.copyWith(
           status: ListingFormStatus.editing,
-          feedback: ListingFeedback.error(
+          feedback: FeedbackMessage.error(
             error is ListingFailure
                 ? error.message
                 : ListingFailure.genericMessage,

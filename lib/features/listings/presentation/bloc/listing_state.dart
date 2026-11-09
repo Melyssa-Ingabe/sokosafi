@@ -22,7 +22,7 @@ class ListingState extends Equatable {
 
   /// Why the list could not be loaded, shown in place of the list.
   final String? errorMessage;
-  final ListingFeedback? feedback;
+  final FeedbackMessage? feedback;
 
   ListingState copyWith({
     ListingsStatus? status,
@@ -31,7 +31,7 @@ class ListingState extends Equatable {
     Set<String>? deletingIds,
     String? errorMessage,
     bool clearError = false,
-    ListingFeedback? feedback,
+    FeedbackMessage? feedback,
   }) {
     return ListingState(
       status: status ?? this.status,
