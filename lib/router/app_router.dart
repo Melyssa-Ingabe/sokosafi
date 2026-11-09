@@ -2,6 +2,9 @@ import 'package:go_router/go_router.dart';
 import 'package:sokosafi/core/widgets/placeholder_screen.dart';
 import 'package:sokosafi/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:sokosafi/features/auth/presentation/screens/splash_screen.dart';
+import 'package:sokosafi/features/orders/presentation/orders_routes.dart';
+import 'package:sokosafi/features/profile/presentation/profile_routes.dart';
+import 'package:sokosafi/features/settings/presentation/screens/settings_screen.dart';
 import 'package:sokosafi/router/app_page.dart';
 import 'package:sokosafi/router/app_routes.dart';
 import 'package:sokosafi/router/auth_redirect.dart';
@@ -80,6 +83,20 @@ GoRouter buildAppRouter(AuthBloc authBloc) {
             title: 'Business dashboard',
             onLogout: () => authBloc.add(const AuthLogoutRequested()),
           ),
+        ),
+      ),
+      ...buildOrdersRoutes(),
+      ...buildProfileRoutes(),
+      GoRoute(
+        path: AppRoutes.settings,
+        pageBuilder: (context, state) =>
+            buildAppPage(state: state, child: const SettingsScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.businessSetup,
+        pageBuilder: (context, state) => buildAppPage(
+          state: state,
+          child: const PlaceholderScreen(title: 'Business setup'),
         ),
       ),
     ],
