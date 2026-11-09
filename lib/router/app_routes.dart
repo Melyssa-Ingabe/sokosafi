@@ -11,4 +11,10 @@ abstract final class AppRoutes {
 
   /// Opened by "Switch to business" in Settings.
   static const String switchToBusiness = '/switch-to-business';
+
+  static const String myListings = '/business/listings';
+  static const String createListing = '/business/listings/new';
+
+  /// Pass the Listing to edit as the route's `extra`.
+  static const String editListing = '/business/listings/edit';
 }
