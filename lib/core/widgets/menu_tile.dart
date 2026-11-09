@@ -48,6 +48,7 @@ class MenuTile extends StatelessWidget {
               ),
               if (value != null)
                 Flexible(
+                  fit: FlexFit.tight,
                   child: Padding(
                     padding: const EdgeInsets.only(left: AppSpacing.sm),
                     child: Text(
