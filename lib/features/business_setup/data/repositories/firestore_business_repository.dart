@@ -20,7 +20,11 @@ class FirestoreBusinessRepository implements BusinessRepository {
     return _businesses
         .where('ownerId', isEqualTo: ownerId)
         .limit(1)
-        .snapshots()
+        .snapshots(includeMetadataChanges: true)
+        // An empty answer from the offline cache does not prove the user has
+        // no business; wait for the server so an owner is never sent back
+        // into setup by a bad connection.
+        .where((query) => query.docs.isNotEmpty || !query.metadata.isFromCache)
         .map<Business?>(
           (query) => query.docs.isEmpty
               ? null
