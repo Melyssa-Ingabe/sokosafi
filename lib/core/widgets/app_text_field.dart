@@ -18,6 +18,14 @@ class AppTextField extends StatelessWidget {
     this.enabled = true,
     this.autofillHints,
     this.inputFormatters,
+    this.initialValue,
+    this.onChanged,
+    this.errorText,
+    this.prefix,
+    this.textCapitalization = TextCapitalization.none,
+    this.minLines,
+    this.maxLines = 1,
+    this.maxLength,
   });
 
   final String label;
@@ -33,6 +41,21 @@ class AppTextField extends StatelessWidget {
   final Iterable<String>? autofillHints;
   final List<TextInputFormatter>? inputFormatters;
 
+  /// Only used when no [controller] is given.
+  final String? initialValue;
+
+  /// Lets a BLoC follow the text without a controller.
+  final ValueChanged<String>? onChanged;
+
+  /// An error decided outside the field, for example by a BLoC after the
+  /// user taps Continue.
+  final String? errorText;
+  final Widget? prefix;
+  final TextCapitalization textCapitalization;
+  final int? minLines;
+  final int? maxLines;
+  final int? maxLength;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -43,6 +66,12 @@ class AppTextField extends StatelessWidget {
         const SizedBox(height: AppSpacing.xs),
         TextFormField(
           controller: controller,
+          initialValue: controller == null ? initialValue : null,
+          onChanged: onChanged,
+          textCapitalization: textCapitalization,
+          minLines: minLines,
+          maxLines: maxLines,
+          maxLength: maxLength,
           validator: validator,
           keyboardType: keyboardType,
           textInputAction: textInputAction,
@@ -52,7 +81,12 @@ class AppTextField extends StatelessWidget {
           autofillHints: autofillHints,
           inputFormatters: inputFormatters,
           autovalidateMode: AutovalidateMode.onUserInteraction,
-          decoration: InputDecoration(hintText: hint, suffixIcon: suffix),
+          decoration: InputDecoration(
+            hintText: hint,
+            suffixIcon: suffix,
+            prefixIcon: prefix,
+            errorText: errorText,
+          ),
         ),
       ],
     );
