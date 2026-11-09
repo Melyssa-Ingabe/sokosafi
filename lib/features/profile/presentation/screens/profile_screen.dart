@@ -57,7 +57,7 @@ class _ProfileContent extends StatelessWidget {
       ),
       const ProfileStatsRow(),
       if (user.role == UserRole.customer)
-        StartSellingCard(onTap: () => context.push(AppRoutes.businessSetup)),
+        StartSellingCard(onTap: () => context.push(AppRoutes.switchToBusiness)),
       MenuGroup(
         children: [
           MenuTile(

@@ -72,7 +72,7 @@ class SettingsScreen extends StatelessWidget {
       ),
       const PreferencesGroup(),
       if (user?.role == UserRole.customer)
-        StartSellingCard(onTap: () => context.push(AppRoutes.businessSetup)),
+        StartSellingCard(onTap: () => context.push(AppRoutes.switchToBusiness)),
       MenuGroup(
         children: [
           MenuTile(

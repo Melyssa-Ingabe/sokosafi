@@ -93,10 +93,10 @@ GoRouter buildAppRouter(AuthBloc authBloc) {
             buildAppPage(state: state, child: const SettingsScreen()),
       ),
       GoRoute(
-        path: AppRoutes.businessSetup,
+        path: AppRoutes.switchToBusiness,
         pageBuilder: (context, state) => buildAppPage(
           state: state,
-          child: const PlaceholderScreen(title: 'Business setup'),
+          child: const PlaceholderScreen(title: 'Switch to business'),
         ),
       ),
     ],
