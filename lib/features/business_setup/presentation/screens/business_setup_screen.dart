@@ -5,7 +5,7 @@ import 'package:sokosafi/core/constants/animation_constants.dart';
 import 'package:sokosafi/core/storage/image_storage.dart';
 import 'package:sokosafi/core/widgets/app_snackbar.dart';
 import 'package:sokosafi/features/business_setup/data/repositories/device_location_repository.dart';
-import 'package:sokosafi/features/business_setup/data/repositories/device_photo_picker.dart';
+import 'package:sokosafi/core/storage/device_photo_picker.dart';
 import 'package:sokosafi/features/business_setup/data/repositories/firestore_business_repository.dart';
 import 'package:sokosafi/features/business_setup/presentation/bloc/business_setup_bloc.dart';
 import 'package:sokosafi/features/business_setup/presentation/widgets/details_step.dart';
