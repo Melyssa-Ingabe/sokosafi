@@ -80,7 +80,7 @@ void main() {
 
       await order(quantity: 2);
 
-      expect(await listingData(), containsPair('status', 'sold out'));
+      expect(await listingData(), containsPair('status', 'soldOut'));
     });
 
     test('refuses more items than are left', () async {

@@ -5,7 +5,7 @@ import 'package:sokosafi/features/orders/domain/entities/order_listing.dart';
 /// Reads the parts of a listings document that orders need.
 abstract final class OrderListingModel {
   static const String activeStatus = 'active';
-  static const String soldOutStatus = 'sold out';
+  static const String soldOutStatus = 'soldOut';
 
   static OrderListing fromSnapshot(DocumentSnapshot<Map<String, dynamic>> doc) {
     final data = doc.data() ?? const <String, dynamic>{};
