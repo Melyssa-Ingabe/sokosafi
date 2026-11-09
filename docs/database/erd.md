@@ -1,7 +1,5 @@
 # SokoSafi database (ERD)
 
-Owner: Annie. Any change to a collection or field name must be sent to
-Annie the same day so this diagram and the report stay correct.
 
 Cloud Firestore, six collections. Field names below are exactly the names
 stored in Firestore. Every primary key is the document id, not a field.
@@ -59,7 +57,7 @@ erDiagram
         timestamp pickupBy
         string imageUrl
         string instructions
-        string status "active, soldOut, expired"
+        string status "active, soldOut, expired; soldOut set by the order transaction at 0"
         timestamp createdAt
     }
 
@@ -69,12 +67,12 @@ erDiagram
         string businessId FK "businesses.businessId"
         string listingId FK "listings.listingId"
         int quantity
-        int total "RWF"
+        int total "RWF, discountPrice x quantity"
         string pickupCode
-        string paymentMethod "MTN or Airtel"
+        string paymentMethod "mtnMomo or airtelMoney"
         string status "paid, collected, cancelled"
         timestamp createdAt
-        timestamp collectedAt
+        timestamp collectedAt "null until picked up"
     }
 
     REVIEWS {
@@ -130,4 +128,4 @@ Listed in `firestore.indexes.json`.
 
 | Collection | Fields | Used by |
 |---|---|---|
-| listings | businessId asc, createdAt desc | My listings (Annie) |
+| listings | businessId asc, createdAt desc | My listings |
