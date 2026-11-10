@@ -1,4 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Map tiles and Firebase need the network in release builds too. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Business setup: "Use my current location". -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <application
         android:label="sokosafi"
         android:name="${applicationName}"
