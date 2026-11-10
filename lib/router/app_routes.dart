@@ -11,4 +11,15 @@ abstract final class AppRoutes {
 
   /// Opened by "Switch to business" in Settings.
   static const String switchToBusiness = '/switch-to-business';
+  static const String switchToBusiness = '/switch-to-business';
+
+  static const String checkout = '/checkout/:listingId';
+  static const String myOrders = '/orders';
+  static const String orderDetail = '/orders/:orderId';
+  static const String profile = '/profile';
+  static const String editProfile = '/profile/edit';
+  static const String settings = '/settings';
+
+  static String checkoutFor(String listingId) => '/checkout/$listingId';
+  static String orderFor(String orderId) => '/orders/$orderId';
 }
