@@ -41,6 +41,7 @@ erDiagram
         string pickupStart "HH:mm"
         string pickupEnd "HH:mm"
         boolean autoClose
+        string landmark "optional pickup guide, max 120 chars"
         timestamp createdAt
     }
 
