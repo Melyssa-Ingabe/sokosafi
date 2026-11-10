@@ -1,21 +1,26 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:sokosafi/core/bloc/feedback_message.dart';
+import 'package:sokosafi/core/storage/image_storage.dart';
+import 'package:sokosafi/core/storage/photo_picker.dart';
+import 'package:sokosafi/core/utils/formatters.dart';
 import 'package:sokosafi/features/listings/domain/entities/listing.dart';
 import 'package:sokosafi/features/listings/domain/entities/listing_category.dart';
 import 'package:sokosafi/features/listings/domain/entities/listing_input.dart';
 import 'package:sokosafi/features/listings/domain/failures/listing_failure.dart';
 import 'package:sokosafi/features/listings/domain/repositories/listing_repository.dart';
 import 'package:sokosafi/features/listings/domain/validation/listing_validator.dart';
-import 'package:sokosafi/core/bloc/feedback_message.dart';
 
 part 'listing_form_state.dart';
 
 /// State of the add and edit listing form. Text fields keep their own text
-/// in controllers; everything else (category, quantity, times) lives here,
-/// and submit re-validates every field before anything is saved.
+/// in controllers; everything else (category, quantity, times, photo) lives
+/// here, and submit re-validates every field before anything is saved.
 class ListingFormCubit extends Cubit<ListingFormState> {
   ListingFormCubit({
     required this._listingRepository,
+    required this._photoPicker,
+    required this._imageStorage,
     required this._businessId,
     Listing? initialListing,
     DateTime Function()? clock,
@@ -27,6 +32,8 @@ class ListingFormCubit extends Cubit<ListingFormState> {
   static const Duration defaultPickupWindow = Duration(hours: 2);
 
   final ListingRepository _listingRepository;
+  final PhotoPicker _photoPicker;
+  final ImageStorage _imageStorage;
   final String _businessId;
   final Listing? _initialListing;
   final DateTime Function() _clock;
@@ -39,6 +46,10 @@ class ListingFormCubit extends Cubit<ListingFormState> {
         madeAt: listing.madeAt,
         pickupBy: listing.pickupBy,
         isEditing: true,
+        originalPrice: listing.originalPrice,
+        discountPrice: listing.discountPrice,
+        imageUrl: listing.imageUrl,
+        prefill: ListingPrefill.fromListing(listing),
       );
     }
     return ListingFormState(
@@ -62,6 +73,18 @@ class ListingFormCubit extends Cubit<ListingFormState> {
     emit(state.copyWith(quantity: clamped, quantityError: () => null));
   }
 
+  void pricesChanged({
+    required String originalPrice,
+    required String discountPrice,
+  }) {
+    emit(
+      state.copyWith(
+        originalPrice: () => ListingValidator.parsePrice(originalPrice),
+        discountPrice: () => ListingValidator.parsePrice(discountPrice),
+      ),
+    );
+  }
+
   void madeAtChanged(DateTime madeAt) {
     emit(state.copyWith(madeAt: madeAt, madeAtError: () => null));
   }
@@ -74,6 +97,37 @@ class ListingFormCubit extends Cubit<ListingFormState> {
         madeAtError: () => null,
       ),
     );
+  }
+
+  /// Copies a past listing's details into the form ("Recent templates").
+  /// Quantity and times stay as they are, since they change every day.
+  void templateApplied(Listing template) {
+    emit(
+      state.copyWith(
+        category: template.category,
+        originalPrice: () => template.originalPrice,
+        discountPrice: () => template.discountPrice,
+        prefill: ListingPrefill.fromListing(template),
+        prefillRevision: state.prefillRevision + 1,
+      ),
+    );
+  }
+
+  Future<void> photoRequested(PhotoSource source) async {
+    try {
+      final path = await _photoPicker.pick(source);
+      if (path != null) emit(state.copyWith(photoPath: path));
+    } catch (_) {
+      emit(
+        state.copyWith(
+          feedback: FeedbackMessage.error(
+            source == PhotoSource.camera
+                ? 'We could not open the camera. Check that SokoSafi may use it'
+                : 'We could not open your photos. Please try again',
+          ),
+        ),
+      );
+    }
   }
 
   /// Validates every field and saves the listing. The text values come from
@@ -120,23 +174,30 @@ class ListingFormCubit extends Cubit<ListingFormState> {
       return;
     }
 
-    final input = ListingInput(
-      title: title,
-      description: description,
-      category: state.category,
-      originalPrice: ListingValidator.parsePrice(originalPrice)!,
-      discountPrice: ListingValidator.parsePrice(discountPrice)!,
-      quantity: state.quantity,
-      madeAt: state.madeAt,
-      pickupBy: state.pickupBy,
-      instructions: instructions,
-      // Photo upload is added once image hosting is ready; an edit keeps the
-      // photo the listing already has.
-      imageUrl: _initialListing?.imageUrl ?? '',
-    );
-
     emit(state.copyWith(status: ListingFormStatus.submitting));
+    final photoPath = state.photoPath;
+    final photoWaiting = photoPath != null && !_imageStorage.isAvailable;
     try {
+      var imageUrl = state.imageUrl;
+      if (photoPath != null && _imageStorage.isAvailable) {
+        imageUrl = await _imageStorage.upload(
+          localPath: photoPath,
+          folder: 'listings/$_businessId',
+        );
+      }
+      final input = ListingInput(
+        title: title,
+        description: description,
+        category: state.category,
+        originalPrice: ListingValidator.parsePrice(originalPrice)!,
+        discountPrice: ListingValidator.parsePrice(discountPrice)!,
+        quantity: state.quantity,
+        madeAt: state.madeAt,
+        pickupBy: state.pickupBy,
+        instructions: instructions,
+        imageUrl: imageUrl,
+      );
+
       final listing = _initialListing;
       if (listing == null) {
         await _listingRepository.createListing(
@@ -149,11 +210,12 @@ class ListingFormCubit extends Cubit<ListingFormState> {
           input: input,
         );
       }
+      final saved = listing == null ? 'Listing published' : 'Listing updated';
       emit(
         state.copyWith(
           status: ListingFormStatus.success,
           feedback: FeedbackMessage.success(
-            listing == null ? 'Listing published' : 'Listing updated',
+            photoWaiting ? '$saved. Photo upload is coming soon' : saved,
           ),
         ),
       );

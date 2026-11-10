@@ -1,6 +1,8 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:sokosafi/core/storage/image_storage.dart';
+import 'package:sokosafi/core/storage/photo_picker.dart';
 import 'package:sokosafi/features/listings/domain/entities/listing_category.dart';
 import 'package:sokosafi/features/listings/domain/entities/listing_input.dart';
 import 'package:sokosafi/features/listings/domain/failures/listing_failure.dart';
@@ -10,6 +12,8 @@ import 'package:sokosafi/features/listings/presentation/bloc/listing_form_cubit.
 import '../../listing_test_data.dart';
 
 class MockListingRepository extends Mock implements ListingRepository {}
+
+class MockPhotoPicker extends Mock implements PhotoPicker {}
 
 void main() {
   late MockListingRepository repository;
@@ -25,6 +29,8 @@ void main() {
   ListingFormCubit buildCubit({bool editing = false}) {
     return ListingFormCubit(
       listingRepository: repository,
+      photoPicker: MockPhotoPicker(),
+      imageStorage: const UnavailableImageStorage(),
       businessId: testBusinessId,
       initialListing: editing ? buildTestListing() : null,
       clock: () => testNow,
@@ -54,6 +60,43 @@ void main() {
     expect(cubit.state.quantity, 20);
     expect(cubit.state.category, ListingCategory.bakery);
   });
+
+  test('an edit form prefills the text fields from the listing', () {
+    final cubit = buildCubit(editing: true);
+    expect(cubit.state.prefill?.title, 'Fresh artisan breads');
+    expect(cubit.state.prefill?.discountPrice, '600');
+  });
+
+  blocTest<ListingFormCubit, ListingFormState>(
+    'shows the live saving once both prices are typed',
+    build: buildCubit,
+    act: (cubit) =>
+        cubit.pricesChanged(originalPrice: '1,000', discountPrice: '600'),
+    verify: (cubit) => expect(cubit.state.savingsPercent, 40),
+  );
+
+  blocTest<ListingFormCubit, ListingFormState>(
+    'shows no saving while the discount is not lower than the original',
+    build: buildCubit,
+    act: (cubit) =>
+        cubit.pricesChanged(originalPrice: '1000', discountPrice: '1200'),
+    verify: (cubit) => expect(cubit.state.savingsPercent, isNull),
+  );
+
+  blocTest<ListingFormCubit, ListingFormState>(
+    "a template fills the form but keeps today's quantity and times",
+    build: buildCubit,
+    act: (cubit) => cubit
+      ..quantityIncremented()
+      ..templateApplied(buildTestListing()),
+    verify: (cubit) {
+      expect(cubit.state.prefill?.title, 'Fresh artisan breads');
+      expect(cubit.state.prefillRevision, 1);
+      expect(cubit.state.category, ListingCategory.bakery);
+      expect(cubit.state.quantity, 2);
+      expect(cubit.state.pickupBy, testNow.add(const Duration(hours: 2)));
+    },
+  );
 
   blocTest<ListingFormCubit, ListingFormState>(
     'quantity never goes below 1',

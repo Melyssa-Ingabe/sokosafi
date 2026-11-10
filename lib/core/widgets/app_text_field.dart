@@ -73,6 +73,9 @@ class AppTextField extends StatelessWidget {
           maxLines: maxLines,
           maxLength: maxLength,
           validator: validator,
+          // A form field replaces decoration.errorText with its own
+          // validator result, so an error from a BLoC must be forced.
+          forceErrorText: errorText,
           keyboardType: keyboardType,
           textInputAction: textInputAction,
           onFieldSubmitted: onFieldSubmitted,
@@ -85,7 +88,6 @@ class AppTextField extends StatelessWidget {
             hintText: hint,
             suffixIcon: suffix,
             prefixIcon: prefix,
-            errorText: errorText,
           ),
         ),
       ],

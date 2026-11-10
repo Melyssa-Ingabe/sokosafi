@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
-import 'package:sokosafi/features/business_setup/domain/repositories/photo_picker.dart';
+import 'package:sokosafi/core/storage/photo_picker.dart';
 
 /// Bottom sheet asking whether to take a photo or choose one.
 class PhotoSourceSheet extends StatelessWidget {

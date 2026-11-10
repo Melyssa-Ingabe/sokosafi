@@ -4,6 +4,9 @@ import 'package:sokosafi/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:sokosafi/features/auth/presentation/screens/splash_screen.dart';
 import 'package:sokosafi/features/business_setup/presentation/screens/business_setup_screen.dart';
 import 'package:sokosafi/features/business_setup/presentation/screens/switch_to_business_screen.dart';
+import 'package:sokosafi/features/listings/domain/entities/listing.dart';
+import 'package:sokosafi/features/listings/presentation/screens/listing_form_screen.dart';
+import 'package:sokosafi/features/listings/presentation/screens/my_listings_screen.dart';
 import 'package:sokosafi/features/orders/presentation/orders_routes.dart';
 import 'package:sokosafi/features/profile/presentation/profile_routes.dart';
 import 'package:sokosafi/features/settings/presentation/screens/settings_screen.dart';
@@ -101,6 +104,34 @@ GoRouter buildAppRouter(AuthBloc authBloc) {
         path: AppRoutes.settings,
         pageBuilder: (context, state) =>
             buildAppPage(state: state, child: const SettingsScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.myListings,
+        pageBuilder: (context, state) => buildAppPage(
+          state: state,
+          child: MyListingsScreen(ownerId: authBloc.state.user!.uid),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.createListing,
+        pageBuilder: (context, state) => buildAppPage(
+          state: state,
+          child: ListingFormScreen(ownerId: authBloc.state.user!.uid),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.editListing,
+        // The listing comes in as `extra`; without it (for example after an
+        // app restart) there is nothing to edit, so go back to the list.
+        redirect: (context, state) =>
+            state.extra is Listing ? null : AppRoutes.myListings,
+        pageBuilder: (context, state) => buildAppPage(
+          state: state,
+          child: ListingFormScreen(
+            ownerId: authBloc.state.user!.uid,
+            initialListing: state.extra! as Listing,
+          ),
+        ),
       ),
     ],
   );

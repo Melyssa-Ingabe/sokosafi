@@ -8,7 +8,7 @@ import 'package:sokosafi/features/business_setup/domain/entities/place.dart';
 import 'package:sokosafi/features/business_setup/domain/failures/business_failure.dart';
 import 'package:sokosafi/features/business_setup/domain/repositories/business_repository.dart';
 import 'package:sokosafi/features/business_setup/domain/repositories/location_repository.dart';
-import 'package:sokosafi/features/business_setup/domain/repositories/photo_picker.dart';
+import 'package:sokosafi/core/storage/photo_picker.dart';
 import 'package:sokosafi/features/business_setup/domain/validation/business_validator.dart';
 
 part 'business_setup_event.dart';

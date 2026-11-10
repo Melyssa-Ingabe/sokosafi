@@ -1,5 +1,5 @@
 import 'package:image_picker/image_picker.dart';
-import 'package:sokosafi/features/business_setup/domain/repositories/photo_picker.dart';
+import 'package:sokosafi/core/storage/photo_picker.dart';
 
 class DevicePhotoPicker implements PhotoPicker {
   DevicePhotoPicker({ImagePicker? imagePicker})

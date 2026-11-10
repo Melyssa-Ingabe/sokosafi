@@ -6,7 +6,7 @@ import 'package:sokosafi/core/theme/app_colors.dart';
 import 'package:sokosafi/core/widgets/primary_button.dart';
 import 'package:sokosafi/features/business_setup/presentation/bloc/business_setup_bloc.dart';
 import 'package:sokosafi/features/business_setup/presentation/widgets/photo_preview.dart';
-import 'package:sokosafi/features/business_setup/presentation/widgets/photo_source_sheet.dart';
+import 'package:sokosafi/core/widgets/photo_source_sheet.dart';
 import 'package:sokosafi/features/business_setup/presentation/widgets/setup_step_layout.dart';
 
 /// Step 3: storefront photo, then "Complete setup" or "Skip for now".
