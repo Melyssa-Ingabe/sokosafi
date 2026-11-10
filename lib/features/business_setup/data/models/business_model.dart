@@ -19,6 +19,7 @@ class BusinessModel extends Business {
     required super.pickupStart,
     required super.pickupEnd,
     required super.autoClose,
+    required super.landmark,
     required super.createdAt,
   });
 
@@ -43,6 +44,8 @@ class BusinessModel extends Business {
       pickupStart: data['pickupStart'] as String? ?? defaultPickupStart,
       pickupEnd: data['pickupEnd'] as String? ?? defaultPickupEnd,
       autoClose: data['autoClose'] as bool? ?? false,
+      // Businesses created before landmark was added have no such field.
+      landmark: data['landmark'] as String? ?? '',
       // createdAt is a server timestamp, so it is null in the local copy
       // until the write reaches Firestore.
       createdAt: createdAt is Timestamp ? createdAt.toDate() : DateTime.now(),
@@ -67,6 +70,7 @@ class BusinessModel extends Business {
       'pickupStart': defaultPickupStart,
       'pickupEnd': defaultPickupEnd,
       'autoClose': false,
+      'landmark': '',
       'createdAt': FieldValue.serverTimestamp(),
     };
   }

@@ -18,6 +18,7 @@ class Business extends Equatable {
     required this.pickupStart,
     required this.pickupEnd,
     required this.autoClose,
+    required this.landmark,
     required this.createdAt,
   });
 
@@ -35,6 +36,10 @@ class Business extends Equatable {
   final String pickupStart;
   final String pickupEnd;
   final bool autoClose;
+
+  /// Optional pickup guide, for example "Green awning next to the
+  /// pharmacy". Set from business settings; empty until then.
+  final String landmark;
   final DateTime createdAt;
 
   @override
@@ -51,6 +56,7 @@ class Business extends Equatable {
     pickupStart,
     pickupEnd,
     autoClose,
+    landmark,
     createdAt,
   ];
 }
