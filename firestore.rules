@@ -51,7 +51,7 @@ service cloud.firestore {
       return data.keys().hasOnly([
           'ownerId', 'name', 'type', 'address', 'lat', 'lng', 'photoUrl',
           'acceptingOrders', 'pickupStart', 'pickupEnd', 'autoClose',
-          'createdAt'])
+          'landmark', 'createdAt'])
         && data.name is string && data.name.size() >= 2
         && data.name.size() <= 60
         && data.type in ['bakery', 'restaurant', 'cafe', 'supermarket',
@@ -62,7 +62,10 @@ service cloud.firestore {
         && data.photoUrl is string
         && data.acceptingOrders is bool
         && data.pickupStart is string && data.pickupEnd is string
-        && data.autoClose is bool;
+        && data.autoClose is bool
+        // Optional, so businesses saved before it existed stay valid.
+        && (!('landmark' in data)
+            || (data.landmark is string && data.landmark.size() <= 120));
     }
 
     match /businesses/{businessId} {
