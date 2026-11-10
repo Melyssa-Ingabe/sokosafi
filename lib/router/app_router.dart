@@ -7,6 +7,9 @@ import 'package:sokosafi/features/business_setup/presentation/screens/switch_to_
 import 'package:sokosafi/features/listings/domain/entities/listing.dart';
 import 'package:sokosafi/features/listings/presentation/screens/listing_form_screen.dart';
 import 'package:sokosafi/features/listings/presentation/screens/my_listings_screen.dart';
+import 'package:sokosafi/features/orders/presentation/orders_routes.dart';
+import 'package:sokosafi/features/profile/presentation/profile_routes.dart';
+import 'package:sokosafi/features/settings/presentation/screens/settings_screen.dart';
 import 'package:sokosafi/router/app_page.dart';
 import 'package:sokosafi/router/app_routes.dart';
 import 'package:sokosafi/router/auth_redirect.dart';
@@ -95,13 +98,12 @@ GoRouter buildAppRouter(AuthBloc authBloc) {
           state: state,
           child: BusinessSetupScreen(ownerId: authBloc.state.user!.uid),
         ),
-      ),
+      ...buildOrdersRoutes(),
+      ...buildProfileRoutes(),
       GoRoute(
-        path: AppRoutes.switchToBusiness,
-        pageBuilder: (context, state) => buildAppPage(
-          state: state,
-          child: SwitchToBusinessScreen(ownerId: authBloc.state.user!.uid),
-        ),
+        path: AppRoutes.settings,
+        pageBuilder: (context, state) =>
+            buildAppPage(state: state, child: const SettingsScreen()),
       ),
       GoRoute(
         path: AppRoutes.myListings,
