@@ -98,6 +98,14 @@ GoRouter buildAppRouter(AuthBloc authBloc) {
           state: state,
           child: BusinessSetupScreen(ownerId: authBloc.state.user!.uid),
         ),
+      ),
+      GoRoute(
+        path: AppRoutes.switchToBusiness,
+        pageBuilder: (context, state) => buildAppPage(
+          state: state,
+          child: SwitchToBusinessScreen(ownerId: authBloc.state.user!.uid),
+        ),
+      ),
       ...buildOrdersRoutes(),
       ...buildProfileRoutes(),
       GoRoute(
