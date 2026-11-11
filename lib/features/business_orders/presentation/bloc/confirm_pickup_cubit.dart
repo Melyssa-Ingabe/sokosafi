@@ -13,9 +13,19 @@ class ConfirmPickupCubit extends Cubit<ConfirmPickupState> {
   final BusinessOrdersRepository _repository;
   final String _businessId;
 
+  Future<void> scan(String pickupCode) async {
+    if (state.status == ConfirmPickupStatus.failed &&
+        state.refusedCode == pickupCode) {
+      return;
+    }
+    await confirm(pickupCode);
+  }
+
+  /// Called when the owner types a code. Always checks, so they can retry
+  /// after a connection problem.
   Future<void> confirm(String pickupCode) async {
     // The scanner reports the same QR code many times a second. Ignoring
-    // scans while a check runs, or after success, stops the order from
+    // codes while a check runs, or after success, stops the order from
     // being checked twice and showing "already picked up".
     if (state.status == ConfirmPickupStatus.checking ||
         state.status == ConfirmPickupStatus.confirmed) {
@@ -33,6 +43,7 @@ class ConfirmPickupCubit extends Cubit<ConfirmPickupState> {
         ConfirmPickupState(
           status: ConfirmPickupStatus.failed,
           errorMessage: failure.message,
+          refusedCode: pickupCode,
         ),
       );
     }
