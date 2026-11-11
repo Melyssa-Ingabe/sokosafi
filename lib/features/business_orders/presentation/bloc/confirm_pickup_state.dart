@@ -6,13 +6,17 @@ class ConfirmPickupState extends Equatable {
   const ConfirmPickupState({
     this.status = ConfirmPickupStatus.idle,
     this.errorMessage,
+    this.refusedCode,
   });
 
   final ConfirmPickupStatus status;
 
-  /// Why the last code was refused, worded for the business owner.
   final String? errorMessage;
 
+  /// The code that was just refused, so the scanner does not keep
+  /// re-checking it while it stays in view.
+  final String? refusedCode;
+
   @override
-  List<Object?> get props => [status, errorMessage];
+  List<Object?> get props => [status, errorMessage, refusedCode];
 }
