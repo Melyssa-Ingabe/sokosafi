@@ -52,6 +52,7 @@ void main() {
       const ConfirmPickupState(
         status: ConfirmPickupStatus.failed,
         errorMessage: 'No order with this code at your business',
+        refusedCode: 'SKS-2B3C4D',
       ),
     ],
   );
@@ -73,5 +74,23 @@ void main() {
         pickupCode: 'SKS-4A7F2B',
       ),
     ).called(1),
+  );
+
+  blocTest<ConfirmPickupCubit, ConfirmPickupState>(
+    'skips a scanned code that was just refused',
+    build: buildCubit,
+    seed: () => const ConfirmPickupState(
+      status: ConfirmPickupStatus.failed,
+      errorMessage: 'No order with this code at your business',
+      refusedCode: 'SKS-2B3C4D',
+    ),
+    act: (cubit) => cubit.scan('SKS-2B3C4D'),
+    expect: () => <ConfirmPickupState>[],
+    verify: (_) => verifyNever(
+      () => repository.confirmPickup(
+        businessId: any(named: 'businessId'),
+        pickupCode: any(named: 'pickupCode'),
+      ),
+    ),
   );
 }
