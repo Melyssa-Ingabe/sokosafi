@@ -103,8 +103,7 @@ class DashboardSummary extends Equatable {
   final int itemsSoldToday;
   final num revenueToday;
 
-  /// Portions customers actually collected, so food that did not go to
-  /// waste. Shown as a count because listings have no weight.
+  /// Portions customers actually collected, so food that did not go to waste
   final int itemsRescued;
   final List<BusinessOrder> recentOrders;
 
