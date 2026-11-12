@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
 import 'package:sokosafi/core/theme/app_colors.dart';
 import 'package:sokosafi/core/theme/app_text_styles.dart';
@@ -19,6 +20,8 @@ import 'package:sokosafi/features/business_orders/presentation/widgets/business_
 import 'package:sokosafi/features/business_setup/domain/entities/business.dart';
 import 'package:sokosafi/features/business_setup/presentation/widgets/owned_business_gate.dart';
 import 'package:sokosafi/features/listings/data/repositories/firestore_listing_repository.dart';
+import 'package:sokosafi/features/orders/domain/entities/order_status.dart';
+import 'package:sokosafi/router/app_routes.dart';
 
 /// Live overview of the owner's business: today's numbers, active
 /// listings, recent orders and food rescued.
@@ -145,7 +148,11 @@ class _DashboardBody extends StatelessWidget {
               ),
             ),
         const SizedBox(height: AppSpacing.lg),
-        const SectionHeader(title: 'Recent orders'),
+        SectionHeader(
+          title: 'Recent orders',
+          actionLabel: 'View all',
+          onAction: () => context.go(AppRoutes.businessOrders),
+        ),
         const SizedBox(height: AppSpacing.sm),
         if (summary.recentOrders.isEmpty)
           Text(
@@ -156,7 +163,12 @@ class _DashboardBody extends StatelessWidget {
           for (final item in summary.recentOrders)
             Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.md),
-              child: BusinessOrderCard(item: item),
+              child: BusinessOrderCard(
+                item: item,
+                onConfirmPickup: item.order.status == OrderStatus.paid
+                    ? () => context.push(AppRoutes.confirmPickup)
+                    : null,
+              ),
             ),
         const SizedBox(height: AppSpacing.lg),
         Text('Waste diverted', style: sectionStyle),

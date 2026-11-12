@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
 import 'package:sokosafi/core/widgets/app_snackbar.dart';
 import 'package:sokosafi/core/widgets/empty_view.dart';
@@ -9,6 +11,7 @@ import 'package:sokosafi/features/business_orders/presentation/bloc/business_ord
 import 'package:sokosafi/features/business_orders/presentation/widgets/business_orders_list.dart';
 import 'package:sokosafi/features/business_orders/presentation/widgets/business_orders_tab_bar.dart';
 import 'package:sokosafi/features/business_setup/presentation/widgets/owned_business_gate.dart';
+import 'package:sokosafi/router/app_routes.dart';
 
 /// Every order for the owner's business, live, split into tabs.
 class BusinessOrdersScreen extends StatelessWidget {
@@ -38,7 +41,16 @@ class _BusinessOrdersView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Orders')),
+      appBar: AppBar(
+        title: const Text('Orders'),
+        actions: [
+          IconButton(
+            tooltip: 'Scan a pickup code',
+            icon: const HugeIcon(icon: HugeIcons.strokeRoundedQrCode),
+            onPressed: () => context.push(AppRoutes.confirmPickup),
+          ),
+        ],
+      ),
       body: BlocConsumer<BusinessOrdersCubit, BusinessOrdersState>(
         listenWhen: (previous, current) =>
             previous.status != current.status &&
@@ -65,7 +77,13 @@ class _BusinessOrdersView extends StatelessWidget {
                   countFor: (tab) => state.ordersFor(tab).length,
                   onSelected: cubit.selectTab,
                 ),
-                Expanded(child: BusinessOrdersList(state: state)),
+                Expanded(
+                  child: BusinessOrdersList(
+                    state: state,
+                    onConfirmPickup: () =>
+                        context.push(AppRoutes.confirmPickup),
+                  ),
+                ),
               ],
             ),
           };
