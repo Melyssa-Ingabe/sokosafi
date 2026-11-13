@@ -7,8 +7,8 @@ import 'package:sokosafi/core/widgets/countdown_text.dart';
 import 'package:sokosafi/core/widgets/tap_scale.dart';
 import 'package:sokosafi/features/listings/domain/entities/listing.dart';
 import 'package:sokosafi/features/listings/domain/entities/listing_status.dart';
-import 'package:sokosafi/features/listings/presentation/widgets/listing_category_icon.dart';
 import 'package:sokosafi/features/listings/presentation/widgets/listing_status_badge.dart';
+import 'package:sokosafi/features/listings/presentation/widgets/listing_thumbnail.dart';
 
 /// One of the owner's listings, with its status and edit and delete actions.
 class ManagedListingCard extends StatelessWidget {
@@ -58,19 +58,9 @@ class ManagedListingCard extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    DecoratedBox(
-                      decoration: const BoxDecoration(
-                        color: AppColors.surfaceSubtle,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(AppSpacing.md),
-                        child: HugeIcon(
-                          icon: listing.category.icon,
-                          color: AppColors.primary,
-                          size: 22,
-                        ),
-                      ),
+                    ListingThumbnail(
+                      imageUrl: listing.imageUrl,
+                      category: listing.category,
                     ),
                     const SizedBox(width: AppSpacing.md),
                     Expanded(
