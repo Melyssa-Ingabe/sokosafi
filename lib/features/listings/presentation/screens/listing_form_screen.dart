@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
 import 'package:sokosafi/core/storage/device_photo_picker.dart';
-import 'package:sokosafi/core/storage/image_storage.dart';
+import 'package:sokosafi/core/storage/r2_image_storage.dart';
 import 'package:sokosafi/core/utils/date_formatters.dart';
 import 'package:sokosafi/core/widgets/app_snackbar.dart';
 import 'package:sokosafi/core/widgets/app_text_field.dart';
@@ -56,7 +56,7 @@ class ListingFormScreen extends StatelessWidget {
               create: (_) => ListingFormCubit(
                 listingRepository: repository,
                 photoPicker: DevicePhotoPicker(),
-                imageStorage: const UnavailableImageStorage(),
+                imageStorage: R2ImageStorage.firebase(),
                 businessId: business.id,
                 initialListing: initialListing,
               ),
