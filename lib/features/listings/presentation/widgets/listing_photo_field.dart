@@ -23,13 +23,30 @@ class ListingPhotoField extends StatelessWidget {
 
   static const double height = 180;
 
+  /// Keeps the grey box and a spinner behind the photo until it has
+  /// loaded, then fades the photo in over them.
   Widget _fadeIn(Widget child, int? frame, bool wasSynchronouslyLoaded) {
     if (wasSynchronouslyLoaded) return child;
-    return AnimatedOpacity(
-      opacity: frame == null ? 0 : 1,
-      duration: AnimationConstants.imageFade,
-      curve: AnimationConstants.imageFadeCurve,
-      child: child,
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        if (frame == null)
+          const ColoredBox(
+            color: AppColors.surfaceSubtle,
+            child: Center(
+              child: SizedBox.square(
+                dimension: 24,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            ),
+          ),
+        AnimatedOpacity(
+          opacity: frame == null ? 0 : 1,
+          duration: AnimationConstants.imageFade,
+          curve: AnimationConstants.imageFadeCurve,
+          child: child,
+        ),
+      ],
     );
   }
 
@@ -50,7 +67,17 @@ class ListingPhotoField extends StatelessWidget {
             fit: BoxFit.cover,
             frameBuilder: (_, child, frame, wasSync) =>
                 _fadeIn(child, frame, wasSync),
-            errorBuilder: (_, _, _) => const SizedBox.shrink(),
+            errorBuilder: (_, _, _) => ColoredBox(
+              color: AppColors.surfaceSubtle,
+              child: Center(
+                child: Text(
+                  'Photo could not load. Tap to change it',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ),
+            ),
           )
         : null;
 
