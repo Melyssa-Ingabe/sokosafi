@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sokosafi/core/constants/animation_constants.dart';
-import 'package:sokosafi/core/storage/image_storage.dart';
+import 'package:sokosafi/core/storage/r2_image_storage.dart';
 import 'package:sokosafi/core/widgets/app_snackbar.dart';
 import 'package:sokosafi/features/business_setup/data/repositories/device_location_repository.dart';
 import 'package:sokosafi/core/storage/device_photo_picker.dart';
@@ -29,7 +29,7 @@ class BusinessSetupScreen extends StatelessWidget {
         businessRepository: FirestoreBusinessRepository(),
         locationRepository: DeviceLocationRepository(),
         photoPicker: DevicePhotoPicker(),
-        imageStorage: const UnavailableImageStorage(),
+        imageStorage: R2ImageStorage.firebase(),
       ),
       child: const _BusinessSetupView(),
     );
