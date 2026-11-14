@@ -9,16 +9,19 @@ class AuthScaffold extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.children,
+    this.showBackButton = false,
   });
 
   final String title;
   final String subtitle;
   final List<Widget> children;
+  final bool showBackButton;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
+      appBar: showBackButton ? AppBar() : null,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(

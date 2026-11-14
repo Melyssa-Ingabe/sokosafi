@@ -5,6 +5,7 @@ import 'package:sokosafi/features/auth/presentation/widgets/auth_feedback_listen
 import 'package:sokosafi/features/auth/presentation/widgets/auth_scaffold.dart';
 import 'package:sokosafi/features/auth/presentation/widgets/google_sign_in_button.dart';
 import 'package:sokosafi/features/auth/presentation/widgets/login_form.dart';
+import 'package:sokosafi/features/auth/presentation/widgets/or_divider.dart';
 import 'package:sokosafi/router/app_routes.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -19,16 +20,7 @@ class LoginScreen extends StatelessWidget {
         children: [
           const LoginForm(),
           const SizedBox(height: AppSpacing.lg),
-          Row(
-            children: [
-              const Expanded(child: Divider()),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                child: Text('or', style: Theme.of(context).textTheme.bodySmall),
-              ),
-              const Expanded(child: Divider()),
-            ],
-          ),
+          const OrDivider(),
           const SizedBox(height: AppSpacing.lg),
           const GoogleSignInButton(),
           const SizedBox(height: AppSpacing.lg),
