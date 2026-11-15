@@ -33,6 +33,28 @@ class OrderDetailCubit extends Cubit<OrderDetailState> {
         );
   }
 
+  Future<void> cancel() async {
+    final current = state;
+    if (current is! OrderDetailReady) return;
+    emit(current.copyWith(isCancelling: true));
+    try {
+      await _repository.cancelOrder(_orderId);
+    } on OrdersFailure catch (e) {
+      if (state is OrderDetailReady) {
+        emit((state as OrderDetailReady).copyWith(isCancelling: false));
+      }
+      _cancelError = e.message;
+    }
+  }
+
+  String? consumeCancelError() {
+    final error = _cancelError;
+    _cancelError = null;
+    return error;
+  }
+
+  String? _cancelError;
+
   @override
   Future<void> close() async {
     await _subscription?.cancel();
