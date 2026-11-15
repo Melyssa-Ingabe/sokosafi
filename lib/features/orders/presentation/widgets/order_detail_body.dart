@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
 import 'package:sokosafi/core/theme/app_colors.dart';
 import 'package:sokosafi/core/widgets/staggered_entrance.dart';
+import 'package:sokosafi/core/utils/formatters.dart';
 import 'package:sokosafi/features/orders/domain/entities/order_details.dart';
 import 'package:sokosafi/features/orders/presentation/widgets/order_receipt_card.dart';
 import 'package:sokosafi/features/orders/presentation/widgets/order_status_badge.dart';
@@ -47,6 +49,32 @@ class OrderDetailBody extends StatelessWidget {
           OrderStatusBadge(status: order.status),
         ],
       ),
+      if (details.listing != null && details.listing!.pickupBy.isAfter(DateTime.now()) && order.isActive)
+        Card(
+          color: AppColors.brandSubtle,
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Row(
+              children: [
+                HugeIcon(
+                  icon: HugeIcons.strokeRoundedClock01,
+                  size: 18,
+                  color: AppColors.primary,
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
+                    'Pick up by ${Formatters.timeLeft(details.listing!.pickupBy.difference(DateTime.now()))}',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       OrderStatusTimeline(
         status: order.status,
         createdAt: order.createdAt,
