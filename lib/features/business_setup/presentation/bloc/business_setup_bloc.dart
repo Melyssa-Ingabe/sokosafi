@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:sokosafi/core/bloc/feedback_message.dart';
 import 'package:sokosafi/core/storage/image_storage.dart';
+import 'package:sokosafi/core/storage/image_upload_failure.dart';
 import 'package:sokosafi/features/business_setup/domain/entities/business_setup_input.dart';
 import 'package:sokosafi/features/business_setup/domain/entities/business_type.dart';
 import 'package:sokosafi/features/business_setup/domain/entities/place.dart';
@@ -262,6 +263,9 @@ class BusinessSetupBloc extends Bloc<BusinessSetupEvent, BusinessSetupState> {
     }
   }
 
-  String _messageFor(Object error) =>
-      error is BusinessFailure ? error.message : BusinessFailure.genericMessage;
+  String _messageFor(Object error) => switch (error) {
+    BusinessFailure(:final message) => message,
+    ImageUploadFailure(:final message) => message,
+    _ => BusinessFailure.genericMessage,
+  };
 }

@@ -1,6 +1,6 @@
 /// Uploads photos and returns their public URL. Used by business setup and
-/// listings. The real implementation arrives with the image host (Supabase);
-/// until then [UnavailableImageStorage] is used.
+/// listings. The app uses R2ImageStorage; [UnavailableImageStorage] stays for
+/// tests that do not upload.
 abstract interface class ImageStorage {
   /// False while no image host is configured, so features can save without
   /// a photo instead of failing.
@@ -10,7 +10,7 @@ abstract interface class ImageStorage {
   Future<String> upload({required String localPath, required String folder});
 }
 
-/// Placeholder used until the image host is set up.
+/// Saves without photos, for tests and when no image host is configured.
 class UnavailableImageStorage implements ImageStorage {
   const UnavailableImageStorage();
 

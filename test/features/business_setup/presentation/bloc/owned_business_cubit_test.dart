@@ -24,6 +24,7 @@ void main() {
     pickupStart: '08:00',
     pickupEnd: '20:00',
     autoClose: false,
+    landmark: '',
     createdAt: DateTime(2026, 11, 9),
   );
 

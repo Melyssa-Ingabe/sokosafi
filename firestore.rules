@@ -1,7 +1,6 @@
 rules_version = '2';
 
-// Annie's part: businesses, listings and the users.role field.
-// Nelly merges every member's part into this file. Nothing here is open to
+// Members' rules are merged into this file by Nelly. Nothing here is open to
 // signed-out users, and no rule is "allow read, write: if true".
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -29,19 +28,34 @@ service cloud.firestore {
     }
 
     // ---------------------------------------------------------------
-    // users/{uid}: only the role field is Annie's. Melyssa owns create,
-    // Prince the profile fields and Nelly foodPreferences; their rules
-    // are combined with this one.
+    // users/{uid}: Melyssa (create), Prince (profile fields),
+    // Nelly (foodPreferences), Annie (role)
     // ---------------------------------------------------------------
     match /users/{uid} {
-      // Business setup switches the owner's own role in the same batch
-      // that creates their business. The role only changes which screens
-      // open; every business or listing write is checked against the
-      // businesses document itself, so changing it grants no access.
+      // People only ever read their own profile.
+      allow read: if isSelf(uid);
+
+      // Created once, at registration or on the first Google sign-in, with
+      // exactly the fields in the ERD and a server timestamp.
+      allow create: if isSelf(uid)
+        && request.resource.data.keys().hasOnly([
+             'name', 'email', 'phone', 'role', 'foodPreferences',
+             'photoUrl', 'createdAt'])
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.role in ['customer', 'business'];
+
+      // Own profile only. The email and creation time never change. Business
+      // setup switches the owner's own role in the same batch that creates
+      // their business. The role only changes which screens open; every
+      // business or listing write is checked against the businesses document
+      // itself, so changing it grants no access.
       allow update: if isSelf(uid)
         && request.resource.data.diff(resource.data).affectedKeys()
-             .hasOnly(['role'])
+             .hasOnly(['name', 'phone', 'photoUrl', 'role', 'foodPreferences'])
         && request.resource.data.role in ['customer', 'business'];
+
+      // The app has no "delete account".
+      allow delete: if false;
     }
 
     // ---------------------------------------------------------------
@@ -51,7 +65,7 @@ service cloud.firestore {
       return data.keys().hasOnly([
           'ownerId', 'name', 'type', 'address', 'lat', 'lng', 'photoUrl',
           'acceptingOrders', 'pickupStart', 'pickupEnd', 'autoClose',
-          'createdAt'])
+          'landmark', 'createdAt'])
         && data.name is string && data.name.size() >= 2
         && data.name.size() <= 60
         && data.type in ['bakery', 'restaurant', 'cafe', 'supermarket',
@@ -62,7 +76,10 @@ service cloud.firestore {
         && data.photoUrl is string
         && data.acceptingOrders is bool
         && data.pickupStart is string && data.pickupEnd is string
-        && data.autoClose is bool;
+        && data.autoClose is bool
+        // Optional, so businesses saved before it existed stay valid.
+        && (!('landmark' in data)
+            || (data.landmark is string && data.landmark.size() <= 120));
     }
 
     match /businesses/{businessId} {

@@ -49,6 +49,7 @@ void main() {
       'pickupStart',
       'pickupEnd',
       'autoClose',
+      'landmark',
       'createdAt',
     });
     expect(stored.data()!['type'], 'bakery');
@@ -86,5 +87,40 @@ void main() {
     expect(business?.name, 'Boulangerie de Kigali');
     expect(business?.type, BusinessType.bakery);
     expect(business?.latitude, -1.9441);
+  });
+
+  test('new businesses start with an empty landmark', () async {
+    final businessId = await repository.createBusiness(
+      ownerId: ownerId,
+      input: input,
+    );
+
+    final stored = await firestore
+        .collection('businesses')
+        .doc(businessId)
+        .get();
+    expect(stored.data()!['landmark'], '');
+  });
+
+  test('loads a business saved before landmark existed', () async {
+    // Written without a landmark field, like businesses created before
+    // the field was added.
+    await firestore.collection('businesses').add({
+      'ownerId': ownerId,
+      'name': 'Simba Center',
+      'type': 'supermarket',
+      'address': 'KN 4 Ave',
+      'lat': -1.95,
+      'lng': 30.06,
+      'photoUrl': '',
+      'acceptingOrders': true,
+      'pickupStart': '08:00',
+      'pickupEnd': '20:00',
+      'autoClose': false,
+    });
+
+    final business = await repository.watchOwnedBusiness(ownerId).first;
+    expect(business?.name, 'Simba Center');
+    expect(business?.landmark, '');
   });
 }
