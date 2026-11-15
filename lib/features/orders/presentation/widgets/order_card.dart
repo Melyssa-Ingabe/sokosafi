@@ -51,6 +51,25 @@ class OrderCard extends StatelessWidget {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      if (details.listing?.imageUrl.isNotEmpty == true)
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            right: AppSpacing.md,
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(
+                              AppSpacing.badgeRadius,
+                            ),
+                            child: Image.network(
+                              details.listing!.imageUrl,
+                              width: 56,
+                              height: 56,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, _, _) =>
+                                  const SizedBox.shrink(),
+                            ),
+                          ),
+                        ),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
