@@ -15,9 +15,9 @@ class DevicePhotoPicker implements PhotoPicker {
       source: source == PhotoSource.camera
           ? ImageSource.camera
           : ImageSource.gallery,
-      maxWidth: 1280,
-      maxHeight: 1280,
-      imageQuality: 80,
+      maxWidth: 1024,
+      maxHeight: 1024,
+      imageQuality: 75,
     );
     return file?.path;
   }

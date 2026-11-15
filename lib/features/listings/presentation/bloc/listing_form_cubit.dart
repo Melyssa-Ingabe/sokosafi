@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:sokosafi/core/bloc/feedback_message.dart';
 import 'package:sokosafi/core/storage/image_storage.dart';
+import 'package:sokosafi/core/storage/image_upload_failure.dart';
 import 'package:sokosafi/core/storage/photo_picker.dart';
 import 'package:sokosafi/core/utils/formatters.dart';
 import 'package:sokosafi/features/listings/domain/entities/listing.dart';
@@ -223,11 +224,11 @@ class ListingFormCubit extends Cubit<ListingFormState> {
       emit(
         state.copyWith(
           status: ListingFormStatus.editing,
-          feedback: FeedbackMessage.error(
-            error is ListingFailure
-                ? error.message
-                : ListingFailure.genericMessage,
-          ),
+          feedback: FeedbackMessage.error(switch (error) {
+            ListingFailure(:final message) => message,
+            ImageUploadFailure(:final message) => message,
+            _ => ListingFailure.genericMessage,
+          }),
         ),
       );
     }
