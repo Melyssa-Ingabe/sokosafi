@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:sokosafi/core/widgets/app_snackbar.dart';
 import 'package:sokosafi/core/widgets/empty_view.dart';
+import 'package:sokosafi/features/orders/domain/entities/order_status.dart';
 import 'package:sokosafi/core/widgets/loading_view.dart';
 import 'package:sokosafi/features/orders/presentation/cubit/order_detail_cubit.dart';
 import 'package:sokosafi/features/orders/presentation/widgets/order_detail_body.dart';
@@ -36,8 +37,12 @@ class OrderDetailScreen extends StatelessWidget {
       ),
       body: BlocConsumer<OrderDetailCubit, OrderDetailState>(
         listenWhen: (previous, current) {
-          if (previous is OrderDetailReady && current is OrderDetailReady) {
-            if (previous.isCancelling && !current.isCancelling) return true;
+          if (previous is! OrderDetailReady || current is! OrderDetailReady) {
+            return false;
+          }
+          if (previous.isCancelling && !current.isCancelling) return true;
+          if (previous.details.order.status != current.details.order.status) {
+            return true;
           }
           return false;
         },
@@ -46,6 +51,11 @@ class OrderDetailScreen extends StatelessWidget {
           final error = cubit.consumeCancelError();
           if (error != null) {
             AppSnackBar.showError(context, error);
+            return;
+          }
+          if (state is OrderDetailReady &&
+              state.details.order.status == OrderStatus.cancelled) {
+            AppSnackBar.showSuccess(context, 'Order cancelled');
           }
         },
         builder: (context, state) {
