@@ -83,6 +83,14 @@ class SettingsScreen extends StatelessWidget {
           ),
         ],
       ),
+      Center(
+        child: Text(
+          'Sokosafi v1.0.0',
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ),
     ];
 
     return Scaffold(
