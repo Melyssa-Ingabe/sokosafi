@@ -23,6 +23,7 @@ class FirestoreReviewRepository implements ReviewRepository {
   Stream<List<Review>> watchBusinessReviews(String businessId) {
     return _reviews
         .where('businessId', isEqualTo: businessId)
+        .orderBy('createdAt', descending: true)
         .snapshots()
         .map((snapshot) => snapshot.docs.map(_toReview).toList())
         .handleError((Object error) => throw _toFailure(error));
