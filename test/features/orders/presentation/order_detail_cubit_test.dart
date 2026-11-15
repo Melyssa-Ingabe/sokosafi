@@ -1,8 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:sokosafi/features/orders/domain/entities/order_details.dart';
-import 'package:sokosafi/features/orders/domain/entities/order_status.dart';
 import 'package:sokosafi/features/orders/domain/failures/orders_failure.dart';
 import 'package:sokosafi/features/orders/domain/repositories/orders_repository.dart';
 import 'package:sokosafi/features/orders/presentation/cubit/order_detail_cubit.dart';
