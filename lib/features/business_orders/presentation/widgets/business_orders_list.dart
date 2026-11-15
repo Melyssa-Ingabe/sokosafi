@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
+import 'package:sokosafi/core/theme/app_colors.dart';
 import 'package:sokosafi/core/widgets/empty_view.dart';
 import 'package:sokosafi/core/widgets/staggered_entrance.dart';
 import 'package:sokosafi/features/business_orders/presentation/bloc/business_orders_cubit.dart';
@@ -15,7 +16,6 @@ class BusinessOrdersList extends StatelessWidget {
 
   final BusinessOrdersState state;
 
-  /// Opens Confirm Pickup. Only incoming orders show the button.
   final VoidCallback onConfirmPickup;
 
   @override
@@ -40,15 +40,13 @@ class BusinessOrdersList extends StatelessWidget {
         icon: HugeIcon(
           icon: HugeIcons.strokeRoundedShoppingBag01,
           size: 48,
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
+          color: AppColors.textTertiary,
         ),
         title: title,
         message: message,
       );
     }
     return ListView.separated(
-      // A key per tab rebuilds the list, so switching tabs replays the
-      // entrance animation.
       key: PageStorageKey(state.tab),
       padding: const EdgeInsets.all(AppSpacing.pagePadding),
       itemCount: orders.length,

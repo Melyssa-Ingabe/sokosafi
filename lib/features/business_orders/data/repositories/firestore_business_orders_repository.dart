@@ -100,15 +100,24 @@ class FirestoreBusinessOrdersRepository implements BusinessOrdersRepository {
     final listingIds = orders
         .map((order) => order.listingId)
         .where((id) => id.isNotEmpty)
-        .toSet();
-    final snapshots = await Future.wait(
-      listingIds.map((id) => _listings.doc(id).get().timeout(_timeout)),
-    );
+        .toSet()
+        .toList();
+    final snapshots = <QueryDocumentSnapshot<Map<String, dynamic>>>[];
+    for (var i = 0; i < listingIds.length; i += 10) {
+      final batch = listingIds.sublist(
+        i,
+        i + 10 > listingIds.length ? listingIds.length : i + 10,
+      );
+      final result = await _listings
+          .where(FieldPath.documentId, whereIn: batch)
+          .get()
+          .timeout(_timeout);
+      snapshots.addAll(result.docs);
+    }
     final titles = {
       for (final snapshot in snapshots)
         if (snapshot.exists)
-          snapshot.id: (snapshot.data() ?? const <String, dynamic>{})
-              .readString('title'),
+          snapshot.id: snapshot.data().readString('title'),
     };
     return [
       for (final order in orders)

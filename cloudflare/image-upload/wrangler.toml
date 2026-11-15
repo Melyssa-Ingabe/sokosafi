@@ -1,0 +1,11 @@
+name = "upload"
+main = "src/index.js"
+compatibility_date = "2025-09-01"
+
+[[r2_buckets]]
+binding = "IMAGES"
+bucket_name = "sokosafi-images"
+
+[vars]
+FIREBASE_PROJECT_ID = "sokosafi-b978a"
+PUBLIC_BASE_URL = "https://pub-4efced103914462c879071dfb37ee709.r2.dev"
