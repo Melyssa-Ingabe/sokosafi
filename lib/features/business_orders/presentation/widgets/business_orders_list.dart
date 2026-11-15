@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
+import 'package:sokosafi/core/theme/app_colors.dart';
 import 'package:sokosafi/core/widgets/empty_view.dart';
 import 'package:sokosafi/core/widgets/staggered_entrance.dart';
 import 'package:sokosafi/features/business_orders/presentation/bloc/business_orders_cubit.dart';
 import 'package:sokosafi/features/business_orders/presentation/widgets/business_order_card.dart';
+import 'package:sokosafi/features/orders/domain/entities/order_status.dart';
 
 class BusinessOrdersList extends StatelessWidget {
-  const BusinessOrdersList({super.key, required this.state});
+  const BusinessOrdersList({
+    super.key,
+    required this.state,
+    this.onConfirmPickup,
+  });
 
   final BusinessOrdersState state;
+  final void Function(String orderId)? onConfirmPickup;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +40,7 @@ class BusinessOrdersList extends StatelessWidget {
         icon: HugeIcon(
           icon: HugeIcons.strokeRoundedShoppingBag01,
           size: 48,
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
+          color: AppColors.textTertiary,
         ),
         title: title,
         message: message,
@@ -51,7 +58,13 @@ class BusinessOrdersList extends StatelessWidget {
         return StaggeredEntrance(
           key: ValueKey('${state.tab.name}-${item.order.id}'),
           index: index,
-          child: BusinessOrderCard(item: item),
+          child: BusinessOrderCard(
+            item: item,
+            onConfirmPickup: item.order.status == OrderStatus.paid &&
+                    onConfirmPickup != null
+                ? () => onConfirmPickup!(item.order.id)
+                : null,
+          ),
         );
       },
     );

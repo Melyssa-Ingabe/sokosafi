@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
 import 'package:sokosafi/core/theme/app_colors.dart';
 import 'package:sokosafi/core/theme/app_text_styles.dart';
@@ -50,7 +51,7 @@ class _ConfirmPickupView extends StatelessWidget {
               context,
               'Pickup confirmed. The order is now collected',
             );
-            Navigator.of(context).maybePop();
+            context.pop();
           } else if (state.status == ConfirmPickupStatus.failed) {
             AppSnackBar.showError(
               context,
