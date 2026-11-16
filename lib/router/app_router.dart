@@ -1,7 +1,11 @@
 import 'package:go_router/go_router.dart';
 import 'package:sokosafi/core/widgets/placeholder_screen.dart';
 import 'package:sokosafi/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:sokosafi/features/auth/presentation/screens/forgot_password_screen.dart';
+import 'package:sokosafi/features/auth/presentation/screens/login_screen.dart';
+import 'package:sokosafi/features/auth/presentation/screens/register_screen.dart';
 import 'package:sokosafi/features/auth/presentation/screens/splash_screen.dart';
+import 'package:sokosafi/features/auth/presentation/screens/verify_email_screen.dart';
 import 'package:sokosafi/features/business_setup/presentation/screens/business_setup_screen.dart';
 import 'package:sokosafi/features/business_setup/presentation/screens/switch_to_business_screen.dart';
 import 'package:sokosafi/features/listings/domain/entities/listing.dart';
@@ -41,34 +45,23 @@ GoRouter buildAppRouter(AuthBloc authBloc) {
       ),
       GoRoute(
         path: AppRoutes.login,
-        pageBuilder: (context, state) => buildAppPage(
-          state: state,
-          child: const PlaceholderScreen(title: 'Login'),
-        ),
+        pageBuilder: (context, state) =>
+            buildAppPage(state: state, child: const LoginScreen()),
       ),
       GoRoute(
         path: AppRoutes.register,
-        pageBuilder: (context, state) => buildAppPage(
-          state: state,
-          child: const PlaceholderScreen(title: 'Register'),
-        ),
+        pageBuilder: (context, state) =>
+            buildAppPage(state: state, child: const RegisterScreen()),
       ),
       GoRoute(
         path: AppRoutes.forgotPassword,
-        pageBuilder: (context, state) => buildAppPage(
-          state: state,
-          child: const PlaceholderScreen(title: 'Forgot password'),
-        ),
+        pageBuilder: (context, state) =>
+            buildAppPage(state: state, child: const ForgotPasswordScreen()),
       ),
       GoRoute(
         path: AppRoutes.verifyEmail,
-        pageBuilder: (context, state) => buildAppPage(
-          state: state,
-          child: PlaceholderScreen(
-            title: 'Verify email',
-            onLogout: () => authBloc.add(const AuthLogoutRequested()),
-          ),
-        ),
+        pageBuilder: (context, state) =>
+            buildAppPage(state: state, child: const VerifyEmailScreen()),
       ),
       GoRoute(
         path: AppRoutes.customerHome,
