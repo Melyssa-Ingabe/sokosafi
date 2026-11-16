@@ -8,7 +8,7 @@ import 'package:sokosafi/features/orders/presentation/cubit/my_orders_cubit.dart
 import 'package:sokosafi/features/orders/presentation/cubit/order_detail_cubit.dart';
 import 'package:sokosafi/features/orders/presentation/screens/checkout_screen.dart';
 import 'package:sokosafi/features/orders/presentation/screens/my_orders_screen.dart';
-import 'package:sokosafi/features/orders/presentation/screens/order_confirmation_screen.dart';
+import 'package:sokosafi/features/orders/presentation/screens/order_detail_screen.dart';
 import 'package:sokosafi/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:sokosafi/router/app_page.dart';
 import 'package:sokosafi/router/app_routes.dart';
@@ -58,7 +58,7 @@ List<GoRoute> buildOrdersRoutes({OrdersRepository Function()? repository}) {
             repository: createRepository(),
             orderId: state.pathParameters['orderId'] ?? '',
           )..watch(),
-          child: const OrderConfirmationScreen(),
+          child: const OrderDetailScreen(),
         ),
       ),
     ),
