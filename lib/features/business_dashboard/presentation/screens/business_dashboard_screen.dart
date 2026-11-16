@@ -144,7 +144,11 @@ class _DashboardBody extends StatelessWidget {
           ],
         ),
         const SizedBox(height: AppSpacing.xl),
-        const SectionHeader(title: 'Active listings'),
+        SectionHeader(
+          title: 'Active listings',
+          actionLabel: 'Manage',
+          onAction: () => context.push(AppRoutes.myListings),
+        ),
         const SizedBox(height: AppSpacing.sm),
         if (summary.activeListings.isEmpty)
           Text(
