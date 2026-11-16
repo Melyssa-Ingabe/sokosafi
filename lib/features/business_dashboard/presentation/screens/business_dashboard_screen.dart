@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
 import 'package:sokosafi/core/theme/app_colors.dart';
 import 'package:sokosafi/core/theme/app_text_styles.dart';
@@ -62,6 +63,11 @@ class _DashboardView extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
         ),
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => context.push(AppRoutes.createListing),
+        icon: const HugeIcon(icon: HugeIcons.strokeRoundedAdd01),
+        label: const Text('List'),
+      ),
       body: BlocConsumer<DashboardCubit, DashboardState>(
         listenWhen: (previous, current) =>
             previous.status != current.status &&
@@ -102,7 +108,14 @@ class _DashboardBody extends StatelessWidget {
       color: AppColors.textSecondary,
     );
     return ListView(
-      padding: const EdgeInsets.all(AppSpacing.pagePadding),
+      // Extra space at the bottom so the "+ List" button never covers the
+      // last card.
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.pagePadding,
+        AppSpacing.pagePadding,
+        AppSpacing.pagePadding,
+        96,
+      ),
       children: [
         Text('Today', style: sectionStyle),
         const SizedBox(height: AppSpacing.sm),
