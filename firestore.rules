@@ -164,5 +164,41 @@ service cloud.firestore {
       // needs a query, which rules cannot run.
       allow delete: if ownsBusiness(resource.data.businessId);
     }
+
+    // ---------------------------------------------------------------
+    // reviews/{reviewId}: Kevine. The review id is the orderId, which
+    // keeps it to one review per order.
+    // ---------------------------------------------------------------
+    function reviewedOrder(orderId) {
+      return get(/databases/$(database)/documents/orders/$(orderId)).data;
+    }
+
+    match /reviews/{reviewId} {
+      // Customers and the business's analytics both read ratings.
+      allow read: if signedIn();
+
+      // Only the customer of a collected order, once, for that order's own
+      // business, with 1 to 5 stars and a short comment.
+      allow create: if signedIn()
+        && exists(/databases/$(database)/documents/orders/$(reviewId))
+        && request.resource.data.orderId == reviewId
+        && request.resource.data.customerId == request.auth.uid
+        && reviewedOrder(reviewId).customerId == request.auth.uid
+        && reviewedOrder(reviewId).status == 'collected'
+        && reviewedOrder(reviewId).businessId ==
+             request.resource.data.businessId
+        && request.resource.data.keys().hasOnly([
+             'orderId', 'customerId', 'businessId', 'rating', 'comment',
+             'createdAt'])
+        && request.resource.data.rating is int
+        && request.resource.data.rating >= 1
+        && request.resource.data.rating <= 5
+        && request.resource.data.comment is string
+        && request.resource.data.comment.size() <= 300
+        && request.resource.data.createdAt == request.time;
+
+      // A review is final: nobody edits or deletes it.
+      allow update, delete: if false;
+    }
   }
 }
