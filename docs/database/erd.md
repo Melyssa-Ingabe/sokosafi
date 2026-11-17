@@ -58,7 +58,7 @@ erDiagram
         timestamp pickupBy
         string imageUrl
         string instructions
-        string status "active, soldOut, expired; soldOut set by the order transaction at 0"
+        string status "active, soldOut, expired; orders set soldOut at 0 and back to active on cancel"
         timestamp createdAt
     }
 
@@ -69,7 +69,7 @@ erDiagram
         string listingId FK "listings.listingId"
         int quantity
         int total "RWF, discountPrice x quantity"
-        string pickupCode
+        string pickupCode "SKS- plus 6 letters or digits, e.g. SKS-4A7F2B"
         string paymentMethod "mtnMomo or airtelMoney"
         string status "paid, collected, cancelled"
         timestamp createdAt
@@ -77,13 +77,13 @@ erDiagram
     }
 
     REVIEWS {
-        string reviewId PK
+        string reviewId PK "same as orderId"
         string orderId FK "orders.orderId"
-        string customerId FK "users.uid"
-        string businessId FK "businesses.businessId"
+        string customerId FK "users.uid, the order's customer"
+        string businessId FK "businesses.businessId, the order's business"
         int rating "1 to 5"
-        string comment
-        timestamp createdAt
+        string comment "max 300 chars"
+        timestamp createdAt "final: never edited or deleted"
     }
 
     SAVED_MERCHANTS {
@@ -95,6 +95,11 @@ erDiagram
 `SAVED_MERCHANTS` is the subcollection `users/{uid}/savedMerchants`, so each
 saved merchant belongs to the user whose document it sits under.
 
+A review's document id is its order's id. That is what keeps it to one review
+per order: a second review for the same order would have to reuse the same
+id, and the security rules only allow creating it once, by that order's
+customer, after the order is `collected`.
+
 ## Relationships
 
 | From | To | Cardinality | Stored as |
@@ -104,7 +109,7 @@ saved merchant belongs to the user whose document it sits under.
 | listings | orders | one listing has many orders | `orders.listingId` |
 | users | orders | one customer places many orders | `orders.customerId` |
 | businesses | orders | one business receives many orders | `orders.businessId` |
-| orders | reviews | one order has zero or one review | `reviews.orderId` |
+| orders | reviews | one order has zero or one review | `reviews.orderId`, also the review's doc id |
 | users | reviews | one customer writes many reviews | `reviews.customerId` |
 | businesses | reviews | one business receives many reviews | `reviews.businessId` |
 | users | savedMerchants | one user saves many businesses | subcollection path |
@@ -130,3 +135,4 @@ Listed in `firestore.indexes.json`.
 | Collection | Fields | Used by |
 |---|---|---|
 | listings | businessId asc, createdAt desc | My listings |
+| orders | customerId asc, createdAt desc | My orders |
