@@ -25,6 +25,11 @@ abstract final class AppRoutes {
   static const String editProfile = '/profile/edit';
   static const String settings = '/settings';
 
-  static String checkoutFor(String listingId) => '/checkout/$listingId';
+  /// [quantity] pre-fills checkout with what was picked on the detail
+  /// screen; checkout still clamps it to what is left.
+  static String checkoutFor(String listingId, {int? quantity}) =>
+      quantity == null
+      ? '/checkout/$listingId'
+      : '/checkout/$listingId?quantity=$quantity';
   static String orderFor(String orderId) => '/orders/$orderId';
 }

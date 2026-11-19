@@ -27,6 +27,8 @@ List<GoRoute> buildOrdersRoutes({OrdersRepository Function()? repository}) {
             repository: createRepository(),
             customerId: context.read<AuthBloc>().state.user?.uid ?? '',
             listingId: state.pathParameters['listingId'] ?? '',
+            initialQuantity:
+                int.tryParse(state.uri.queryParameters['quantity'] ?? '') ?? 1,
             preferredPaymentMethod: context
                 .read<SettingsCubit>()
                 .state

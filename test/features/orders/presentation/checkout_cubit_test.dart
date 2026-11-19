@@ -49,6 +49,38 @@ void main() {
     ],
   );
 
+  group('quantity picked on the product detail screen', () {
+    CheckoutCubit buildWithQuantity(int initialQuantity) => CheckoutCubit(
+      repository: repository,
+      customerId: 'customer-1',
+      listingId: 'bread',
+      preferredPaymentMethod: PaymentMethod.airtelMoney,
+      initialQuantity: initialQuantity,
+    );
+
+    blocTest<CheckoutCubit, CheckoutState>(
+      'starts checkout at that quantity',
+      setUp: () =>
+          when(() => repository.loadCheckoutItem('bread'))
+              .thenAnswer((_) async => breadCheckout()),
+      build: () => buildWithQuantity(2),
+      act: (cubit) => cubit.load(),
+      skip: 1,
+      expect: () => [readyState(quantity: 2)],
+    );
+
+    blocTest<CheckoutCubit, CheckoutState>(
+      'lowers it to what is left if items sold in the meantime',
+      setUp: () =>
+          when(() => repository.loadCheckoutItem('bread'))
+              .thenAnswer((_) async => breadCheckout(quantityLeft: 1)),
+      build: () => buildWithQuantity(3),
+      act: (cubit) => cubit.load(),
+      skip: 1,
+      expect: () => [readyState(quantity: 1, quantityLeft: 1)],
+    );
+  });
+
   blocTest<CheckoutCubit, CheckoutState>(
     'shows a polite error when the item cannot load',
     setUp: () =>
