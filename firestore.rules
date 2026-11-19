@@ -164,5 +164,72 @@ service cloud.firestore {
       // needs a query, which rules cannot run.
       allow delete: if ownsBusiness(resource.data.businessId);
     }
+
+    // ---------------------------------------------------------------
+    // orders/{orderId}: Prince (create, cancel), Kevine (collected)
+    // ---------------------------------------------------------------
+    function orderFields() {
+      return ['customerId', 'businessId', 'listingId', 'quantity', 'total',
+              'pickupCode', 'paymentMethod', 'status', 'createdAt',
+              'collectedAt'];
+    }
+
+    // A new order is checked against its listing as it was before the
+    // order transaction (still on sale, the real price) and as it is after
+    // (stock reduced by exactly the quantity bought). getAfter() is what
+    // ties the order to the stock change made in the same transaction.
+    function validNewOrder(order) {
+      let listingPath =
+        /databases/$(database)/documents/listings/$(order.listingId);
+      let listing = get(listingPath).data;
+      return order.keys().hasOnly(orderFields())
+        && order.keys().hasAll(orderFields())
+        && order.customerId == request.auth.uid
+        && order.businessId == listing.businessId
+        && listing.status == 'active'
+        && listing.pickupBy > request.time
+        && order.quantity is int && order.quantity >= 1
+        && order.total == listing.discountPrice * order.quantity
+        && getAfter(listingPath).data.quantity
+             == listing.quantity - order.quantity
+        && order.pickupCode is string
+        && order.pickupCode.matches('SKS-[A-HJ-NP-Z2-9]{6}')
+        && order.paymentMethod in ['mtnMomo', 'airtelMoney']
+        && order.status == 'paid'
+        && order.createdAt == request.time
+        && order.collectedAt == null;
+    }
+
+    match /orders/{orderId} {
+      // The customer reads their own orders and the business reads the
+      // orders it received. Rules are not filters, so every app query on
+      // orders must filter by customerId or businessId to be allowed.
+      allow read: if signedIn()
+        && (resource.data.customerId == request.auth.uid
+            || ownsBusiness(resource.data.businessId));
+
+      allow create: if signedIn() && validNewOrder(request.resource.data);
+
+      // The customer may cancel their own order while it waits for pickup.
+      allow update: if signedIn()
+        && resource.data.customerId == request.auth.uid
+        && resource.data.status == 'paid'
+        && request.resource.data.status == 'cancelled'
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(['status']);
+
+      // Only the business that received the order may mark it collected,
+      // only from paid, and only with the server's time of pickup.
+      allow update: if ownsBusiness(resource.data.businessId)
+        && resource.data.status == 'paid'
+        && request.resource.data.status == 'collected'
+        && request.resource.data.collectedAt == request.time
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(['status', 'collectedAt']);
+
+      // Orders are kept for the customer's history and the business's
+      // analytics.
+      allow delete: if false;
+    }
   }
 }
