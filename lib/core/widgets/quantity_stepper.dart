@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
 
+/// Minus and plus buttons around a number, each a full 48px tap target.
 class QuantityStepper extends StatelessWidget {
   const QuantityStepper({
     super.key,
