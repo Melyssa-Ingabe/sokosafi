@@ -8,10 +8,18 @@ import 'package:sokosafi/core/theme/app_colors.dart';
 /// with a back button over it. Shares a hero tag with the card it was
 /// opened from.
 class ProductPhotoHeader extends StatelessWidget {
-  const ProductPhotoHeader({super.key, required this.imageUrl, this.heroTag});
+  const ProductPhotoHeader({
+    super.key,
+    required this.imageUrl,
+    this.heroTag,
+    this.action,
+  });
 
   final String imageUrl;
   final Object? heroTag;
+
+  /// Shown in the top-right corner, where Figma has its round button.
+  final Widget? action;
 
   // Sizes from the Product Detail frame in Figma.
   static const double height = 268;
@@ -79,6 +87,12 @@ class ProductPhotoHeader extends StatelessWidget {
                   ),
                 ),
               ),
+              if (action != null)
+                Positioned(
+                  top: AppSpacing.md,
+                  right: AppSpacing.md,
+                  child: action!,
+                ),
             ],
           ),
         ),
