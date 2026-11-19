@@ -192,6 +192,16 @@ describe('cancelling an order', () => {
     );
   });
 
+  // Mirrors cancelOrder in FirestoreOrdersRepository, which puts the items
+  // back in the same transaction.
+  test('cancelling puts the items back on the listing', async () => {
+    const db = dbAs(env, CUSTOMER);
+    const batch = writeBatch(db);
+    batch.update(doc(db, 'orders/order1'), { status: 'cancelled' });
+    batch.update(doc(db, 'listings/listing1'), { quantity: 7 });
+    await assertSucceeds(batch.commit());
+  });
+
   test('another customer cannot cancel it', async () => {
     const db = dbAs(env, STRANGER);
     await assertFails(
