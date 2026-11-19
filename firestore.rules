@@ -29,8 +29,20 @@ service cloud.firestore {
 
     // ---------------------------------------------------------------
     // users/{uid}: Melyssa (create), Prince (profile fields),
-    // Nelly (foodPreferences), Annie (role)
+    // Nelly (foodPreferences, savedMerchants), Annie (role)
     // ---------------------------------------------------------------
+
+    // Food preferences are listing categories, so the feed can put them
+    // first. Optional, so profiles saved before the field existed can still
+    // be edited.
+    function validFoodPreferences(data) {
+      return !('foodPreferences' in data)
+        || (data.foodPreferences is list
+            && data.foodPreferences.size() <= 4
+            && data.foodPreferences.hasOnly(
+                 ['bakery', 'meals', 'cafe', 'grocery']));
+    }
+
     match /users/{uid} {
       // People only ever read their own profile.
       allow read: if isSelf(uid);
@@ -42,7 +54,8 @@ service cloud.firestore {
              'name', 'email', 'phone', 'role', 'foodPreferences',
              'photoUrl', 'createdAt'])
         && request.resource.data.createdAt == request.time
-        && request.resource.data.role in ['customer', 'business'];
+        && request.resource.data.role in ['customer', 'business']
+        && validFoodPreferences(request.resource.data);
 
       // Own profile only. The email and creation time never change. Business
       // setup switches the owner's own role in the same batch that creates
@@ -52,10 +65,26 @@ service cloud.firestore {
       allow update: if isSelf(uid)
         && request.resource.data.diff(resource.data).affectedKeys()
              .hasOnly(['name', 'phone', 'photoUrl', 'role', 'foodPreferences'])
-        && request.resource.data.role in ['customer', 'business'];
+        && request.resource.data.role in ['customer', 'business']
+        && validFoodPreferences(request.resource.data);
 
       // The app has no "delete account".
       allow delete: if false;
+
+      // users/{uid}/savedMerchants/{businessId}: the document id is the
+      // saved business's id, so a merchant can only be saved once, and the
+      // list is private to the customer who saved it.
+      match /savedMerchants/{businessId} {
+        allow read, delete: if isSelf(uid);
+
+        allow create: if isSelf(uid)
+          && exists(/databases/$(database)/documents/businesses/$(businessId))
+          && request.resource.data.keys().hasOnly(['savedAt'])
+          && request.resource.data.savedAt == request.time;
+
+        // Saving is on or off; there is nothing to edit.
+        allow update: if false;
+      }
     }
 
     // ---------------------------------------------------------------
