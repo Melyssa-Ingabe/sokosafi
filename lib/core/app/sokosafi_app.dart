@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sokosafi/core/theme/app_theme.dart';
 import 'package:sokosafi/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:sokosafi/features/discovery/presentation/bloc/saved_merchants_cubit.dart';
 import 'package:sokosafi/features/settings/domain/entities/app_settings.dart';
 import 'package:sokosafi/features/settings/presentation/cubit/settings_cubit.dart';
 
@@ -11,11 +12,13 @@ class SokosafiApp extends StatelessWidget {
     super.key,
     required this.authBloc,
     required this.settingsCubit,
+    required this.savedMerchantsCubit,
     required this.router,
   });
 
   final AuthBloc authBloc;
   final SettingsCubit settingsCubit;
+  final SavedMerchantsCubit savedMerchantsCubit;
   final GoRouter router;
 
   @override
@@ -24,6 +27,7 @@ class SokosafiApp extends StatelessWidget {
       providers: [
         BlocProvider<AuthBloc>.value(value: authBloc),
         BlocProvider<SettingsCubit>.value(value: settingsCubit),
+        BlocProvider<SavedMerchantsCubit>.value(value: savedMerchantsCubit),
       ],
       child: BlocSelector<SettingsCubit, AppSettings, bool>(
         selector: (settings) => settings.isDarkMode,
