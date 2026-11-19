@@ -125,6 +125,34 @@ void main() {
     });
   });
 
+  group('watchShopItems', () {
+    test('returns only that shop\'s listings', () async {
+      final listings = firestore.collection('listings');
+      await listings
+          .doc('mine')
+          .set(
+            listingData(
+              businessId: 'biz-1',
+              pickupIn: const Duration(hours: 2),
+            ),
+          );
+      await listings
+          .doc('theirs')
+          .set(
+            listingData(
+              businessId: 'biz-2',
+              pickupIn: const Duration(hours: 2),
+            ),
+          );
+
+      final items = await repository
+          .watchShopItems(buildBusiness(id: 'biz-1'))
+          .first;
+
+      expect(items.map((item) => item.listing.id), ['mine']);
+    });
+  });
+
   group('watchItem', () {
     test('returns the listing and its business', () async {
       await firestore
