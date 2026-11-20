@@ -47,17 +47,21 @@ class OrderStatusTimeline extends StatelessWidget {
     return switch (status) {
       OrderStatus.paid => [
         _Step('Order placed', placed, isCompleted: true),
-        _Step('Ready for pickup', 'Show your code at the store',
-            isCompleted: true),
+        _Step(
+          'Ready for pickup',
+          'Show your code at the store',
+          isCompleted: true,
+        ),
         _Step('Awaiting collection', '', isCompleted: false),
       ],
       OrderStatus.collected => [
         _Step('Order placed', placed, isCompleted: true),
         _Step('Ready for pickup', '', isCompleted: true),
         _Step(
-            'Collected',
-            collectedAt != null ? _formatDate(collectedAt!) : '',
-            isCompleted: true),
+          'Collected',
+          collectedAt != null ? _formatDate(collectedAt!) : '',
+          isCompleted: true,
+        ),
       ],
       OrderStatus.cancelled => [
         _Step('Order placed', placed, isCompleted: true),
@@ -68,8 +72,18 @@ class OrderStatusTimeline extends StatelessWidget {
 
   static String _formatDate(DateTime date) {
     final months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     final hour = date.hour % 12 == 0 ? 12 : date.hour % 12;
     final period = date.hour < 12 ? 'AM' : 'PM';
@@ -121,21 +135,14 @@ class _TimelineStep extends StatelessWidget {
                   ),
                 ),
                 if (!isLast)
-                  Expanded(
-                    child: Container(
-                      width: 2,
-                      color: lineColor,
-                    ),
-                  ),
+                  Expanded(child: Container(width: 2, color: lineColor)),
               ],
             ),
           ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Padding(
-              padding: EdgeInsets.only(
-                bottom: isLast ? 0 : AppSpacing.lg,
-              ),
+              padding: EdgeInsets.only(bottom: isLast ? 0 : AppSpacing.lg),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

@@ -116,8 +116,7 @@ class FirestoreBusinessOrdersRepository implements BusinessOrdersRepository {
     }
     final titles = {
       for (final snapshot in snapshots)
-        if (snapshot.exists)
-          snapshot.id: snapshot.data().readString('title'),
+        if (snapshot.exists) snapshot.id: snapshot.data().readString('title'),
     };
     return [
       for (final order in orders)
