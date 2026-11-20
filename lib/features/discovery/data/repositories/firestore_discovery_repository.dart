@@ -73,6 +73,24 @@ class FirestoreDiscoveryRepository implements DiscoveryRepository {
         .handleError((Object error) => throw toDiscoveryFailure(error));
   }
 
+  @override
+  Stream<List<FeedItem>> watchShopItems(Business business) {
+    // An equality filter on one field needs no composite index.
+    return _listings
+        .where('businessId', isEqualTo: business.id)
+        .snapshots()
+        .map(
+          (snapshot) => [
+            for (final doc in snapshot.docs)
+              FeedItem(
+                listing: ListingModel.fromSnapshot(doc),
+                business: business,
+              ),
+          ],
+        )
+        .handleError((Object error) => throw toDiscoveryFailure(error));
+  }
+
   /// Reads each business once per update. A listing whose business is
   /// missing is left out rather than shown without a name or address.
   Future<Map<String, Business>> _readBusinesses(Set<String> ids) async {

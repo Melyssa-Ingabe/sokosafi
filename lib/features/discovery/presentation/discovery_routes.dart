@@ -9,6 +9,7 @@ import 'package:sokosafi/features/discovery/presentation/bloc/feed_cubit.dart';
 import 'package:sokosafi/features/discovery/presentation/bloc/product_detail_cubit.dart';
 import 'package:sokosafi/features/discovery/presentation/screens/feed_screen.dart';
 import 'package:sokosafi/features/discovery/presentation/screens/product_detail_screen.dart';
+import 'package:sokosafi/features/discovery/presentation/screens/saved_merchants_screen.dart';
 import 'package:sokosafi/features/discovery/presentation/widgets/customer_shell.dart';
 import 'package:sokosafi/features/orders/presentation/orders_routes.dart';
 import 'package:sokosafi/features/profile/presentation/profile_routes.dart';
@@ -59,6 +60,19 @@ List<RouteBase> buildDiscoveryRoutes({
           ],
         ),
         StatefulShellBranch(routes: [buildMyOrdersRoute()]),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: AppRoutes.savedMerchants,
+              pageBuilder: (context, state) => buildAppPage(
+                state: state,
+                child: SavedMerchantsScreen(
+                  discoveryRepository: createRepository(),
+                ),
+              ),
+            ),
+          ],
+        ),
         StatefulShellBranch(routes: [buildProfileRoute()]),
       ],
     ),

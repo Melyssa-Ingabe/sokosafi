@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:sokosafi/features/discovery/domain/entities/saved_merchant.dart';
 import 'package:sokosafi/features/discovery/presentation/bloc/product_detail_cubit.dart';
+import 'package:sokosafi/features/discovery/presentation/bloc/saved_merchants_cubit.dart';
 import 'package:sokosafi/features/discovery/presentation/screens/product_detail_screen.dart';
 
 import '../../discovery_test_data.dart';
@@ -11,10 +13,23 @@ import '../../discovery_test_data.dart';
 class MockProductDetailCubit extends MockCubit<ProductDetailState>
     implements ProductDetailCubit {}
 
+class MockSavedMerchantsCubit extends MockCubit<SavedMerchantsState>
+    implements SavedMerchantsCubit {}
+
 void main() {
   late MockProductDetailCubit cubit;
+  late MockSavedMerchantsCubit savedMerchants;
 
-  setUp(() => cubit = MockProductDetailCubit());
+  setUpAll(() => registerFallbackValue(buildBusiness()));
+
+  setUp(() {
+    cubit = MockProductDetailCubit();
+    savedMerchants = MockSavedMerchantsCubit();
+    when(
+      () => savedMerchants.state,
+    ).thenReturn(const SavedMerchantsState(status: SavedMerchantsStatus.ready));
+    when(() => savedMerchants.toggle(any())).thenAnswer((_) async {});
+  });
 
   Future<void> pumpDetail(WidgetTester tester, {Size? screenSize}) async {
     if (screenSize != null) {
@@ -24,8 +39,11 @@ void main() {
     }
     await tester.pumpWidget(
       MaterialApp(
-        home: BlocProvider<ProductDetailCubit>.value(
-          value: cubit,
+        home: MultiBlocProvider(
+          providers: [
+            BlocProvider<ProductDetailCubit>.value(value: cubit),
+            BlocProvider<SavedMerchantsCubit>.value(value: savedMerchants),
+          ],
           child: const ProductDetailScreen(),
         ),
       ),
@@ -59,6 +77,35 @@ void main() {
     expect(find.text('Total (3 items)'), findsOneWidget);
     expect(find.text('4,500 RWF'), findsOneWidget);
     expect(find.text('Reserve'), findsOneWidget);
+  });
+
+  testWidgets('the heart saves the shop', (tester) async {
+    when(() => cubit.state).thenReturn(readyWith());
+
+    await pumpDetail(tester);
+    await tester.tap(find.byTooltip('Save Boulangerie de Kigali'));
+
+    verify(() => savedMerchants.toggle(buildBusiness())).called(1);
+  });
+
+  testWidgets('the heart is filled when the shop is already saved', (
+    tester,
+  ) async {
+    when(() => cubit.state).thenReturn(readyWith());
+    when(() => savedMerchants.state).thenReturn(
+      SavedMerchantsState(
+        status: SavedMerchantsStatus.ready,
+        merchants: [SavedMerchant(business: buildBusiness(), savedAt: feedNow)],
+      ),
+    );
+
+    await pumpDetail(tester);
+
+    expect(find.byIcon(Icons.favorite), findsOneWidget);
+    expect(
+      find.byTooltip('Remove Boulangerie de Kigali from saved'),
+      findsOneWidget,
+    );
   });
 
   testWidgets('turns Reserve off when the shop stops taking orders', (

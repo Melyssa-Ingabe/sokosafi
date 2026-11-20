@@ -22,6 +22,9 @@ abstract final class AppRoutes {
   /// route's `extra` so the photo animates in.
   static const String listingDetail = '/listings/:listingId';
 
+  /// The customer's saved shops, a bottom navigation tab.
+  static const String savedMerchants = '/saved';
+
   static const String checkout = '/checkout/:listingId';
   static const String myOrders = '/orders';
   static const String orderDetail = '/orders/:orderId';
