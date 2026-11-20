@@ -29,8 +29,20 @@ service cloud.firestore {
 
     // ---------------------------------------------------------------
     // users/{uid}: Melyssa (create), Prince (profile fields),
-    // Nelly (foodPreferences), Annie (role)
+    // Nelly (foodPreferences, savedMerchants), Annie (role)
     // ---------------------------------------------------------------
+
+    // Food preferences are listing categories, so the feed can put them
+    // first. Optional, so profiles saved before the field existed can still
+    // be edited.
+    function validFoodPreferences(data) {
+      return !('foodPreferences' in data)
+        || (data.foodPreferences is list
+            && data.foodPreferences.size() <= 4
+            && data.foodPreferences.hasOnly(
+                 ['bakery', 'meals', 'cafe', 'grocery']));
+    }
+
     match /users/{uid} {
       // People only ever read their own profile.
       allow read: if isSelf(uid);
@@ -42,7 +54,8 @@ service cloud.firestore {
              'name', 'email', 'phone', 'role', 'foodPreferences',
              'photoUrl', 'createdAt'])
         && request.resource.data.createdAt == request.time
-        && request.resource.data.role in ['customer', 'business'];
+        && request.resource.data.role in ['customer', 'business']
+        && validFoodPreferences(request.resource.data);
 
       // Own profile only. The email and creation time never change. Business
       // setup switches the owner's own role in the same batch that creates
@@ -52,10 +65,26 @@ service cloud.firestore {
       allow update: if isSelf(uid)
         && request.resource.data.diff(resource.data).affectedKeys()
              .hasOnly(['name', 'phone', 'photoUrl', 'role', 'foodPreferences'])
-        && request.resource.data.role in ['customer', 'business'];
+        && request.resource.data.role in ['customer', 'business']
+        && validFoodPreferences(request.resource.data);
 
       // The app has no "delete account".
       allow delete: if false;
+
+      // users/{uid}/savedMerchants/{businessId}: the document id is the
+      // saved business's id, so a merchant can only be saved once, and the
+      // list is private to the customer who saved it.
+      match /savedMerchants/{businessId} {
+        allow read, delete: if isSelf(uid);
+
+        allow create: if isSelf(uid)
+          && exists(/databases/$(database)/documents/businesses/$(businessId))
+          && request.resource.data.keys().hasOnly(['savedAt'])
+          && request.resource.data.savedAt == request.time;
+
+        // Saving is on or off; there is nothing to edit.
+        allow update: if false;
+      }
     }
 
     // ---------------------------------------------------------------
@@ -163,6 +192,93 @@ service cloud.firestore {
       // The app also refuses while paid orders wait for pickup; that check
       // needs a query, which rules cannot run.
       allow delete: if ownsBusiness(resource.data.businessId);
+    }
+
+    // ---------------------------------------------------------------
+    // orders/{orderId}: Prince (create, cancel), Kevine (collected)
+    // ---------------------------------------------------------------
+    function orderFields() {
+      return ['customerId', 'businessId', 'listingId', 'quantity', 'total',
+              'pickupCode', 'paymentMethod', 'status', 'createdAt',
+              'collectedAt'];
+    }
+
+    function validNewOrder(order) {
+      let listingPath =
+        /databases/$(database)/documents/listings/$(order.listingId);
+      let listing = get(listingPath).data;
+      return order.keys().hasOnly(orderFields())
+        && order.keys().hasAll(orderFields())
+        && order.customerId == request.auth.uid
+        && order.businessId == listing.businessId
+        && listing.status == 'active'
+        && listing.pickupBy > request.time
+        && order.quantity is int && order.quantity >= 1
+        && order.total == listing.discountPrice * order.quantity
+        && getAfter(listingPath).data.quantity
+             == listing.quantity - order.quantity
+        && order.pickupCode is string
+        && order.pickupCode.matches('SKS-[A-HJ-NP-Z2-9]{6}')
+        && order.paymentMethod in ['mtnMomo', 'airtelMoney']
+        && order.status == 'paid'
+        && order.createdAt == request.time
+        && order.collectedAt == null;
+    }
+
+    match /orders/{orderId} {
+      allow read: if signedIn()
+        && (resource.data.customerId == request.auth.uid
+            || ownsBusiness(resource.data.businessId));
+
+      allow create: if signedIn() && validNewOrder(request.resource.data);
+
+      allow update: if signedIn()
+        && resource.data.customerId == request.auth.uid
+        && resource.data.status == 'paid'
+        && request.resource.data.status == 'cancelled'
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(['status']);
+
+      allow update: if ownsBusiness(resource.data.businessId)
+        && resource.data.status == 'paid'
+        && request.resource.data.status == 'collected'
+        && request.resource.data.collectedAt == request.time
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(['status', 'collectedAt']);
+
+      allow delete: if false;
+    }
+
+    // ---------------------------------------------------------------
+    // reviews/{reviewId}: Kevine. The review id is the orderId, which
+    // keeps it to one review per order.
+    // ---------------------------------------------------------------
+    function reviewedOrder(orderId) {
+      return get(/databases/$(database)/documents/orders/$(orderId)).data;
+    }
+
+    match /reviews/{reviewId} {
+      allow read: if signedIn();
+
+      allow create: if signedIn()
+        && exists(/databases/$(database)/documents/orders/$(reviewId))
+        && request.resource.data.orderId == reviewId
+        && request.resource.data.customerId == request.auth.uid
+        && reviewedOrder(reviewId).customerId == request.auth.uid
+        && reviewedOrder(reviewId).status == 'collected'
+        && reviewedOrder(reviewId).businessId ==
+             request.resource.data.businessId
+        && request.resource.data.keys().hasOnly([
+             'orderId', 'customerId', 'businessId', 'rating', 'comment',
+             'createdAt'])
+        && request.resource.data.rating is int
+        && request.resource.data.rating >= 1
+        && request.resource.data.rating <= 5
+        && request.resource.data.comment is string
+        && request.resource.data.comment.size() <= 300
+        && request.resource.data.createdAt == request.time;
+
+      allow update, delete: if false;
     }
   }
 }
