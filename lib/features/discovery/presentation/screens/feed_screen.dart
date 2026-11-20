@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -21,56 +22,69 @@ class FeedScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: BlocConsumer<FeedCubit, FeedState>(
-          listenWhen: (previous, current) =>
-              previous.status != current.status &&
-              current.status == FeedStatus.failure,
-          listener: (context, state) => AppSnackBar.showError(
-            context,
-            state.errorMessage ?? 'We could not load the food',
+    // Saving Food Preferences updates the profile, which the auth stream
+    // passes on here, so the rows reorder without reloading the feed.
+    return BlocListener<AuthBloc, AuthState>(
+      listenWhen: (previous, current) => !listEquals(
+        previous.user?.foodPreferences,
+        current.user?.foodPreferences,
+      ),
+      listener: (context, state) => context
+          .read<FeedCubit>()
+          .updateFoodPreferences(state.user?.foodPreferences ?? const []),
+      child: Scaffold(
+        body: SafeArea(
+          child: BlocConsumer<FeedCubit, FeedState>(
+            listenWhen: (previous, current) =>
+                previous.status != current.status &&
+                current.status == FeedStatus.failure,
+            listener: (context, state) => AppSnackBar.showError(
+              context,
+              state.errorMessage ?? 'We could not load the food',
+            ),
+            builder: (context, state) {
+              final header = _FeedTop(state: state);
+              return switch (state.status) {
+                FeedStatus.loading => Column(
+                  children: [
+                    header,
+                    const Expanded(
+                      child: LoadingView(
+                        message: 'Finding surplus food nearby',
+                      ),
+                    ),
+                  ],
+                ),
+                FeedStatus.failure => Column(
+                  children: [
+                    header,
+                    Expanded(
+                      child: EmptyView(
+                        title: 'We could not load the food',
+                        message: state.errorMessage,
+                        actionLabel: 'Try again',
+                        onAction: context.read<FeedCubit>().watch,
+                      ),
+                    ),
+                  ],
+                ),
+                FeedStatus.ready when state.isEmpty => Column(
+                  children: [
+                    header,
+                    const Expanded(
+                      child: EmptyView(
+                        title: 'No surplus food right now',
+                        message:
+                            'Shops post food through the day. New listings '
+                            'show up here as soon as they go live.',
+                      ),
+                    ),
+                  ],
+                ),
+                FeedStatus.ready => _FeedList(state: state, header: header),
+              };
+            },
           ),
-          builder: (context, state) {
-            final header = _FeedTop(state: state);
-            return switch (state.status) {
-              FeedStatus.loading => Column(
-                children: [
-                  header,
-                  const Expanded(
-                    child: LoadingView(message: 'Finding surplus food nearby'),
-                  ),
-                ],
-              ),
-              FeedStatus.failure => Column(
-                children: [
-                  header,
-                  Expanded(
-                    child: EmptyView(
-                      title: 'We could not load the food',
-                      message: state.errorMessage,
-                      actionLabel: 'Try again',
-                      onAction: context.read<FeedCubit>().watch,
-                    ),
-                  ),
-                ],
-              ),
-              FeedStatus.ready when state.isEmpty => Column(
-                children: [
-                  header,
-                  const Expanded(
-                    child: EmptyView(
-                      title: 'No surplus food right now',
-                      message:
-                          'Shops post food through the day. New listings '
-                          'show up here as soon as they go live.',
-                    ),
-                  ),
-                ],
-              ),
-              FeedStatus.ready => _FeedList(state: state, header: header),
-            };
-          },
         ),
       ),
     );

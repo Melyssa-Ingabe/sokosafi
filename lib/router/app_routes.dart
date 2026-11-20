@@ -35,6 +35,8 @@ abstract final class AppRoutes {
   static const String editProfile = '/profile/edit';
   static const String settings = '/settings';
 
+  static const String foodPreferences = '/settings/food-preferences';
+
   static const String businessOrders = '/business/orders';
   static const String businessAnalytics = '/business/analytics';
   static const String businessSettings = '/business/settings';
