@@ -18,6 +18,10 @@ abstract final class AppRoutes {
   /// Pass the Listing to edit as the route's `extra`.
   static const String editListing = '/business/listings/edit';
 
+  /// A listing as the customer sees it. Pass the card's hero tag as the
+  /// route's `extra` so the photo animates in.
+  static const String listingDetail = '/listings/:listingId';
+
   static const String checkout = '/checkout/:listingId';
   static const String myOrders = '/orders';
   static const String orderDetail = '/orders/:orderId';
@@ -31,7 +35,12 @@ abstract final class AppRoutes {
   static const String confirmPickup = '/business/confirm-pickup';
   static const String rateOrder = '/orders/:orderId/rate';
 
-  static String checkoutFor(String listingId) => '/checkout/$listingId';
+  static String listingFor(String listingId) => '/listings/$listingId';
+
+  static String checkoutFor(String listingId, {int? quantity}) =>
+      quantity == null
+      ? '/checkout/$listingId'
+      : '/checkout/$listingId?quantity=$quantity';
   static String orderFor(String orderId) => '/orders/$orderId';
   static String rateOrderFor(String orderId) => '/orders/$orderId/rate';
 }

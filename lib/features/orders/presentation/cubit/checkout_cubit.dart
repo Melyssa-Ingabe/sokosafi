@@ -13,11 +13,15 @@ class CheckoutCubit extends Cubit<CheckoutState> {
     required this._customerId,
     required this._listingId,
     required PaymentMethod preferredPaymentMethod,
+    this._initialQuantity = 1,
   }) : super(CheckoutState(paymentMethod: preferredPaymentMethod));
 
   final OrdersRepository _repository;
   final String _customerId;
   final String _listingId;
+
+  /// The quantity picked on the product detail screen.
+  final int _initialQuantity;
 
   Future<void> load() async {
     emit(state.copyWith(status: CheckoutStatus.loading, clearError: true));
@@ -26,7 +30,15 @@ class CheckoutCubit extends Cubit<CheckoutState> {
       if (item.listing.quantityLeft < 1) {
         throw const OrdersFailure('This item is sold out');
       }
-      emit(state.copyWith(status: CheckoutStatus.ready, item: item));
+      emit(
+        state.copyWith(
+          status: CheckoutStatus.ready,
+          item: item,
+          // Items may have sold since the detail screen, so the picked
+          // quantity is clamped to what is left now.
+          quantity: _initialQuantity.clamp(1, item.listing.quantityLeft),
+        ),
+      );
     } on OrdersFailure catch (failure) {
       emit(
         state.copyWith(

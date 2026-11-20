@@ -9,6 +9,7 @@ import 'package:sokosafi/features/auth/presentation/screens/verify_email_screen.
 import 'package:sokosafi/features/business_dashboard/presentation/business_routes.dart';
 import 'package:sokosafi/features/business_setup/presentation/screens/business_setup_screen.dart';
 import 'package:sokosafi/features/business_setup/presentation/screens/switch_to_business_screen.dart';
+import 'package:sokosafi/features/discovery/presentation/discovery_routes.dart';
 import 'package:sokosafi/features/listings/domain/entities/listing.dart';
 import 'package:sokosafi/features/listings/presentation/screens/listing_form_screen.dart';
 import 'package:sokosafi/features/listings/presentation/screens/my_listings_screen.dart';
@@ -65,6 +66,7 @@ GoRouter buildAppRouter(AuthBloc authBloc) {
         pageBuilder: (context, state) =>
             buildAppPage(state: state, child: const VerifyEmailScreen()),
       ),
+      ...buildDiscoveryRoutes(),
       GoRoute(
         path: AppRoutes.customerHome,
         pageBuilder: (context, state) => buildAppPage(
