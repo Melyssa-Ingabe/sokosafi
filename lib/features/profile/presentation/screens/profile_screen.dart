@@ -63,7 +63,8 @@ class _ProfileContent extends StatelessWidget {
           MenuTile(
             icon: HugeIcons.strokeRoundedShoppingBag01,
             title: 'My orders',
-            onTap: () => context.push(AppRoutes.myOrders),
+            // My Orders is a bottom navigation tab, so this switches to it.
+            onTap: () => context.go(AppRoutes.myOrders),
           ),
           MenuTile(
             icon: HugeIcons.strokeRoundedUserEdit01,

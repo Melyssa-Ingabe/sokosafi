@@ -12,28 +12,32 @@ import 'package:sokosafi/features/profile/presentation/screens/profile_screen.da
 import 'package:sokosafi/router/app_page.dart';
 import 'package:sokosafi/router/app_routes.dart';
 
-List<GoRoute> buildProfileRoutes({
-  OrdersRepository Function()? ordersRepository,
-  ProfileRepository Function()? profileRepository,
-}) {
+/// Profile, one of the customer's bottom navigation tabs.
+GoRoute buildProfileRoute({OrdersRepository Function()? ordersRepository}) {
   final createOrdersRepository =
       ordersRepository ?? FirestoreOrdersRepository.new;
+  return GoRoute(
+    path: AppRoutes.profile,
+    pageBuilder: (context, state) => buildAppPage(
+      state: state,
+      child: BlocProvider(
+        create: (context) => MyOrdersCubit(
+          repository: createOrdersRepository(),
+          customerId: context.read<AuthBloc>().state.user?.uid ?? '',
+        )..watch(),
+        child: const ProfileScreen(),
+      ),
+    ),
+  );
+}
+
+/// Profile screens that open over the bottom navigation.
+List<GoRoute> buildProfileRoutes({
+  ProfileRepository Function()? profileRepository,
+}) {
   final createProfileRepository =
       profileRepository ?? FirestoreProfileRepository.new;
   return [
-    GoRoute(
-      path: AppRoutes.profile,
-      pageBuilder: (context, state) => buildAppPage(
-        state: state,
-        child: BlocProvider(
-          create: (context) => MyOrdersCubit(
-            repository: createOrdersRepository(),
-            customerId: context.read<AuthBloc>().state.user?.uid ?? '',
-          )..watch(),
-          child: const ProfileScreen(),
-        ),
-      ),
-    ),
     GoRoute(
       path: AppRoutes.editProfile,
       pageBuilder: (context, state) => buildAppPage(

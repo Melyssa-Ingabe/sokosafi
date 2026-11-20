@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
 import 'package:sokosafi/core/utils/formatters.dart';
+import 'package:sokosafi/core/widgets/quantity_stepper.dart';
 import 'package:sokosafi/features/orders/presentation/cubit/checkout_cubit.dart';
 import 'package:sokosafi/features/orders/presentation/widgets/price_row.dart';
-import 'package:sokosafi/features/orders/presentation/widgets/quantity_stepper.dart';
 
 class CheckoutSummaryCard extends StatelessWidget {
   const CheckoutSummaryCard({

@@ -11,6 +11,7 @@ import 'package:sokosafi/core/widgets/start_selling_card.dart';
 import 'package:sokosafi/features/auth/domain/entities/app_user.dart';
 import 'package:sokosafi/features/auth/domain/entities/user_role.dart';
 import 'package:sokosafi/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:sokosafi/features/listings/domain/entities/listing_category.dart';
 import 'package:sokosafi/features/settings/presentation/widgets/preferences_group.dart';
 import 'package:sokosafi/router/app_routes.dart';
 
@@ -40,6 +41,15 @@ class SettingsScreen extends StatelessWidget {
       ),
     );
     if (confirmed ?? false) authBloc.add(const AuthLogoutRequested());
+  }
+
+  /// "Bakery, Café" from the stored names, in the same order as the feed.
+  static String _foodPreferencesSummary(List<String> names) {
+    final labels = [
+      for (final category in ListingCategory.values)
+        if (names.contains(category.name)) category.label,
+    ];
+    return labels.isEmpty ? 'Not set' : labels.join(', ');
   }
 
   @override
@@ -72,6 +82,18 @@ class SettingsScreen extends StatelessWidget {
       ),
       const PreferencesGroup(),
       if (user?.role == UserRole.customer)
+        MenuGroup(
+          title: 'Your feed',
+          children: [
+            MenuTile(
+              icon: HugeIcons.strokeRoundedFavourite,
+              title: 'Food preferences',
+              value: _foodPreferencesSummary(user!.foodPreferences),
+              onTap: () => context.push(AppRoutes.foodPreferences),
+            ),
+          ],
+        ),
+      if (user?.role == UserRole.customer)
         StartSellingCard(onTap: () => context.push(AppRoutes.switchToBusiness)),
       MenuGroup(
         children: [
@@ -86,9 +108,8 @@ class SettingsScreen extends StatelessWidget {
       Center(
         child: Text(
           'Sokosafi v1.0.0',
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
+          style: Theme.of(context).textTheme.bodySmall
+              ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
         ),
       ),
     ];

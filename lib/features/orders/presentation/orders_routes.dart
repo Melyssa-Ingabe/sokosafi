@@ -13,8 +13,26 @@ import 'package:sokosafi/features/settings/presentation/cubit/settings_cubit.dar
 import 'package:sokosafi/router/app_page.dart';
 import 'package:sokosafi/router/app_routes.dart';
 
-/// Checkout and order routes. The router's redirect guarantees a signed-in
-/// user before any of these build.
+/// My Orders, one of the customer's bottom navigation tabs.
+GoRoute buildMyOrdersRoute({OrdersRepository Function()? repository}) {
+  final createRepository = repository ?? FirestoreOrdersRepository.new;
+  return GoRoute(
+    path: AppRoutes.myOrders,
+    pageBuilder: (context, state) => buildAppPage(
+      state: state,
+      child: BlocProvider(
+        create: (context) => MyOrdersCubit(
+          repository: createRepository(),
+          customerId: context.read<AuthBloc>().state.user?.uid ?? '',
+        )..watch(),
+        child: const MyOrdersScreen(),
+      ),
+    ),
+  );
+}
+
+/// Checkout and order detail, which open over the bottom navigation. The
+/// router's redirect guarantees a signed-in user before any of these build.
 List<GoRoute> buildOrdersRoutes({OrdersRepository Function()? repository}) {
   final createRepository = repository ?? FirestoreOrdersRepository.new;
   return [
@@ -27,25 +45,14 @@ List<GoRoute> buildOrdersRoutes({OrdersRepository Function()? repository}) {
             repository: createRepository(),
             customerId: context.read<AuthBloc>().state.user?.uid ?? '',
             listingId: state.pathParameters['listingId'] ?? '',
+            initialQuantity:
+                int.tryParse(state.uri.queryParameters['quantity'] ?? '') ?? 1,
             preferredPaymentMethod: context
                 .read<SettingsCubit>()
                 .state
                 .preferredPaymentMethod,
           )..load(),
           child: const CheckoutScreen(),
-        ),
-      ),
-    ),
-    GoRoute(
-      path: AppRoutes.myOrders,
-      pageBuilder: (context, state) => buildAppPage(
-        state: state,
-        child: BlocProvider(
-          create: (context) => MyOrdersCubit(
-            repository: createRepository(),
-            customerId: context.read<AuthBloc>().state.user?.uid ?? '',
-          )..watch(),
-          child: const MyOrdersScreen(),
         ),
       ),
     ),
