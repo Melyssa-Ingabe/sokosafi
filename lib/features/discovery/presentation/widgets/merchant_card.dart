@@ -5,9 +5,11 @@ import 'package:latlong2/latlong.dart';
 import 'package:sokosafi/core/theme/app_colors.dart';
 import 'package:sokosafi/core/utils/date_formatters.dart';
 import 'package:sokosafi/features/business_setup/domain/entities/business.dart';
+import 'package:sokosafi/features/discovery/presentation/widgets/directions_button.dart';
 
 /// Where to collect the food, from the Merchant card in Figma: a small map
-/// with the shop pinned, the address and until when it hands out pickups.
+/// with the shop pinned, the address, until when it hands out pickups and
+/// a button that opens directions in the maps app.
 class MerchantCard extends StatelessWidget {
   const MerchantCard({super.key, required this.business, required this.now});
 
@@ -117,6 +119,11 @@ class MerchantCard extends StatelessWidget {
                         ),
                       ),
                     ],
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    child: DirectionsButton(business: business),
                   ),
                 ],
               ),
