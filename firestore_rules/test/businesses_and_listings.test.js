@@ -17,6 +17,7 @@ import {
   business,
   createTestEnv,
   dbAs,
+  hoursFromNow,
   listing,
   seed,
   signedOutDb,
@@ -123,6 +124,65 @@ describe('listings', () => {
         discountPrice: 1,
       }),
     );
+  });
+
+  describe('stock changes from orders', () => {
+    const asCustomer = (changes) =>
+      updateDoc(doc(dbAs(env, CUSTOMER), 'listings/listing1'), changes);
+
+    test('an order takes stock from a listing on sale', async () => {
+      await assertSucceeds(asCustomer({ quantity: 3 }));
+      await assertSucceeds(asCustomer({ quantity: 0, status: 'soldOut' }));
+    });
+
+    test('stock cannot be taken from an expired listing', async () => {
+      await seed(env, {
+        'listings/listing1': listing('biz1', { status: 'expired' }),
+      });
+      await assertFails(asCustomer({ quantity: 3, status: 'active' }));
+    });
+
+    test('stock cannot be taken after the pick-up time', async () => {
+      await seed(env, {
+        'listings/listing1': listing('biz1', { pickupBy: hoursFromNow(-1) }),
+      });
+      await assertFails(asCustomer({ quantity: 3 }));
+    });
+
+    test('a cancel puts a sold-out listing back on sale', async () => {
+      await seed(env, {
+        'listings/listing1': listing('biz1', {
+          quantity: 0,
+          status: 'soldOut',
+        }),
+      });
+      await assertSucceeds(asCustomer({ quantity: 2, status: 'active' }));
+    });
+
+    // Mirrors cancelOrder after the pick-up time: stock goes back but the
+    // status is left alone.
+    test('a late cancel puts stock back without reviving the listing', async () => {
+      await seed(env, {
+        'listings/listing1': listing('biz1', {
+          quantity: 0,
+          status: 'soldOut',
+          pickupBy: hoursFromNow(-1),
+        }),
+      });
+      await assertSucceeds(asCustomer({ quantity: 2 }));
+      await assertFails(asCustomer({ quantity: 4, status: 'active' }));
+    });
+
+    test('adding stock cannot revive an expired listing', async () => {
+      await seed(env, {
+        'listings/listing1': listing('biz1', { status: 'expired' }),
+      });
+      await assertFails(asCustomer({ quantity: 9, status: 'active' }));
+    });
+
+    test('the status cannot change without stock moving', async () => {
+      await assertFails(asCustomer({ status: 'soldOut' }));
+    });
   });
 
   test('only the owner deletes a listing', async () => {
