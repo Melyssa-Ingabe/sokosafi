@@ -6,17 +6,17 @@ import 'package:sokosafi/core/widgets/empty_view.dart';
 import 'package:sokosafi/core/widgets/staggered_entrance.dart';
 import 'package:sokosafi/features/business_orders/presentation/bloc/business_orders_cubit.dart';
 import 'package:sokosafi/features/business_orders/presentation/widgets/business_order_card.dart';
-import 'package:sokosafi/features/orders/domain/entities/order_status.dart';
 
 class BusinessOrdersList extends StatelessWidget {
   const BusinessOrdersList({
     super.key,
     required this.state,
-    this.onConfirmPickup,
+    required this.onConfirmPickup,
   });
 
   final BusinessOrdersState state;
-  final void Function(String orderId)? onConfirmPickup;
+
+  final VoidCallback onConfirmPickup;
 
   @override
   Widget build(BuildContext context) {
@@ -47,8 +47,6 @@ class BusinessOrdersList extends StatelessWidget {
       );
     }
     return ListView.separated(
-      // A key per tab rebuilds the list, so switching tabs replays the
-      // entrance animation.
       key: PageStorageKey(state.tab),
       padding: const EdgeInsets.all(AppSpacing.pagePadding),
       itemCount: orders.length,
@@ -60,9 +58,8 @@ class BusinessOrdersList extends StatelessWidget {
           index: index,
           child: BusinessOrderCard(
             item: item,
-            onConfirmPickup: item.order.status == OrderStatus.paid &&
-                    onConfirmPickup != null
-                ? () => onConfirmPickup!(item.order.id)
+            onConfirmPickup: state.tab == BusinessOrdersTab.incoming
+                ? onConfirmPickup
                 : null,
           ),
         );

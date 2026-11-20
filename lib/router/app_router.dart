@@ -6,6 +6,7 @@ import 'package:sokosafi/features/auth/presentation/screens/login_screen.dart';
 import 'package:sokosafi/features/auth/presentation/screens/register_screen.dart';
 import 'package:sokosafi/features/auth/presentation/screens/splash_screen.dart';
 import 'package:sokosafi/features/auth/presentation/screens/verify_email_screen.dart';
+import 'package:sokosafi/features/business_dashboard/presentation/business_routes.dart';
 import 'package:sokosafi/features/business_setup/presentation/screens/business_setup_screen.dart';
 import 'package:sokosafi/features/business_setup/presentation/screens/switch_to_business_screen.dart';
 import 'package:sokosafi/features/listings/domain/entities/listing.dart';
@@ -13,6 +14,7 @@ import 'package:sokosafi/features/listings/presentation/screens/listing_form_scr
 import 'package:sokosafi/features/listings/presentation/screens/my_listings_screen.dart';
 import 'package:sokosafi/features/orders/presentation/orders_routes.dart';
 import 'package:sokosafi/features/profile/presentation/profile_routes.dart';
+import 'package:sokosafi/features/reviews/presentation/review_routes.dart';
 import 'package:sokosafi/features/settings/presentation/screens/settings_screen.dart';
 import 'package:sokosafi/router/app_page.dart';
 import 'package:sokosafi/router/app_routes.dart';
@@ -73,16 +75,6 @@ GoRouter buildAppRouter(AuthBloc authBloc) {
           ),
         ),
       ),
-      GoRoute(
-        path: AppRoutes.businessHome,
-        pageBuilder: (context, state) => buildAppPage(
-          state: state,
-          child: PlaceholderScreen(
-            title: 'Business dashboard',
-            onLogout: () => authBloc.add(const AuthLogoutRequested()),
-          ),
-        ),
-      ),
       // The redirect only lets signed-in users reach these, so the user is
       // never null here.
       GoRoute(
@@ -134,6 +126,11 @@ GoRouter buildAppRouter(AuthBloc authBloc) {
           ),
         ),
       ),
+      // Business side: Dashboard, Orders, Analytics and Settings in one
+      // bottom navigation, plus Confirm Pickup.
+      ...buildBusinessRoutes(authBloc),
+      // Customer's Rate Experience after pickup.
+      ...buildReviewRoutes(authBloc),
     ],
   );
 }
