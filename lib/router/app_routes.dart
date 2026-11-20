@@ -25,6 +25,13 @@ abstract final class AppRoutes {
   static const String editProfile = '/profile/edit';
   static const String settings = '/settings';
 
+  static const String businessOrders = '/business/orders';
+  static const String businessAnalytics = '/business/analytics';
+  static const String businessSettings = '/business/settings';
+  static const String confirmPickup = '/business/confirm-pickup';
+  static const String rateOrder = '/orders/:orderId/rate';
+
   static String checkoutFor(String listingId) => '/checkout/$listingId';
   static String orderFor(String orderId) => '/orders/$orderId';
+  static String rateOrderFor(String orderId) => '/orders/$orderId/rate';
 }

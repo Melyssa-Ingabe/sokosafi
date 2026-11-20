@@ -203,10 +203,6 @@ service cloud.firestore {
               'collectedAt'];
     }
 
-    // A new order is checked against its listing as it was before the
-    // order transaction (still on sale, the real price) and as it is after
-    // (stock reduced by exactly the quantity bought). getAfter() is what
-    // ties the order to the stock change made in the same transaction.
     function validNewOrder(order) {
       let listingPath =
         /databases/$(database)/documents/listings/$(order.listingId);
@@ -230,16 +226,12 @@ service cloud.firestore {
     }
 
     match /orders/{orderId} {
-      // The customer reads their own orders and the business reads the
-      // orders it received. Rules are not filters, so every app query on
-      // orders must filter by customerId or businessId to be allowed.
       allow read: if signedIn()
         && (resource.data.customerId == request.auth.uid
             || ownsBusiness(resource.data.businessId));
 
       allow create: if signedIn() && validNewOrder(request.resource.data);
 
-      // The customer may cancel their own order while it waits for pickup.
       allow update: if signedIn()
         && resource.data.customerId == request.auth.uid
         && resource.data.status == 'paid'
@@ -247,8 +239,6 @@ service cloud.firestore {
         && request.resource.data.diff(resource.data).affectedKeys()
              .hasOnly(['status']);
 
-      // Only the business that received the order may mark it collected,
-      // only from paid, and only with the server's time of pickup.
       allow update: if ownsBusiness(resource.data.businessId)
         && resource.data.status == 'paid'
         && request.resource.data.status == 'collected'
@@ -256,9 +246,39 @@ service cloud.firestore {
         && request.resource.data.diff(resource.data).affectedKeys()
              .hasOnly(['status', 'collectedAt']);
 
-      // Orders are kept for the customer's history and the business's
-      // analytics.
       allow delete: if false;
+    }
+
+    // ---------------------------------------------------------------
+    // reviews/{reviewId}: Kevine. The review id is the orderId, which
+    // keeps it to one review per order.
+    // ---------------------------------------------------------------
+    function reviewedOrder(orderId) {
+      return get(/databases/$(database)/documents/orders/$(orderId)).data;
+    }
+
+    match /reviews/{reviewId} {
+      allow read: if signedIn();
+
+      allow create: if signedIn()
+        && exists(/databases/$(database)/documents/orders/$(reviewId))
+        && request.resource.data.orderId == reviewId
+        && request.resource.data.customerId == request.auth.uid
+        && reviewedOrder(reviewId).customerId == request.auth.uid
+        && reviewedOrder(reviewId).status == 'collected'
+        && reviewedOrder(reviewId).businessId ==
+             request.resource.data.businessId
+        && request.resource.data.keys().hasOnly([
+             'orderId', 'customerId', 'businessId', 'rating', 'comment',
+             'createdAt'])
+        && request.resource.data.rating is int
+        && request.resource.data.rating >= 1
+        && request.resource.data.rating <= 5
+        && request.resource.data.comment is string
+        && request.resource.data.comment.size() <= 300
+        && request.resource.data.createdAt == request.time;
+
+      allow update, delete: if false;
     }
   }
 }
