@@ -2,7 +2,9 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:sokosafi/core/constants/app_icons.dart';
 import 'package:sokosafi/features/discovery/domain/entities/saved_merchant.dart';
 import 'package:sokosafi/features/discovery/presentation/bloc/product_detail_cubit.dart';
 import 'package:sokosafi/features/discovery/presentation/bloc/saved_merchants_cubit.dart';
@@ -101,7 +103,13 @@ void main() {
 
     await pumpDetail(tester);
 
-    expect(find.byIcon(Icons.favorite), findsOneWidget);
+    expect(
+      find.byWidgetPredicate(
+        (widget) =>
+            widget is HugeIcon && widget.icon == AppIcons.favouriteFilled,
+      ),
+      findsOneWidget,
+    );
     expect(
       find.byTooltip('Remove Boulangerie de Kigali from saved'),
       findsOneWidget,
