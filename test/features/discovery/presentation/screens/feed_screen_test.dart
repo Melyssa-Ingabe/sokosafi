@@ -85,6 +85,36 @@ void main() {
     expect(find.text('Boulangerie de Kigali'), findsWidgets);
   });
 
+  testWidgets('reorders the rows when food preferences are saved', (
+    tester,
+  ) async {
+    when(() => feedCubit.state).thenReturn(readyState);
+    const signedIn = AuthState(
+      status: AuthStatus.authenticated,
+      user: _customer,
+    );
+    const likesCafes = AppUser(
+      uid: 'customer-1',
+      email: 'nelly@example.com',
+      name: 'Nelly',
+      phone: '0788000000',
+      role: UserRole.customer,
+      photoUrl: '',
+      foodPreferences: ['cafe'],
+      isEmailVerified: true,
+    );
+    whenListen(
+      authBloc,
+      Stream.value(signedIn.copyWith(user: likesCafes)),
+      initialState: signedIn,
+    );
+
+    await pumpFeed(tester);
+    await tester.pumpAndSettle();
+
+    verify(() => feedCubit.updateFoodPreferences(['cafe'])).called(1);
+  });
+
   testWidgets('says so when nothing is on sale', (tester) async {
     when(() => feedCubit.state)
         .thenReturn(const FeedState(status: FeedStatus.ready));
