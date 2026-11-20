@@ -58,7 +58,7 @@ erDiagram
         timestamp pickupBy
         string imageUrl
         string instructions
-        string status "active, soldOut, expired; orders set soldOut at 0 and back to active on cancel"
+        string status "active, soldOut, expired; orders set soldOut at 0; a cancel before pickupBy sets active again"
         timestamp createdAt
     }
 
