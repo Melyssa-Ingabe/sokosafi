@@ -21,8 +21,20 @@ abstract final class AppTextStyles {
   static final TextStyle button = _geist(16, FontWeight.w600, 24);
   static final TextStyle caption = _geist(12, FontWeight.w400, 16);
 
+  /// Screen headings inside the page, such as "Near you".
+  static final TextStyle screenTitle = _geist(22, FontWeight.w600, 28);
+
+  /// Short labels on tiles and compact buttons.
+  static final TextStyle labelCompact = _geist(13, FontWeight.w500, 18);
+
+  /// Badges, chips and struck-through prices.
+  static final TextStyle badge = _geist(11, FontWeight.w500, 16);
+
   static TextTheme get textTheme => TextTheme(
     headlineMedium: headline,
+    headlineSmall: screenTitle,
+    titleSmall: labelCompact,
+    labelSmall: badge,
     titleLarge: title,
     titleMedium: subtitle,
     bodyLarge: bodyLarge,
