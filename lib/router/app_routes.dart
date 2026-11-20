@@ -35,6 +35,9 @@ abstract final class AppRoutes {
   static const String editProfile = '/profile/edit';
   static const String settings = '/settings';
 
+  /// Food categories the customer's feed shows first, opened from Settings.
+  static const String foodPreferences = '/settings/food-preferences';
+
   static String listingFor(String listingId) => '/listings/$listingId';
 
   /// [quantity] pre-fills checkout with what was picked on the detail
