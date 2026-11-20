@@ -42,7 +42,9 @@ class BusinessSettingsState extends Equatable {
       status: status ?? this.status,
       settings: settings ?? this.settings,
       payoutAccount: payoutAccount ?? this.payoutAccount,
-      errorMessage: errorMessage,
+      // Kept until watch() starts again, so a late payout update does
+      // not wipe the reason the settings failed to load.
+      errorMessage: errorMessage ?? this.errorMessage,
       // Cleared on every other change so a message only shows once.
       feedback: feedback,
     );
