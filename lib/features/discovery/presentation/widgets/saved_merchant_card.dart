@@ -3,6 +3,7 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
 import 'package:sokosafi/core/theme/app_colors.dart';
 import 'package:sokosafi/features/business_setup/domain/entities/business.dart';
+import 'package:sokosafi/features/discovery/presentation/widgets/directions_button.dart';
 import 'package:sokosafi/features/discovery/presentation/widgets/save_merchant_button.dart';
 
 /// One saved shop, from the Saved Merchants frame in Figma.
@@ -117,36 +118,50 @@ class SavedMerchantCard extends StatelessWidget {
                   const SizedBox(height: AppSpacing.md),
                   const Divider(height: 1, thickness: 1, color: _hairline),
                   const SizedBox(height: 13),
-                  SizedBox(
-                    height: AppSpacing.minTapTarget,
-                    child: TextButton(
-                      onPressed: onExplore,
-                      style: TextButton.styleFrom(
-                        backgroundColor: AppColors.background,
-                        foregroundColor: AppColors.primary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            AppSpacing.buttonRadius,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: SizedBox(
+                          height: AppSpacing.minTapTarget,
+                          child: TextButton(
+                            onPressed: onExplore,
+                            style: TextButton.styleFrom(
+                              backgroundColor: AppColors.background,
+                              foregroundColor: AppColors.primary,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                  AppSpacing.buttonRadius,
+                                ),
+                              ),
+                              textStyle: textTheme.bodyMedium?.copyWith(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            child: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    'Explore surplus',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                SizedBox(width: 6),
+                                HugeIcon(
+                                  icon: HugeIcons.strokeRoundedArrowRight01,
+                                  size: 14,
+                                  color: AppColors.primary,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                        textStyle: textTheme.bodyMedium?.copyWith(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                        ),
                       ),
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text('Explore surplus'),
-                          SizedBox(width: 6),
-                          HugeIcon(
-                            icon: HugeIcons.strokeRoundedArrowRight01,
-                            size: 14,
-                            color: AppColors.primary,
-                          ),
-                        ],
-                      ),
-                    ),
+                      const SizedBox(width: AppSpacing.sm),
+                      DirectionsButton(business: business, compact: true),
+                    ],
                   ),
                 ],
               ),
