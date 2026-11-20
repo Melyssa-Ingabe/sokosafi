@@ -136,3 +136,4 @@ Listed in `firestore.indexes.json`.
 |---|---|---|
 | listings | businessId asc, createdAt desc | My listings |
 | orders | customerId asc, createdAt desc | My orders |
+| orders | businessId asc, createdAt desc | Business orders list |
