@@ -150,8 +150,7 @@ class _MapCredit extends StatelessWidget {
           fit: BoxFit.scaleDown,
           child: Text(
             '© OpenStreetMap contributors',
-            style: Theme.of(context).textTheme.bodySmall
-                ?.copyWith(fontSize: 9, height: 1.2),
+            style: Theme.of(context).textTheme.labelSmall,
           ),
         ),
       ),

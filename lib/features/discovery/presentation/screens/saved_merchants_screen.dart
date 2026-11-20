@@ -48,8 +48,8 @@ class SavedMerchantsScreen extends StatelessWidget {
                     ),
                     SavedMerchantsStatus.ready when count == 0 =>
                       const EmptyView(
-                        icon: Icon(
-                          Icons.favorite_border,
+                        icon: HugeIcon(
+                          icon: HugeIcons.strokeRoundedFavourite,
                           size: 40,
                           color: AppColors.textSecondary,
                         ),
@@ -90,13 +90,7 @@ class _Header extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Saved collections',
-            style: textTheme.titleMedium?.copyWith(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
+          Text('Saved collections', style: textTheme.titleLarge),
           Text(
             subtitle,
             style: textTheme.bodySmall?.copyWith(
@@ -169,16 +163,20 @@ class _RemoveBackground extends StatelessWidget {
         color: AppColors.error,
         borderRadius: BorderRadius.circular(18),
       ),
-      child: const Row(
+      child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          HugeIcon(
+          const HugeIcon(
             icon: HugeIcons.strokeRoundedDelete02,
             color: Colors.white,
             size: 22,
           ),
-          SizedBox(width: AppSpacing.sm),
-          Text('Remove', style: TextStyle(color: Colors.white)),
+          const SizedBox(width: AppSpacing.sm),
+          Text(
+            'Remove',
+            style: Theme.of(context).textTheme.labelMedium
+                ?.copyWith(color: Colors.white),
+          ),
         ],
       ),
     );

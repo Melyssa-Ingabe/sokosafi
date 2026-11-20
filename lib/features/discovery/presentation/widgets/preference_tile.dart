@@ -19,7 +19,6 @@ class PreferenceTile extends StatelessWidget {
   final VoidCallback onTap;
 
   static const double _radius = 16;
-  static const Color _hairline = Color(0x141F2E24);
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +32,7 @@ class PreferenceTile extends StatelessWidget {
         color: isSelected ? AppColors.brandSubtle : AppColors.surface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(_radius),
-          side: const BorderSide(color: _hairline),
+          side: const BorderSide(color: AppColors.hairline),
         ),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
@@ -48,11 +47,8 @@ class PreferenceTile extends StatelessWidget {
                     const SizedBox(height: 10),
                     Text(
                       category.label,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
-                        color: foreground,
-                      ),
+                      style: Theme.of(context).textTheme.titleSmall
+                          ?.copyWith(color: foreground),
                     ),
                   ],
                 ),

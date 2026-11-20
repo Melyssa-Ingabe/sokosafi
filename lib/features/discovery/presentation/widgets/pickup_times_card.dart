@@ -70,7 +70,9 @@ class _TimeRow extends StatelessWidget {
               children: [
                 TextSpan(
                   text: '$label  ',
-                  style: TextStyle(color: scheme.onSurfaceVariant),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                  ),
                 ),
                 TextSpan(text: value),
               ],
