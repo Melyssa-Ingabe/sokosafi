@@ -159,6 +159,31 @@ service cloud.firestore {
         && data.status in ['active', 'soldOut', 'expired'];
     }
 
+    // Rules cannot see which order a stock change belongs to, so a
+    // customer's change is held to what an order can do: placing one sells
+    // stock from a listing still on sale, cancelling one puts stock back.
+    function stockSold() {
+      let before = resource.data;
+      let after = request.resource.data;
+      return before.status == 'active'
+        && before.pickupBy > request.time
+        && after.quantity < before.quantity
+        && after.status == (after.quantity == 0 ? 'soldOut' : 'active');
+    }
+
+    // A sold-out listing goes back on sale only before its pick-up time; an
+    // expired or late listing keeps its status, so a cancel can never
+    // revive it.
+    function stockReturned() {
+      let before = resource.data;
+      let after = request.resource.data;
+      return after.quantity > before.quantity
+        && (after.status == before.status
+            || (before.status == 'soldOut'
+                && before.pickupBy > request.time
+                && after.status == 'active'));
+    }
+
     match /listings/{listingId} {
       // Customers browse every listing; the feed filters by status.
       allow read: if signedIn();
@@ -178,16 +203,14 @@ service cloud.firestore {
         && validListing(request.resource.data);
 
       // Ordering (Prince): a signed-in customer may only change quantity and
-      // status, quantity stays between 0 and 999, and the status must match
-      // it (soldOut at 0). Prince can tighten this to his transaction.
+      // status, and only the way placing or cancelling an order does.
       allow update: if signedIn()
         && request.resource.data.diff(resource.data).affectedKeys()
              .hasOnly(['quantity', 'status'])
         && request.resource.data.quantity is int
         && request.resource.data.quantity >= 0
         && request.resource.data.quantity <= 999
-        && request.resource.data.status ==
-             (request.resource.data.quantity == 0 ? 'soldOut' : 'active');
+        && (stockSold() || stockReturned());
 
       // The app also refuses while paid orders wait for pickup; that check
       // needs a query, which rules cannot run.
