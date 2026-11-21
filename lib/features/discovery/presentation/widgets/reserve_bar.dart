@@ -46,19 +46,11 @@ class ReserveBar extends StatelessWidget {
                   children: [
                     Text(
                       'Total ($itemLabel)',
-                      style: textTheme.bodySmall?.copyWith(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w500,
+                      style: textTheme.labelSmall?.copyWith(
                         color: AppColors.textSecondary,
                       ),
                     ),
-                    Text(
-                      Formatters.rwf(total),
-                      style: textTheme.titleMedium?.copyWith(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    Text(Formatters.rwf(total), style: textTheme.titleLarge),
                   ],
                 ),
               ),

@@ -19,7 +19,6 @@ class SavedMerchantCard extends StatelessWidget {
 
   static const double _radius = 18;
   static const double _photoHeight = 200;
-  static const Color _hairline = Color(0x0A000000);
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +27,7 @@ class SavedMerchantCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(_radius),
-        border: Border.all(color: _hairline),
+        border: Border.all(color: AppColors.hairlineFaint),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
@@ -49,15 +48,15 @@ class SavedMerchantCard extends StatelessWidget {
                 children: [
                   _Photo(url: business.photoUrl),
                   // Darkens the bottom so the white address stays readable.
-                  const DecoratedBox(
+                  DecoratedBox(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.bottomCenter,
                         end: Alignment.topCenter,
                         colors: [
-                          Color(0x73000000),
-                          Color(0x00000000),
-                          Color(0x26000000),
+                          AppColors.photoShade,
+                          Colors.transparent,
+                          AppColors.photoShadeLight,
                         ],
                       ),
                     ),
@@ -111,12 +110,15 @@ class SavedMerchantCard extends StatelessWidget {
                     Text(
                       type.label,
                       style: textTheme.bodyMedium?.copyWith(
-                        fontSize: 13,
                         color: AppColors.textSecondary,
                       ),
                     ),
                   const SizedBox(height: AppSpacing.md),
-                  const Divider(height: 1, thickness: 1, color: _hairline),
+                  const Divider(
+                    height: 1,
+                    thickness: 1,
+                    color: AppColors.hairlineFaint,
+                  ),
                   const SizedBox(height: 13),
                   Row(
                     children: [
@@ -133,8 +135,7 @@ class SavedMerchantCard extends StatelessWidget {
                                   AppSpacing.buttonRadius,
                                 ),
                               ),
-                              textStyle: textTheme.bodyMedium?.copyWith(
-                                fontSize: 13,
+                              textStyle: textTheme.titleSmall?.copyWith(
                                 fontWeight: FontWeight.w600,
                               ),
                             ),

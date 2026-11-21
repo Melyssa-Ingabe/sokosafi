@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sokosafi/core/constants/animation_constants.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:sokosafi/core/constants/app_icons.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
+import 'package:sokosafi/core/theme/app_colors.dart';
 import 'package:sokosafi/features/business_setup/domain/entities/business.dart';
 import 'package:sokosafi/features/discovery/presentation/bloc/saved_merchants_cubit.dart';
 
@@ -13,7 +16,6 @@ class SaveMerchantButton extends StatelessWidget {
   final Business business;
 
   static const double _circleSize = 40;
-  static const Color _savedColor = Color(0xFFE5484D);
 
   @override
   Widget build(BuildContext context) {
@@ -44,13 +46,13 @@ class SaveMerchantButton extends StatelessWidget {
           duration: AnimationConstants.imageFade,
           transitionBuilder: (child, animation) =>
               ScaleTransition(scale: animation, child: child),
-          // HugeIcons' free set has no filled heart, and the heart filling
-          // in is the whole point, so this one icon is Material's.
-          child: Icon(
-            isSaved ? Icons.favorite : Icons.favorite_border,
+          child: HugeIcon(
+            icon: isSaved
+                ? AppIcons.favouriteFilled
+                : HugeIcons.strokeRoundedFavourite,
             key: ValueKey(isSaved),
             size: 20,
-            color: isSaved ? _savedColor : Colors.white,
+            color: isSaved ? AppColors.favourite : Colors.white,
           ),
         ),
       ),

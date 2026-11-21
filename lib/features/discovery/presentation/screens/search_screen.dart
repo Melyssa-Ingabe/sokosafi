@@ -42,10 +42,7 @@ class SearchScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Near you',
-                        style: textTheme.titleLarge?.copyWith(fontSize: 22),
-                      ),
+                      Text('Near you', style: textTheme.headlineSmall),
                       Text(
                         'Surplus rescued nearby before closing',
                         style: textTheme.bodySmall?.copyWith(

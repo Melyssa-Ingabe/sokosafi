@@ -55,7 +55,7 @@ class FoodPreferencesScreen extends StatelessWidget {
                     Expanded(
                       child: Text(
                         'Pick what you like',
-                        style: textTheme.titleLarge?.copyWith(fontSize: 22),
+                        style: textTheme.headlineSmall,
                       ),
                     ),
                     _SelectedCount(count: state.selected.length),
@@ -116,11 +116,8 @@ class _SelectedCount extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
         child: Text(
           '$count selected',
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            fontSize: 11,
-            fontWeight: FontWeight.w500,
-            color: AppColors.textSecondary,
-          ),
+          style: Theme.of(context).textTheme.labelSmall
+              ?.copyWith(color: AppColors.textSecondary),
         ),
       ),
     );
@@ -136,7 +133,7 @@ class _ImpactNote extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.background,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0x141F2E24)),
+        border: Border.all(color: AppColors.hairline),
       ),
       child: Padding(
         padding: const EdgeInsets.all(14),
@@ -184,7 +181,7 @@ class _SaveBar extends StatelessWidget {
     return DecoratedBox(
       decoration: const BoxDecoration(
         color: AppColors.surface,
-        border: Border(top: BorderSide(color: Color(0x141F2E24))),
+        border: Border(top: BorderSide(color: AppColors.hairline)),
       ),
       child: SafeArea(
         top: false,

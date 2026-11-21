@@ -129,7 +129,6 @@ class _DetailBody extends StatelessWidget {
                               ? '${listing.quantity} left'
                               : 'Sold out',
                           style: theme.textTheme.bodyMedium?.copyWith(
-                            fontSize: 13,
                             color: listing.quantity > 0
                                 ? scheme.onSurfaceVariant
                                 : scheme.error,

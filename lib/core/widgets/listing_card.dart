@@ -159,8 +159,7 @@ class ListingCard extends StatelessWidget {
                         ),
                         Text(
                           Formatters.rwf(originalPrice),
-                          style: textTheme.bodySmall?.copyWith(
-                            fontSize: 11,
+                          style: textTheme.labelSmall?.copyWith(
                             color: scheme.onSurfaceVariant,
                             decoration: TextDecoration.lineThrough,
                           ),
@@ -265,8 +264,8 @@ class _PickupChip extends StatelessWidget {
             const SizedBox(width: 2),
             Text(
               label,
-              style: Theme.of(context).textTheme.bodySmall
-                  ?.copyWith(fontSize: 10, height: 1.4, color: Colors.white),
+              style: Theme.of(context).textTheme.labelSmall
+                  ?.copyWith(color: Colors.white),
             ),
           ],
         ),

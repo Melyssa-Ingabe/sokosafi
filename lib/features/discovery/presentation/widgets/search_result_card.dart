@@ -78,8 +78,7 @@ class SearchResultCard extends StatelessWidget {
                             result.item.business.name,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: textTheme.bodyMedium?.copyWith(
-                              fontSize: 15,
+                            style: textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -97,7 +96,7 @@ class SearchResultCard extends StatelessWidget {
                       '${listing.quantity} × ${listing.title}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: textTheme.bodyMedium?.copyWith(fontSize: 13),
+                      style: textTheme.bodyMedium,
                     ),
                     const SizedBox(height: AppSpacing.md),
                     Row(
@@ -110,15 +109,13 @@ class SearchResultCard extends StatelessWidget {
                             children: [
                               Text(
                                 Formatters.rwf(listing.discountPrice),
-                                style: textTheme.titleMedium?.copyWith(
-                                  fontSize: 18,
+                                style: textTheme.titleLarge?.copyWith(
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
                               Text(
                                 Formatters.rwf(listing.originalPrice),
                                 style: textTheme.bodySmall?.copyWith(
-                                  fontSize: 13,
                                   color: AppColors.textSecondary,
                                   decoration: TextDecoration.lineThrough,
                                 ),
@@ -147,7 +144,6 @@ class _TimeLeftChip extends StatelessWidget {
   final DateTime pickupBy;
 
   static const Duration _urgentWithin = Duration(minutes: 30);
-  static const Color _urgentBackground = Color(0xFFFDE8E8);
 
   @override
   Widget build(BuildContext context) {
@@ -158,7 +154,7 @@ class _TimeLeftChip extends StatelessWidget {
         final color = isUrgent ? AppColors.error : AppColors.textSecondary;
         return DecoratedBox(
           decoration: BoxDecoration(
-            color: isUrgent ? _urgentBackground : AppColors.surfaceSubtle,
+            color: isUrgent ? AppColors.errorSubtle : AppColors.surfaceSubtle,
             borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
           ),
           child: Padding(

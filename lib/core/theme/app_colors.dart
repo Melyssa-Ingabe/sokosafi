@@ -26,6 +26,18 @@ abstract final class AppColors {
   static const Color border = Color(0xFFBFC9C0);
   static const Color borderSubtle = Color(0xFFE5E7EB);
 
+  // Card outlines thinner than [borderSubtle], from the discovery frames.
+  static const Color hairline = Color(0x141F2E24);
+  static const Color hairlineFaint = Color(0x0A000000);
+
+  // Shading over shop photos so white text on them stays readable.
+  static const Color photoShade = Color(0x73000000);
+  static const Color photoShadeLight = Color(0x26000000);
+
   static const Color error = Color(0xFFBA1A1A);
+  static const Color errorSubtle = Color(0xFFFDE8E8);
   static const Color warning = Color(0xFFB45309);
+
+  /// A saved shop's heart.
+  static const Color favourite = Color(0xFFE5484D);
 }
