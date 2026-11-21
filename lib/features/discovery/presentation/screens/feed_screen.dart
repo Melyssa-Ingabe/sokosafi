@@ -6,7 +6,7 @@ import 'package:sokosafi/core/constants/app_spacing.dart';
 import 'package:sokosafi/core/widgets/app_snackbar.dart';
 import 'package:sokosafi/core/widgets/empty_view.dart';
 import 'package:sokosafi/core/widgets/loading_view.dart';
-import 'package:sokosafi/core/widgets/staggered_fade_in.dart';
+import 'package:sokosafi/core/widgets/staggered_entrance.dart';
 import 'package:sokosafi/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:sokosafi/features/discovery/presentation/bloc/feed_cubit.dart';
 import 'package:sokosafi/features/discovery/presentation/widgets/feed_header.dart';
@@ -148,7 +148,7 @@ class _FeedList extends StatelessWidget {
       itemBuilder: (context, index) {
         if (index == 0) return header;
         final section = sections[index - 1];
-        return StaggeredFadeIn(
+        return StaggeredEntrance(
           index: index - 1,
           child: FeedSectionRow(
             section: section,

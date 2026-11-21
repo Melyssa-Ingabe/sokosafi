@@ -5,7 +5,7 @@ import 'package:sokosafi/core/constants/app_spacing.dart';
 import 'package:sokosafi/core/theme/app_colors.dart';
 import 'package:sokosafi/core/widgets/empty_view.dart';
 import 'package:sokosafi/core/widgets/loading_view.dart';
-import 'package:sokosafi/core/widgets/staggered_fade_in.dart';
+import 'package:sokosafi/core/widgets/staggered_entrance.dart';
 import 'package:sokosafi/features/discovery/domain/entities/saved_merchant.dart';
 import 'package:sokosafi/features/discovery/domain/repositories/discovery_repository.dart';
 import 'package:sokosafi/features/discovery/presentation/bloc/saved_merchants_cubit.dart';
@@ -126,7 +126,7 @@ class _SavedList extends StatelessWidget {
           const SizedBox(height: AppSpacing.xl - AppSpacing.xs),
       itemBuilder: (context, index) {
         final business = merchants[index].business;
-        return StaggeredFadeIn(
+        return StaggeredEntrance(
           index: index,
           child: Dismissible(
             key: ValueKey(business.id),

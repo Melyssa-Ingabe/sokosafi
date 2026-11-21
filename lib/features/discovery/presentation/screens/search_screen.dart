@@ -6,7 +6,7 @@ import 'package:sokosafi/core/constants/app_spacing.dart';
 import 'package:sokosafi/core/theme/app_colors.dart';
 import 'package:sokosafi/core/widgets/empty_view.dart';
 import 'package:sokosafi/core/widgets/loading_view.dart';
-import 'package:sokosafi/core/widgets/staggered_fade_in.dart';
+import 'package:sokosafi/core/widgets/staggered_entrance.dart';
 import 'package:sokosafi/features/discovery/presentation/bloc/search_cubit.dart';
 import 'package:sokosafi/features/discovery/presentation/widgets/category_chips.dart';
 import 'package:sokosafi/features/discovery/presentation/widgets/location_notice.dart';
@@ -129,7 +129,7 @@ class _Results extends StatelessWidget {
         itemBuilder: (context, index) {
           final result = results[index];
           final heroTag = 'search-${result.item.listing.id}';
-          return StaggeredFadeIn(
+          return StaggeredEntrance(
             index: index,
             child: SearchResultCard(
               result: result,

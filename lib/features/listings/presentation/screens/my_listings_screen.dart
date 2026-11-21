@@ -6,7 +6,7 @@ import 'package:sokosafi/core/constants/app_spacing.dart';
 import 'package:sokosafi/core/widgets/app_snackbar.dart';
 import 'package:sokosafi/core/widgets/empty_view.dart';
 import 'package:sokosafi/core/widgets/loading_view.dart';
-import 'package:sokosafi/core/widgets/staggered_fade_in.dart';
+import 'package:sokosafi/core/widgets/staggered_entrance.dart';
 import 'package:sokosafi/features/business_setup/presentation/widgets/owned_business_gate.dart';
 import 'package:sokosafi/features/listings/data/repositories/firestore_listing_repository.dart';
 import 'package:sokosafi/features/listings/domain/entities/listing.dart';
@@ -119,7 +119,7 @@ class _MyListingsView extends StatelessWidget {
                     const SizedBox(height: AppSpacing.md),
                 itemBuilder: (context, index) {
                   final listing = state.listings[index];
-                  return StaggeredFadeIn(
+                  return StaggeredEntrance(
                     key: ValueKey(listing.id),
                     index: index,
                     child: ManagedListingCard(

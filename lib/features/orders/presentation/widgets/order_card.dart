@@ -53,9 +53,7 @@ class OrderCard extends StatelessWidget {
                     children: [
                       if (details.listing?.imageUrl.isNotEmpty == true)
                         Padding(
-                          padding: const EdgeInsets.only(
-                            right: AppSpacing.md,
-                          ),
+                          padding: const EdgeInsets.only(right: AppSpacing.md),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(
                               AppSpacing.badgeRadius,
