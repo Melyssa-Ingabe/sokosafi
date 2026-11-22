@@ -15,9 +15,8 @@ abstract final class AppTheme {
     brightness: Brightness.light,
     primary: AppColors.primary,
     onPrimary: Colors.white,
-    secondary: AppColors.accent,
-    // Dark text, because white on the accent green is below 4.5:1.
-    onSecondary: AppColors.textPrimary,
+    secondary: AppColors.primary,
+    onSecondary: Colors.white,
     error: AppColors.error,
     onError: Colors.white,
     surface: AppColors.background,
@@ -32,8 +31,8 @@ abstract final class AppTheme {
   // Dark palette is not in Figma. These values are our own choices.
   static const ColorScheme _darkScheme = ColorScheme(
     brightness: Brightness.dark,
-    primary: AppColors.accent,
-    onPrimary: AppColors.textPrimary,
+    primary: AppColors.primary,
+    onPrimary: Colors.white,
     secondary: AppColors.lime,
     onSecondary: AppColors.onLime,
     error: Color(0xFFFFB4AB),
