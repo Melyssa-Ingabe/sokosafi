@@ -33,6 +33,21 @@ class MyOrdersState extends Equatable {
   List<OrderDetails> get pastOrders =>
       orders.where((details) => !details.order.isActive).toList();
 
+  /// The most recently placed active order, opened by default.
+  String? get latestActiveOrderId {
+    final active = activeOrders;
+    if (active.isEmpty) return null;
+    return active
+        .reduce(
+          (newest, details) =>
+              details.order.createdAt.isAfter(newest.order.createdAt)
+              ? details
+              : newest,
+        )
+        .order
+        .id;
+  }
+
   List<OrderDetails> get visibleOrders =>
       tab == OrdersTab.active ? activeOrders : pastOrders;
 

@@ -63,6 +63,57 @@ void main() {
     ],
   );
 
+  group('newest active order', () {
+    final older = orderDetails(
+      id: 'older',
+      createdAt: fixtureNow.subtract(const Duration(hours: 1)),
+    );
+
+    blocTest<MyOrdersCubit, MyOrdersState>(
+      'opens on the first load',
+      setUp: () =>
+          when(() => repository.watchCustomerOrders('customer-1'))
+              .thenAnswer((_) => Stream.value([older, active, collected])),
+      build: buildCubit,
+      act: (cubit) => cubit.watch(),
+      verify: (cubit) => expect(cubit.state.expandedOrderId, 'active'),
+    );
+
+    blocTest<MyOrdersCubit, MyOrdersState>(
+      'stays closed after the customer closes it and the list updates',
+      setUp: () => when(() => repository.watchCustomerOrders('customer-1'))
+          .thenAnswer(
+            (_) => Stream.fromIterable([
+              [older, active],
+              [older, active, collected],
+            ]),
+          ),
+      build: buildCubit,
+      act: (cubit) async {
+        cubit.watch();
+        await Future<void>.delayed(Duration.zero);
+        cubit.toggleExpanded('active');
+      },
+      wait: const Duration(milliseconds: 10),
+      verify: (cubit) {
+        expect(cubit.state.orders, hasLength(3));
+        expect(cubit.state.expandedOrderId, isNull);
+      },
+    );
+
+    blocTest<MyOrdersCubit, MyOrdersState>(
+      'opens again when the customer comes back to the Active tab',
+      build: buildCubit,
+      seed: () => MyOrdersState(
+        status: MyOrdersStatus.ready,
+        orders: [older, active],
+        tab: OrdersTab.past,
+      ),
+      act: (cubit) => cubit.selectTab(OrdersTab.active),
+      verify: (cubit) => expect(cubit.state.expandedOrderId, 'active'),
+    );
+  });
+
   blocTest<MyOrdersCubit, MyOrdersState>(
     'switching tabs collapses the open order',
     build: buildCubit,
