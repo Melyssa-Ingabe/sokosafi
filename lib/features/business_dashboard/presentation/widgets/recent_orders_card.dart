@@ -3,20 +3,15 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
 import 'package:sokosafi/core/utils/formatters.dart';
 import 'package:sokosafi/core/widgets/staggered_entrance.dart';
-import 'package:sokosafi/features/business_dashboard/presentation/widgets/order_action_pill.dart';
 import 'package:sokosafi/features/business_orders/domain/entities/business_order.dart';
+import 'package:sokosafi/features/business_orders/presentation/widgets/order_action_pill.dart';
 
 /// The latest orders as rows in one card, each with its pickup action or
 /// status on the right.
 class RecentOrdersCard extends StatelessWidget {
-  const RecentOrdersCard({
-    super.key,
-    required this.orders,
-    required this.onConfirmPickup,
-  });
+  const RecentOrdersCard({super.key, required this.orders});
 
   final List<BusinessOrder> orders;
-  final VoidCallback onConfirmPickup;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +27,7 @@ class RecentOrdersCard extends StatelessWidget {
                 Divider(height: 1, thickness: 1, color: scheme.outlineVariant),
               StaggeredEntrance(
                 index: index,
-                child: _OrderRow(item: item, onConfirmPickup: onConfirmPickup),
+                child: _OrderRow(item: item),
               ),
             ],
           ],
@@ -43,10 +38,9 @@ class RecentOrdersCard extends StatelessWidget {
 }
 
 class _OrderRow extends StatelessWidget {
-  const _OrderRow({required this.item, required this.onConfirmPickup});
+  const _OrderRow({required this.item});
 
   final BusinessOrder item;
-  final VoidCallback onConfirmPickup;
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +99,7 @@ class _OrderRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: AppSpacing.sm),
-          OrderActionPill(status: order.status, onConfirm: onConfirmPickup),
+          OrderActionPill(item: item),
         ],
       ),
     );

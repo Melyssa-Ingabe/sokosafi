@@ -18,6 +18,8 @@ import 'package:sokosafi/features/business_dashboard/presentation/widgets/compac
 import 'package:sokosafi/features/business_dashboard/presentation/widgets/listing_progress_card.dart';
 import 'package:sokosafi/features/business_dashboard/presentation/widgets/recent_orders_card.dart';
 import 'package:sokosafi/features/business_orders/data/repositories/firestore_business_orders_repository.dart';
+import 'package:sokosafi/features/business_orders/presentation/bloc/order_actions_cubit.dart';
+import 'package:sokosafi/features/business_orders/presentation/widgets/order_actions_feedback.dart';
 import 'package:sokosafi/features/business_setup/domain/entities/business.dart';
 import 'package:sokosafi/features/business_setup/presentation/widgets/owned_business_gate.dart';
 import 'package:sokosafi/features/listings/data/repositories/firestore_listing_repository.dart';
@@ -35,14 +37,29 @@ class BusinessDashboardScreen extends StatelessWidget {
     return OwnedBusinessGate(
       ownerId: ownerId,
       title: 'Dashboard',
-      builder: (context, business) => BlocProvider(
-        create: (_) => DashboardCubit(
-          listingRepository: FirestoreListingRepository(),
-          ordersRepository: FirestoreBusinessOrdersRepository(),
-          businessId: business.id,
-        )..watch(),
-        child: _DashboardView(business: business),
-      ),
+      builder: (context, business) {
+        final ordersRepository = FirestoreBusinessOrdersRepository();
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (_) => DashboardCubit(
+                listingRepository: FirestoreListingRepository(),
+                ordersRepository: ordersRepository,
+                businessId: business.id,
+              )..watch(),
+            ),
+            BlocProvider(
+              create: (_) => OrderActionsCubit(
+                repository: ordersRepository,
+                businessId: business.id,
+              ),
+            ),
+          ],
+          child: OrderActionsFeedback(
+            child: _DashboardView(business: business),
+          ),
+        );
+      },
     );
   }
 }
@@ -214,10 +231,7 @@ class _DashboardBody extends StatelessWidget {
             ),
           )
         else
-          RecentOrdersCard(
-            orders: summary.recentOrders,
-            onConfirmPickup: () => context.push(AppRoutes.confirmPickup),
-          ),
+          RecentOrdersCard(orders: summary.recentOrders),
       ],
     );
   }

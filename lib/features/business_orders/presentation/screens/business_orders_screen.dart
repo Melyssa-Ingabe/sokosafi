@@ -9,7 +9,9 @@ import 'package:sokosafi/core/widgets/pill_segmented_control.dart';
 import 'package:sokosafi/core/widgets/skeleton_loading_list.dart';
 import 'package:sokosafi/features/business_orders/data/repositories/firestore_business_orders_repository.dart';
 import 'package:sokosafi/features/business_orders/presentation/bloc/business_orders_cubit.dart';
+import 'package:sokosafi/features/business_orders/presentation/bloc/order_actions_cubit.dart';
 import 'package:sokosafi/features/business_orders/presentation/widgets/business_orders_list.dart';
+import 'package:sokosafi/features/business_orders/presentation/widgets/order_actions_feedback.dart';
 import 'package:sokosafi/features/business_setup/presentation/widgets/owned_business_gate.dart';
 import 'package:sokosafi/router/app_routes.dart';
 
@@ -24,13 +26,26 @@ class BusinessOrdersScreen extends StatelessWidget {
     return OwnedBusinessGate(
       ownerId: ownerId,
       title: 'Orders',
-      builder: (context, business) => BlocProvider(
-        create: (_) => BusinessOrdersCubit(
-          repository: FirestoreBusinessOrdersRepository(),
-          businessId: business.id,
-        )..watch(),
-        child: const _BusinessOrdersView(),
-      ),
+      builder: (context, business) {
+        final repository = FirestoreBusinessOrdersRepository();
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (_) => BusinessOrdersCubit(
+                repository: repository,
+                businessId: business.id,
+              )..watch(),
+            ),
+            BlocProvider(
+              create: (_) => OrderActionsCubit(
+                repository: repository,
+                businessId: business.id,
+              ),
+            ),
+          ],
+          child: const OrderActionsFeedback(child: _BusinessOrdersView()),
+        );
+      },
     );
   }
 }
@@ -86,13 +101,7 @@ class _BusinessOrdersView extends StatelessWidget {
                         cubit.selectTab(BusinessOrdersTab.values[index]),
                   ),
                 ),
-                Expanded(
-                  child: BusinessOrdersList(
-                    state: state,
-                    onConfirmPickup: () =>
-                        context.push(AppRoutes.confirmPickup),
-                  ),
-                ),
+                Expanded(child: BusinessOrdersList(state: state)),
               ],
             ),
           };

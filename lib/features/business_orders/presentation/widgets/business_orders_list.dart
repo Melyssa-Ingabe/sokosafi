@@ -6,15 +6,9 @@ import 'package:sokosafi/features/business_orders/presentation/bloc/business_ord
 import 'package:sokosafi/features/business_orders/presentation/widgets/business_order_card.dart';
 
 class BusinessOrdersList extends StatelessWidget {
-  const BusinessOrdersList({
-    super.key,
-    required this.state,
-    required this.onConfirmPickup,
-  });
+  const BusinessOrdersList({super.key, required this.state});
 
   final BusinessOrdersState state;
-
-  final VoidCallback onConfirmPickup;
 
   @override
   Widget build(BuildContext context) {
@@ -50,12 +44,7 @@ class BusinessOrdersList extends StatelessWidget {
         return StaggeredEntrance(
           key: ValueKey('${state.tab.name}-${item.order.id}'),
           index: index,
-          child: BusinessOrderCard(
-            item: item,
-            onConfirmPickup: state.tab == BusinessOrdersTab.incoming
-                ? onConfirmPickup
-                : null,
-          ),
+          child: BusinessOrderCard(item: item),
         );
       },
     );
