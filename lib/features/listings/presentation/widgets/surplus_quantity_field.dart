@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:hugeicons/hugeicons.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
-import 'package:sokosafi/core/theme/app_colors.dart';
+import 'package:sokosafi/core/widgets/quantity_stepper.dart';
 
-/// "SURPLUS QUANTITY" row with minus and plus buttons.
-class QuantityStepper extends StatelessWidget {
-  const QuantityStepper({
+/// "SURPLUS QUANTITY" row with the shared stepper and an optional error.
+class SurplusQuantityField extends StatelessWidget {
+  const SurplusQuantityField({
     super.key,
     required this.quantity,
     required this.onDecrement,
@@ -21,7 +20,6 @@ class QuantityStepper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final iconColor = theme.colorScheme.onSurface;
     final error = errorText;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,42 +41,10 @@ class QuantityStepper extends StatelessWidget {
                 ],
               ),
             ),
-            DecoratedBox(
-              decoration: BoxDecoration(
-                color: AppColors.surfaceSubtle,
-                borderRadius: BorderRadius.circular(AppSpacing.md),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    tooltip: 'Less',
-                    onPressed: quantity > 1 ? onDecrement : null,
-                    icon: HugeIcon(
-                      icon: HugeIcons.strokeRoundedMinusSign,
-                      color: quantity > 1
-                          ? iconColor
-                          : theme.colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                  SizedBox(
-                    width: AppSpacing.xxl,
-                    child: Text(
-                      '$quantity',
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.titleLarge,
-                    ),
-                  ),
-                  IconButton(
-                    tooltip: 'More',
-                    onPressed: onIncrement,
-                    icon: HugeIcon(
-                      icon: HugeIcons.strokeRoundedAdd01,
-                      color: iconColor,
-                    ),
-                  ),
-                ],
-              ),
+            QuantityStepper(
+              quantity: quantity,
+              onDecrease: quantity > 1 ? onDecrement : null,
+              onIncrease: onIncrement,
             ),
           ],
         ),

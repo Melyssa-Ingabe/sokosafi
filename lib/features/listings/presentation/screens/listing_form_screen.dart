@@ -24,7 +24,7 @@ import 'package:sokosafi/features/listings/presentation/widgets/category_selecto
 import 'package:sokosafi/features/listings/presentation/widgets/date_time_tile.dart';
 import 'package:sokosafi/features/listings/presentation/widgets/form_section_card.dart';
 import 'package:sokosafi/features/listings/presentation/widgets/listing_photo_field.dart';
-import 'package:sokosafi/features/listings/presentation/widgets/quantity_stepper.dart';
+import 'package:sokosafi/features/listings/presentation/widgets/surplus_quantity_field.dart';
 import 'package:sokosafi/features/listings/presentation/widgets/rwf_suffix.dart';
 import 'package:sokosafi/features/listings/presentation/widgets/savings_line.dart';
 import 'package:sokosafi/features/listings/presentation/widgets/template_chips.dart';
@@ -277,7 +277,7 @@ class _ListingFormViewState extends State<_ListingFormView> {
                           FormSectionCard(
                             child: Column(
                               children: [
-                                QuantityStepper(
+                                SurplusQuantityField(
                                   quantity: state.quantity,
                                   errorText: state.quantityError,
                                   onDecrement: cubit.quantityDecremented,
