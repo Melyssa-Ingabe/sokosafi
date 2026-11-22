@@ -262,6 +262,13 @@ service cloud.firestore {
         && request.resource.data.diff(resource.data).affectedKeys()
              .hasOnly(['status']);
 
+      // The shop can also cancel an order it cannot fill.
+      allow update: if ownsBusiness(resource.data.businessId)
+        && resource.data.status == 'paid'
+        && request.resource.data.status == 'cancelled'
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(['status']);
+
       allow update: if ownsBusiness(resource.data.businessId)
         && resource.data.status == 'paid'
         && request.resource.data.status == 'collected'
