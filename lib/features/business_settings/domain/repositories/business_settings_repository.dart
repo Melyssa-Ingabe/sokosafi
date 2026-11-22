@@ -17,5 +17,6 @@ abstract interface class BusinessSettingsRepository {
     String? pickupStart,
     String? pickupEnd,
     String? landmark,
+    String? phone,
   });
 }

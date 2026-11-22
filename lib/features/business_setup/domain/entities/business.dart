@@ -20,6 +20,7 @@ class Business extends Equatable {
     required this.autoClose,
     required this.landmark,
     required this.createdAt,
+    this.phone = '',
   });
 
   final String id;
@@ -40,6 +41,10 @@ class Business extends Equatable {
   /// Optional pickup guide, for example "Green awning next to the
   /// pharmacy". Set from business settings; empty until then.
   final String landmark;
+
+  /// The number customers call about an order. Set from business
+  /// settings; empty until then.
+  final String phone;
   final DateTime createdAt;
 
   @override
@@ -58,5 +63,6 @@ class Business extends Equatable {
     autoClose,
     landmark,
     createdAt,
+    phone,
   ];
 }

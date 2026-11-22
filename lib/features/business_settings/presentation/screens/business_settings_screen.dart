@@ -13,7 +13,7 @@ import 'package:sokosafi/features/business_settings/data/repositories/firestore_
 import 'package:sokosafi/features/business_settings/domain/entities/business_settings.dart';
 import 'package:sokosafi/features/business_settings/presentation/bloc/business_settings_cubit.dart';
 import 'package:sokosafi/features/business_settings/presentation/widgets/business_header_card.dart';
-import 'package:sokosafi/features/business_settings/presentation/widgets/landmark_sheet.dart';
+import 'package:sokosafi/features/business_settings/presentation/widgets/setting_text_sheet.dart';
 import 'package:sokosafi/features/business_settings/presentation/widgets/pickup_time_format.dart';
 import 'package:sokosafi/features/business_setup/domain/entities/business.dart';
 import 'package:sokosafi/features/business_setup/presentation/widgets/owned_business_gate.dart';
@@ -121,8 +121,30 @@ class _SettingsBody extends StatelessWidget {
 
   Future<void> _editLandmark(BuildContext context) async {
     final cubit = context.read<BusinessSettingsCubit>();
-    final landmark = await LandmarkSheet.show(context, settings.landmark);
+    final landmark = await SettingTextSheet(
+      title: 'Pickup landmark',
+      description: 'Something customers can spot when they arrive.',
+      label: 'Landmark',
+      hint: 'Green awning next to the pharmacy',
+      initialValue: settings.landmark,
+      maxLength: BusinessSettings.maxLandmarkLength,
+      textCapitalization: TextCapitalization.sentences,
+    ).show(context);
     if (landmark != null) await cubit.setLandmark(landmark);
+  }
+
+  Future<void> _editPhone(BuildContext context) async {
+    final cubit = context.read<BusinessSettingsCubit>();
+    final phone = await SettingTextSheet(
+      title: 'Store phone',
+      description: 'Customers can call this number about their order.',
+      label: 'Phone number',
+      hint: '0788 123 456',
+      initialValue: settings.phone,
+      maxLength: BusinessSettings.maxPhoneLength,
+      keyboardType: TextInputType.phone,
+    ).show(context);
+    if (phone != null) await cubit.setPhone(phone);
   }
 
   @override
@@ -167,6 +189,12 @@ class _SettingsBody extends StatelessWidget {
               title: 'Pickup landmark',
               value: settings.landmark.isEmpty ? 'Add' : settings.landmark,
               onTap: () => _editLandmark(context),
+            ),
+            MenuTile(
+              icon: HugeIcons.strokeRoundedCall,
+              title: 'Store phone',
+              value: settings.phone.isEmpty ? 'Add' : settings.phone,
+              onTap: () => _editPhone(context),
             ),
             MenuTile(
               icon: HugeIcons.strokeRoundedPackageRemove,

@@ -42,6 +42,7 @@ erDiagram
         string pickupEnd "HH:mm"
         boolean autoClose
         string landmark "optional pickup guide, max 120 chars"
+        string phone "optional store phone customers call, max 20 chars"
         timestamp createdAt
     }
 

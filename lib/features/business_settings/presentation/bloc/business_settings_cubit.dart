@@ -116,6 +116,25 @@ class BusinessSettingsCubit extends Cubit<BusinessSettingsState> {
     );
   }
 
+  Future<void> setPhone(String phone) {
+    if (!BusinessSettings.isValidPhone(phone)) {
+      emit(
+        state.copyWith(
+          feedback: const SettingsFeedback.error(
+            'Enter a phone number customers can call, like 0788 123 456',
+          ),
+        ),
+      );
+      return Future.value();
+    }
+    return _save(
+      () => _repository.updateSettings(_businessId, phone: phone),
+      successMessage: phone.trim().isEmpty
+          ? 'Store phone removed'
+          : 'Store phone saved',
+    );
+  }
+
   Future<void> _save(
     Future<void> Function() write, {
     String? successMessage,

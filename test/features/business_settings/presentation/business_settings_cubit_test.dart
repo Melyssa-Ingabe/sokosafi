@@ -85,4 +85,45 @@ void main() {
       expect(cubit.state.feedback?.isError, isTrue);
     },
   );
+
+  group('store phone', () {
+    test('accepts local and international numbers, and empty to clear', () {
+      expect(BusinessSettings.isValidPhone('0788 123 456'), isTrue);
+      expect(BusinessSettings.isValidPhone('+250788123456'), isTrue);
+      expect(BusinessSettings.isValidPhone(''), isTrue);
+      expect(BusinessSettings.isValidPhone('call me'), isFalse);
+      expect(BusinessSettings.isValidPhone('1234'), isFalse);
+    });
+
+    blocTest<BusinessSettingsCubit, BusinessSettingsState>(
+      'a number that is not a phone number is refused and not saved',
+      build: buildCubit,
+      seed: () => const BusinessSettingsState(
+        status: BusinessSettingsStatus.ready,
+        settings: settings,
+      ),
+      act: (cubit) => cubit.setPhone('not a number'),
+      verify: (cubit) {
+        expect(cubit.state.feedback?.isError, isTrue);
+        verifyNever(
+          () => repository.updateSettings(any(), phone: any(named: 'phone')),
+        );
+      },
+    );
+
+    blocTest<BusinessSettingsCubit, BusinessSettingsState>(
+      'a valid number is saved with a confirmation',
+      setUp: () =>
+          when(() => repository.updateSettings('bakery', phone: '0788 123 456'))
+              .thenAnswer((_) async {}),
+      build: buildCubit,
+      seed: () => const BusinessSettingsState(
+        status: BusinessSettingsStatus.ready,
+        settings: settings,
+      ),
+      act: (cubit) => cubit.setPhone('0788 123 456'),
+      verify: (cubit) =>
+          expect(cubit.state.feedback?.message, 'Store phone saved'),
+    );
+  });
 }
