@@ -4,9 +4,9 @@ import 'package:sokosafi/core/constants/app_spacing.dart';
 import 'package:sokosafi/core/widgets/app_snackbar.dart';
 import 'package:sokosafi/core/widgets/empty_view.dart';
 import 'package:sokosafi/core/widgets/loading_view.dart';
+import 'package:sokosafi/core/widgets/pill_segmented_control.dart';
 import 'package:sokosafi/features/orders/presentation/cubit/my_orders_cubit.dart';
 import 'package:sokosafi/features/orders/presentation/widgets/orders_list.dart';
-import 'package:sokosafi/features/orders/presentation/widgets/orders_tab_switcher.dart';
 
 class MyOrdersScreen extends StatelessWidget {
   const MyOrdersScreen({super.key});
@@ -39,11 +39,15 @@ class MyOrdersScreen extends StatelessWidget {
             MyOrdersStatus.ready => Column(
               children: [
                 const SizedBox(height: AppSpacing.sm),
-                OrdersTabSwitcher(
-                  selected: state.tab,
-                  activeCount: state.activeOrders.length,
-                  pastCount: state.pastOrders.length,
-                  onSelected: cubit.selectTab,
+                PillSegmentedControl(
+                  width: 240,
+                  labels: [
+                    'Active (${state.activeOrders.length})',
+                    'Past (${state.pastOrders.length})',
+                  ],
+                  selectedIndex: state.tab.index,
+                  onSelected: (index) =>
+                      cubit.selectTab(OrdersTab.values[index]),
                 ),
                 Expanded(child: OrdersList(state: state)),
               ],
