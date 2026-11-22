@@ -5,6 +5,7 @@ import 'package:sokosafi/core/widgets/app_snackbar.dart';
 import 'package:sokosafi/core/widgets/empty_view.dart';
 import 'package:sokosafi/core/widgets/section_header.dart';
 import 'package:sokosafi/core/widgets/skeleton_loading_list.dart';
+import 'package:sokosafi/core/widgets/staggered_entrance.dart';
 import 'package:sokosafi/core/widgets/stat_tile.dart';
 import 'package:sokosafi/features/business_analytics/domain/entities/analytics_summary.dart';
 import 'package:sokosafi/features/business_analytics/presentation/bloc/analytics_cubit.dart';
@@ -98,38 +99,44 @@ class _AnalyticsBody extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.pagePadding),
       children: [
-        RevenueChartCard(summary: summary),
+        StaggeredEntrance(index: 0, child: RevenueChartCard(summary: summary)),
         const SizedBox(height: AppSpacing.md),
-        Row(
-          children: [
-            Expanded(
-              child: StatTile(
-                value: compactNumber(summary.itemsSold),
-                label: 'Items sold',
+        StaggeredEntrance(
+          index: 1,
+          child: Row(
+            children: [
+              Expanded(
+                child: StatTile(
+                  value: compactNumber(summary.itemsSold),
+                  label: 'Items sold',
+                ),
               ),
-            ),
-            const SizedBox(width: AppSpacing.sm),
-            Expanded(
-              child: StatTile(
-                value: compactNumber(summary.orderCount),
-                label: 'Orders',
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: StatTile(
+                  value: compactNumber(summary.orderCount),
+                  label: 'Orders',
+                ),
               ),
-            ),
-            const SizedBox(width: AppSpacing.sm),
-            Expanded(
-              child: StatTile(
-                value: averageRating == null
-                    ? '-'
-                    : averageRating.toStringAsFixed(1),
-                label: 'Avg rating (${summary.ratingCount})',
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: StatTile(
+                  value: averageRating == null
+                      ? '-'
+                      : averageRating.toStringAsFixed(1),
+                  label: 'Avg rating (${summary.ratingCount})',
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         const SizedBox(height: AppSpacing.xl),
         const SectionHeader(title: 'Top items'),
         const SizedBox(height: AppSpacing.sm),
-        TopItemsCard(items: summary.topItems),
+        StaggeredEntrance(
+          index: 2,
+          child: TopItemsCard(items: summary.topItems),
+        ),
       ],
     );
   }
