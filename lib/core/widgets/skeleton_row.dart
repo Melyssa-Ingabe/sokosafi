@@ -10,7 +10,7 @@ class SkeletonRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fill = color ?? Theme.of(context).colorScheme.surfaceContainerHighest;
+    final fill = color ?? Theme.of(context).colorScheme.outlineVariant;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
       child: Row(

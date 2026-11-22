@@ -128,10 +128,10 @@ abstract final class AppTheme {
         side: BorderSide(color: scheme.outlineVariant),
         backgroundColor: scheme.surfaceContainerLowest,
         selectedColor: scheme.primary,
-        checkmarkColor: scheme.onPrimary,
-        labelStyle: WidgetStateTextStyle.resolveWith(
-          (states) => textTheme.labelMedium!.copyWith(
-            color: states.contains(WidgetState.selected)
+        showCheckmark: false,
+        labelStyle: textTheme.labelMedium?.copyWith(
+          color: WidgetStateColor.resolveWith(
+            (states) => states.contains(WidgetState.selected)
                 ? scheme.onPrimary
                 : scheme.onSurface,
           ),
