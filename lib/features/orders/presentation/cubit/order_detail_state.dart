@@ -21,8 +21,10 @@ final class OrderDetailReady extends OrderDetailState {
   final OrderDetails details;
   final bool isCancelling;
 
-  OrderDetailReady copyWith({bool? isCancelling}) =>
-      OrderDetailReady(details, isCancelling: isCancelling ?? this.isCancelling);
+  OrderDetailReady copyWith({bool? isCancelling}) => OrderDetailReady(
+    details,
+    isCancelling: isCancelling ?? this.isCancelling,
+  );
 
   @override
   List<Object?> get props => [details, isCancelling];

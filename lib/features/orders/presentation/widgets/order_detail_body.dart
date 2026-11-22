@@ -49,7 +49,9 @@ class OrderDetailBody extends StatelessWidget {
           OrderStatusBadge(status: order.status),
         ],
       ),
-      if (details.listing != null && details.listing!.pickupBy.isAfter(DateTime.now()) && order.isActive)
+      if (details.listing != null &&
+          details.listing!.pickupBy.isAfter(DateTime.now()) &&
+          order.isActive)
         Card(
           color: AppColors.brandSubtle,
           child: Padding(
@@ -131,9 +133,7 @@ class OrderDetailBody extends StatelessWidget {
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
-            style: FilledButton.styleFrom(
-              backgroundColor: AppColors.error,
-            ),
+            style: FilledButton.styleFrom(backgroundColor: AppColors.error),
             child: const Text('Cancel order'),
           ),
         ],
