@@ -136,16 +136,12 @@ class _Results extends StatelessWidget {
             const SizedBox(height: AppSpacing.lg),
         itemBuilder: (context, index) {
           final result = results[index];
-          final heroTag = 'search-${result.item.listing.id}';
           return StaggeredEntrance(
             index: index,
             child: SearchResultCard(
               result: result,
-              heroTag: heroTag,
-              onTap: () => context.push(
-                AppRoutes.listingFor(result.item.listing.id),
-                extra: heroTag,
-              ),
+              onTap: () =>
+                  context.push(AppRoutes.listingFor(result.item.listing.id)),
             ),
           );
         },

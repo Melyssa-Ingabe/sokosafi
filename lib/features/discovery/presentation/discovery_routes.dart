@@ -23,6 +23,7 @@ import 'package:sokosafi/features/profile/presentation/profile_routes.dart';
 import 'package:sokosafi/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:sokosafi/router/app_page.dart';
 import 'package:sokosafi/router/app_routes.dart';
+import 'package:sokosafi/router/bottom_sheet_page.dart';
 
 /// The customer side: the bottom navigation with its tabs, and the listing
 /// detail and food preferences that open over it. The redirect only lets signed-in users reach
@@ -118,14 +119,14 @@ List<RouteBase> buildDiscoveryRoutes({
     ),
     GoRoute(
       path: AppRoutes.listingDetail,
-      pageBuilder: (context, state) => buildAppPage(
+      pageBuilder: (context, state) => buildBottomSheetPage(
         state: state,
         child: BlocProvider(
           create: (context) => ProductDetailCubit(
             repository: createRepository(),
             listingId: state.pathParameters['listingId'] ?? '',
           )..watch(),
-          child: ProductDetailScreen(heroTag: state.extra),
+          child: const ProductDetailScreen(),
         ),
       ),
     ),

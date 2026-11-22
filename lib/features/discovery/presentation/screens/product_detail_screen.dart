@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
 import 'package:sokosafi/core/utils/formatters.dart';
-import 'package:sokosafi/core/widgets/app_badge.dart';
 import 'package:sokosafi/core/widgets/empty_view.dart';
 import 'package:sokosafi/core/widgets/loading_view.dart';
 import 'package:sokosafi/core/widgets/now_ticker.dart';
@@ -19,60 +18,72 @@ import 'package:sokosafi/features/discovery/presentation/widgets/save_merchant_b
 import 'package:sokosafi/features/discovery/presentation/widgets/saved_merchants_feedback.dart';
 import 'package:sokosafi/router/app_routes.dart';
 
-/// One listing in full: photo, price, pickup times, the shop, and a
-/// quantity to reserve.
+/// One listing in full, as a sheet over the feed: photo, price, pickup
+/// times, the shop, and a quantity to reserve. Drag it down to close.
 class ProductDetailScreen extends StatelessWidget {
-  const ProductDetailScreen({super.key, this.heroTag});
+  const ProductDetailScreen({super.key});
 
-  /// Matches the card the customer tapped, so its photo flies in.
-  final Object? heroTag;
+  static const double _openSize = 0.92;
+  static const double _sheetRadius = 28;
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<SavedMerchantsCubit, SavedMerchantsState>(
-      listenWhen: (previous, current) => current.feedback != null,
-      listener: (context, state) => showSavedMerchantsFeedback(context, state),
-      child: BlocBuilder<ProductDetailCubit, ProductDetailState>(
-        builder: (context, state) {
-          final item = state.item;
-          if (state.status == ProductDetailStatus.failure || item == null) {
-            return Scaffold(
-              appBar: AppBar(),
-              body: state.status == ProductDetailStatus.failure
-                  ? EmptyView(
-                      title: 'This food is not available',
-                      message: state.errorMessage,
-                      actionLabel: 'Back to the feed',
-                      onAction: () => context.go(AppRoutes.customerHome),
-                    )
-                  : const LoadingView(),
-            );
-          }
-          // Re-checks every 30 seconds so Reserve turns off when the pick-up
-          // time passes while the screen is open.
-          return NowTicker(
-            builder: (context, now) => Scaffold(
-              body: _DetailBody(
-                item: item,
-                state: state,
-                heroTag: heroTag,
-                now: now,
-              ),
-              bottomNavigationBar: ReserveBar(
-                quantity: state.quantity,
-                total: state.total,
-                onReserve: state.canReserveAt(now)
-                    ? () => context.push(
-                        AppRoutes.checkoutFor(
-                          item.listing.id,
-                          quantity: state.quantity,
-                        ),
-                      )
-                    : null,
-              ),
-            ),
-          );
-        },
+    return DraggableScrollableSheet(
+      initialChildSize: _openSize,
+      maxChildSize: _openSize,
+      minChildSize: 0.5,
+      snap: true,
+      expand: false,
+      builder: (context, scrollController) => ClipRRect(
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(_sheetRadius),
+        ),
+        child: BlocListener<SavedMerchantsCubit, SavedMerchantsState>(
+          listenWhen: (previous, current) => current.feedback != null,
+          listener: (context, state) =>
+              showSavedMerchantsFeedback(context, state),
+          child: BlocBuilder<ProductDetailCubit, ProductDetailState>(
+            builder: (context, state) {
+              final item = state.item;
+              if (state.status == ProductDetailStatus.failure || item == null) {
+                return Scaffold(
+                  body: state.status == ProductDetailStatus.failure
+                      ? EmptyView(
+                          title: 'This food is not available',
+                          message: state.errorMessage,
+                          actionLabel: 'Back to the feed',
+                          onAction: () => context.go(AppRoutes.customerHome),
+                        )
+                      : const LoadingView(),
+                );
+              }
+              // Re-checks every 30 seconds so Reserve turns off when the
+              // pick-up time passes while the sheet is open.
+              return NowTicker(
+                builder: (context, now) => Scaffold(
+                  body: _DetailBody(
+                    item: item,
+                    state: state,
+                    now: now,
+                    scrollController: scrollController,
+                  ),
+                  bottomNavigationBar: ReserveBar(
+                    quantity: state.quantity,
+                    total: state.total,
+                    onReserve: state.canReserveAt(now)
+                        ? () => context.push(
+                            AppRoutes.checkoutFor(
+                              item.listing.id,
+                              quantity: state.quantity,
+                            ),
+                          )
+                        : null,
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
       ),
     );
   }
@@ -82,14 +93,14 @@ class _DetailBody extends StatelessWidget {
   const _DetailBody({
     required this.item,
     required this.state,
-    required this.heroTag,
     required this.now,
+    required this.scrollController,
   });
 
   final FeedItem item;
   final ProductDetailState state;
-  final Object? heroTag;
   final DateTime now;
+  final ScrollController scrollController;
 
   @override
   Widget build(BuildContext context) {
@@ -103,16 +114,20 @@ class _DetailBody extends StatelessWidget {
     );
 
     return ListView(
-      padding: const EdgeInsets.only(bottom: AppSpacing.xl),
+      controller: scrollController,
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.pagePadding,
+        AppSpacing.lg,
+        AppSpacing.pagePadding,
+        AppSpacing.xl,
+      ),
       children: [
         ProductPhotoHeader(
           imageUrl: listing.imageUrl,
-          heroTag: heroTag,
           action: SaveMerchantButton(business: item.business),
         ),
         Padding(
-          // 20px sides, as in the Product Detail frame in Figma.
-          padding: const EdgeInsets.fromLTRB(20, AppSpacing.lg, 20, 0),
+          padding: const EdgeInsets.only(top: AppSpacing.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -166,7 +181,14 @@ class _DetailBody extends StatelessWidget {
                       decoration: TextDecoration.lineThrough,
                     ),
                   ),
-                  if (percentOff > 0) AppBadge(label: '-$percentOff%'),
+                  if (percentOff > 0)
+                    Text(
+                      '-$percentOff%',
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        color: scheme.primary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                 ],
               ),
               if (listing.description.isNotEmpty) ...[
@@ -188,14 +210,14 @@ class _DetailBody extends StatelessWidget {
                   ),
                 ),
               ],
-              const SizedBox(height: AppSpacing.lg + AppSpacing.xs),
+              const SizedBox(height: AppSpacing.xl),
               Text(
                 'Merchant',
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: AppSpacing.md),
               MerchantCard(business: item.business, now: now),
             ],
           ),

@@ -62,8 +62,8 @@ class SavedMerchantCard extends StatelessWidget {
                     ),
                   ),
                   Positioned(
-                    top: AppSpacing.xs,
-                    right: AppSpacing.xs,
+                    top: AppSpacing.sm,
+                    right: AppSpacing.sm,
                     child: SaveMerchantButton(business: business),
                   ),
                   Positioned(
