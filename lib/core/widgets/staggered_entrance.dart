@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'package:sokosafi/core/constants/animation_constants.dart';
 
@@ -31,17 +33,25 @@ class _StaggeredEntranceState extends State<StaggeredEntrance>
     curve: AnimationConstants.listCurve,
   );
 
+  Timer? _delay;
+
   @override
   void initState() {
     super.initState();
     final steps = widget.index.clamp(0, _maxStaggeredItems);
-    Future<void>.delayed(AnimationConstants.listStagger * steps, () {
-      if (mounted) _controller.forward();
-    });
+    if (steps == 0) {
+      _controller.forward();
+    } else {
+      _delay = Timer(
+        AnimationConstants.listStagger * steps,
+        _controller.forward,
+      );
+    }
   }
 
   @override
   void dispose() {
+    _delay?.cancel();
     _controller.dispose();
     super.dispose();
   }
