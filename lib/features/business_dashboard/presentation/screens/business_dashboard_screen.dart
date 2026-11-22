@@ -3,25 +3,24 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
-import 'package:sokosafi/core/theme/app_colors.dart';
-import 'package:sokosafi/core/theme/app_text_styles.dart';
 import 'package:sokosafi/core/widgets/app_snackbar.dart';
+import 'package:sokosafi/core/widgets/brand_header.dart';
 import 'package:sokosafi/core/widgets/empty_view.dart';
-import 'package:sokosafi/core/widgets/loading_view.dart';
 import 'package:sokosafi/core/widgets/section_header.dart';
+import 'package:sokosafi/core/widgets/skeleton_empty_view.dart';
+import 'package:sokosafi/core/widgets/skeleton_loading_list.dart';
 import 'package:sokosafi/core/widgets/staggered_entrance.dart';
+import 'package:sokosafi/core/widgets/stat_tile.dart';
+import 'package:sokosafi/core/widgets/tap_scale.dart';
 import 'package:sokosafi/features/business_dashboard/domain/entities/dashboard_summary.dart';
 import 'package:sokosafi/features/business_dashboard/presentation/bloc/dashboard_cubit.dart';
 import 'package:sokosafi/features/business_dashboard/presentation/widgets/compact_number.dart';
-import 'package:sokosafi/core/widgets/stat_tile.dart';
-import 'package:sokosafi/features/business_dashboard/presentation/widgets/items_rescued_card.dart';
 import 'package:sokosafi/features/business_dashboard/presentation/widgets/listing_progress_card.dart';
+import 'package:sokosafi/features/business_dashboard/presentation/widgets/recent_orders_card.dart';
 import 'package:sokosafi/features/business_orders/data/repositories/firestore_business_orders_repository.dart';
-import 'package:sokosafi/features/business_orders/presentation/widgets/business_order_card.dart';
 import 'package:sokosafi/features/business_setup/domain/entities/business.dart';
 import 'package:sokosafi/features/business_setup/presentation/widgets/owned_business_gate.dart';
 import 'package:sokosafi/features/listings/data/repositories/firestore_listing_repository.dart';
-import 'package:sokosafi/features/orders/domain/entities/order_status.dart';
 import 'package:sokosafi/router/app_routes.dart';
 
 /// Live overview of the owner's business: today's numbers, active
@@ -56,69 +55,92 @@ class _DashboardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          business.name,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
+      floatingActionButton: TapScale(
+        child: FloatingActionButton(
+          tooltip: 'Scan a pickup code',
+          heroTag: null,
+          onPressed: () => context.push(AppRoutes.confirmPickup),
+          backgroundColor: Theme.of(context).colorScheme.surfaceContainerLowest,
+          foregroundColor: Theme.of(context).colorScheme.onSurface,
+          elevation: 2,
+          shape: const CircleBorder(),
+          child: HugeIcon(
+            icon: HugeIcons.strokeRoundedQrCode,
+            size: 28,
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.push(AppRoutes.createListing),
-        icon: const HugeIcon(icon: HugeIcons.strokeRoundedAdd01),
-        label: const Text('List'),
-      ),
-      body: BlocConsumer<DashboardCubit, DashboardState>(
-        listenWhen: (previous, current) =>
-            previous.status != current.status &&
-            current.status == DashboardStatus.failure,
-        listener: (context, state) => AppSnackBar.showError(
-          context,
-          state.errorMessage ?? 'We could not load your dashboard',
+      body: SafeArea(
+        bottom: false,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.pagePadding,
+              ),
+              child: BrandHeader(locationLabel: business.address),
+            ),
+            Expanded(
+              child: BlocConsumer<DashboardCubit, DashboardState>(
+                listenWhen: (previous, current) =>
+                    previous.status != current.status &&
+                    current.status == DashboardStatus.failure,
+                listener: (context, state) => AppSnackBar.showError(
+                  context,
+                  state.errorMessage ?? 'We could not load your dashboard',
+                ),
+                builder: (context, state) {
+                  final summary = state.summary;
+                  return switch (state.status) {
+                    DashboardStatus.failure => EmptyView(
+                      title: 'We could not load your dashboard',
+                      message: state.errorMessage,
+                      actionLabel: 'Try again',
+                      onAction: context.read<DashboardCubit>().watch,
+                    ),
+                    DashboardStatus.ready when summary != null =>
+                      _DashboardBody(business: business, summary: summary),
+                    _ => const SkeletonLoadingList(),
+                  };
+                },
+              ),
+            ),
+          ],
         ),
-        builder: (context, state) {
-          final summary = state.summary;
-          return switch (state.status) {
-            DashboardStatus.loading => const LoadingView(),
-            DashboardStatus.failure => EmptyView(
-              title: 'We could not load your dashboard',
-              message: state.errorMessage,
-              actionLabel: 'Try again',
-              onAction: context.read<DashboardCubit>().watch,
-            ),
-            DashboardStatus.ready when summary != null => _DashboardBody(
-              summary: summary,
-            ),
-            DashboardStatus.ready => const LoadingView(),
-          };
-        },
       ),
     );
   }
 }
 
 class _DashboardBody extends StatelessWidget {
-  const _DashboardBody({required this.summary});
+  const _DashboardBody({required this.business, required this.summary});
 
+  final Business business;
   final DashboardSummary summary;
 
   @override
   Widget build(BuildContext context) {
-    final sectionStyle = AppTextStyles.label.copyWith(
-      color: AppColors.textSecondary,
-    );
+    final theme = Theme.of(context);
     return ListView(
-      // Extra space at the bottom so the "+ List" button never covers the
-      // last card.
+      // Extra space at the bottom so the QR button never covers the last
+      // card.
       padding: const EdgeInsets.fromLTRB(
         AppSpacing.pagePadding,
-        AppSpacing.pagePadding,
+        AppSpacing.lg,
         AppSpacing.pagePadding,
         96,
       ),
       children: [
-        Text('Today', style: sectionStyle),
-        const SizedBox(height: AppSpacing.sm),
+        _BusinessRow(business: business),
+        const SizedBox(height: AppSpacing.xl),
+        Text(
+          'Today',
+          style: theme.textTheme.bodyLarge?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.md),
         Row(
           children: [
             Expanded(
@@ -127,14 +149,14 @@ class _DashboardBody extends StatelessWidget {
                 label: 'Active listings',
               ),
             ),
-            const SizedBox(width: AppSpacing.sm),
+            const SizedBox(width: AppSpacing.md),
             Expanded(
               child: StatTile(
                 value: '${summary.itemsSoldToday}',
                 label: 'Items sold',
               ),
             ),
-            const SizedBox(width: AppSpacing.sm),
+            const SizedBox(width: AppSpacing.md),
             Expanded(
               child: StatTile(
                 value: compactNumber(summary.revenueToday),
@@ -151,9 +173,13 @@ class _DashboardBody extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.sm),
         if (summary.activeListings.isEmpty)
-          Text(
-            'No listings on sale right now.',
-            style: AppTextStyles.body.copyWith(color: AppColors.textSecondary),
+          const SizedBox(
+            height: 220,
+            child: SkeletonEmptyView(
+              rowCount: 2,
+              title: 'No listings on sale',
+              message: 'Tap + List to put surplus food up for sale',
+            ),
           )
         else
           for (final (index, progress) in summary.activeListings.indexed)
@@ -161,36 +187,123 @@ class _DashboardBody extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: AppSpacing.md),
               child: StaggeredEntrance(
                 index: index,
-                child: ListingProgressCard(progress: progress),
+                child: ListingProgressCard(
+                  progress: progress,
+                  onTap: () => context.push(
+                    AppRoutes.editListing,
+                    extra: progress.listing,
+                  ),
+                ),
               ),
             ),
-        const SizedBox(height: AppSpacing.lg),
+        const SizedBox(height: AppSpacing.md),
         SectionHeader(
           title: 'Recent orders',
-          actionLabel: 'View all',
+          actionLabel: 'View all (${summary.totalOrders})',
+          isActionSubtle: true,
           onAction: () => context.go(AppRoutes.businessOrders),
         ),
         const SizedBox(height: AppSpacing.sm),
         if (summary.recentOrders.isEmpty)
-          Text(
-            'Orders show up here as soon as customers reserve.',
-            style: AppTextStyles.body.copyWith(color: AppColors.textSecondary),
+          const SizedBox(
+            height: 220,
+            child: SkeletonEmptyView(
+              rowCount: 2,
+              title: 'No orders yet',
+              message: 'Orders show up here as soon as customers reserve',
+            ),
           )
         else
-          for (final item in summary.recentOrders)
-            Padding(
-              padding: const EdgeInsets.only(bottom: AppSpacing.md),
-              child: BusinessOrderCard(
-                item: item,
-                onConfirmPickup: item.order.status == OrderStatus.paid
-                    ? () => context.push(AppRoutes.confirmPickup)
-                    : null,
+          RecentOrdersCard(
+            orders: summary.recentOrders,
+            onConfirmPickup: () => context.push(AppRoutes.confirmPickup),
+          ),
+      ],
+    );
+  }
+}
+
+/// Shop icon, name and the "Selling" pill that switches back to buying.
+class _BusinessRow extends StatelessWidget {
+  const _BusinessRow({required this.business});
+
+  final Business business;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    return Row(
+      children: [
+        SizedBox.square(
+          dimension: 44,
+          child: DecoratedBox(
+            decoration: ShapeDecoration(
+              color: scheme.surfaceContainerHighest,
+              shape: const CircleBorder(),
+            ),
+            child: Center(
+              child: HugeIcon(
+                icon: HugeIcons.strokeRoundedStore01,
+                size: 22,
+                color: scheme.primary,
               ),
             ),
-        const SizedBox(height: AppSpacing.lg),
-        Text('Waste diverted', style: sectionStyle),
-        const SizedBox(height: AppSpacing.sm),
-        ItemsRescuedCard(itemsRescued: summary.itemsRescued),
+          ),
+        ),
+        const SizedBox(width: AppSpacing.md),
+        Expanded(
+          child: Text(
+            business.name,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+        const SizedBox(width: AppSpacing.sm),
+        TapScale(
+          child: Tooltip(
+            message: 'Switch to buying',
+            child: Material(
+              color: scheme.surfaceContainerHighest,
+              shape: const StadiumBorder(),
+              child: InkWell(
+                customBorder: const StadiumBorder(),
+                onTap: () => context.go(AppRoutes.customerHome),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    minHeight: AppSpacing.minTapTarget,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.lg,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        HugeIcon(
+                          icon: HugeIcons
+                              .strokeRoundedArrowDataTransferHorizontal,
+                          size: 18,
+                          color: scheme.primary,
+                        ),
+                        const SizedBox(width: AppSpacing.sm),
+                        Text(
+                          'Selling',
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            color: scheme.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }

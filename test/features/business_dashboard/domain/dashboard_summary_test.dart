@@ -92,25 +92,6 @@ void main() {
     expect(summary.revenueToday, 3000);
   });
 
-  test('items rescued counts every collected order, not only today', () {
-    final summary = DashboardSummary.from(
-      listings: const [],
-      orders: [
-        order(id: 'today', status: OrderStatus.collected, quantity: 3),
-        order(
-          id: 'yesterday',
-          status: OrderStatus.collected,
-          quantity: 4,
-          createdAt: yesterday,
-        ),
-        order(id: 'waiting', quantity: 2),
-      ],
-      now: now,
-    );
-
-    expect(summary.itemsRescued, 7);
-  });
-
   test('an active listing shows portions left, reserved and its total', () {
     final summary = DashboardSummary.from(
       listings: [listing(quantity: 14)],
