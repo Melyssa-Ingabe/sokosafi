@@ -150,10 +150,8 @@ class _FeedList extends StatelessWidget {
           child: FeedSectionRow(
             section: section,
             distanceTo: state.distanceTo,
-            onOpen: (item, heroTag) => context.push(
-              AppRoutes.listingFor(item.listing.id),
-              extra: heroTag,
-            ),
+            onOpen: (item) =>
+                context.push(AppRoutes.listingFor(item.listing.id)),
           ),
         );
       },
