@@ -11,4 +11,10 @@ abstract interface class BusinessOrdersRepository {
     required String businessId,
     required String pickupCode,
   });
+
+  /// Cancels a paid order and puts its portions back on sale.
+  Future<void> cancelOrder({
+    required String businessId,
+    required String orderId,
+  });
 }

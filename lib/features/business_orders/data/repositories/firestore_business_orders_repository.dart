@@ -6,6 +6,7 @@ import 'package:sokosafi/features/business_orders/domain/entities/business_order
 import 'package:sokosafi/features/business_orders/domain/failures/business_orders_failure.dart';
 import 'package:sokosafi/features/business_orders/domain/repositories/business_orders_repository.dart';
 import 'package:sokosafi/features/orders/data/models/firestore_reading.dart';
+import 'package:sokosafi/features/orders/data/models/order_listing_model.dart';
 import 'package:sokosafi/features/orders/data/models/order_model.dart';
 import 'package:sokosafi/features/orders/data/models/pickup_code.dart';
 import 'package:sokosafi/features/orders/domain/entities/customer_order.dart';
@@ -81,6 +82,49 @@ class FirestoreBusinessOrdersRepository implements BusinessOrdersRepository {
         transaction.update(orderRef, {
           'status': OrderStatus.collected.name,
           'collectedAt': FieldValue.serverTimestamp(),
+        });
+      }, timeout: _timeout);
+    } catch (error) {
+      throw toBusinessOrdersFailure(error);
+    }
+  }
+
+  @override
+  Future<void> cancelOrder({
+    required String businessId,
+    required String orderId,
+  }) async {
+    try {
+      final orderRef = _orders.doc(orderId);
+      await _firestore.runTransaction((transaction) async {
+        final orderSnapshot = await transaction.get(orderRef);
+        if (!orderSnapshot.exists) {
+          throw const BusinessOrdersFailure('We could not find that order');
+        }
+        final order = OrderModel.fromSnapshot(orderSnapshot);
+        if (order.businessId != businessId) {
+          throw const BusinessOrdersFailure('This order is not for your shop');
+        }
+        if (order.status == OrderStatus.collected) {
+          throw const BusinessOrdersFailure('This order was already picked up');
+        }
+        if (order.status == OrderStatus.cancelled) {
+          throw const BusinessOrdersFailure('This order is already cancelled');
+        }
+        // Every read must happen before the first write in a transaction.
+        final listingRef = _listings.doc(order.listingId);
+        final listingSnapshot = await transaction.get(listingRef);
+
+        transaction.update(orderRef, {'status': OrderStatus.cancelled.name});
+        if (!listingSnapshot.exists) return;
+        final listing = OrderListingModel.fromSnapshot(listingSnapshot);
+        final wasSoldOut =
+            listingSnapshot.data()?['status'] ==
+            OrderListingModel.soldOutStatus;
+        transaction.update(listingRef, {
+          'quantity': listing.quantityLeft + order.quantity,
+          if (wasSoldOut && listing.pickupBy.isAfter(DateTime.now()))
+            'status': OrderListingModel.activeStatus,
         });
       }, timeout: _timeout);
     } catch (error) {

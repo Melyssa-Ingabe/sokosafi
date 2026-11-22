@@ -49,6 +49,50 @@ void main() {
     repository = FirestoreBusinessOrdersRepository(firestore: firestore);
   });
 
+  group('cancelOrder', () {
+    Future<void> seedListing({int quantity = 0, String status = 'soldOut'}) {
+      return firestore.collection('listings').doc('bread').set({
+        'businessId': 'bakery',
+        'title': 'Bread',
+        'quantity': quantity,
+        'status': status,
+        'pickupBy': Timestamp.fromDate(
+          DateTime.now().add(const Duration(hours: 2)),
+        ),
+      });
+    }
+
+    test('cancels a paid order and puts the portions back on sale', () async {
+      await seedOrder();
+      await seedListing();
+
+      await repository.cancelOrder(businessId: 'bakery', orderId: 'order-1');
+
+      expect((await orderData('order-1'))['status'], 'cancelled');
+      final listing = await firestore.collection('listings').doc('bread').get();
+      expect(listing.data()!['quantity'], 2);
+      expect(listing.data()!['status'], 'active');
+    });
+
+    test('refuses an order from another shop', () async {
+      await seedOrder(businessId: 'cafe');
+
+      expect(
+        repository.cancelOrder(businessId: 'bakery', orderId: 'order-1'),
+        failsWith('This order is not for your shop'),
+      );
+    });
+
+    test('refuses an order that was already picked up', () async {
+      await seedOrder(status: 'collected');
+
+      expect(
+        repository.cancelOrder(businessId: 'bakery', orderId: 'order-1'),
+        failsWith('This order was already picked up'),
+      );
+    });
+  });
+
   group('confirmPickup', () {
     test('marks a paid order as collected', () async {
       await seedOrder();
