@@ -6,10 +6,10 @@ import 'package:sokosafi/core/constants/app_spacing.dart';
 import 'package:sokosafi/core/widgets/app_snackbar.dart';
 import 'package:sokosafi/core/widgets/empty_view.dart';
 import 'package:sokosafi/core/widgets/loading_view.dart';
+import 'package:sokosafi/core/widgets/pill_segmented_control.dart';
 import 'package:sokosafi/features/business_orders/data/repositories/firestore_business_orders_repository.dart';
 import 'package:sokosafi/features/business_orders/presentation/bloc/business_orders_cubit.dart';
 import 'package:sokosafi/features/business_orders/presentation/widgets/business_orders_list.dart';
-import 'package:sokosafi/features/business_orders/presentation/widgets/business_orders_tab_bar.dart';
 import 'package:sokosafi/features/business_setup/presentation/widgets/owned_business_gate.dart';
 import 'package:sokosafi/router/app_routes.dart';
 
@@ -72,10 +72,19 @@ class _BusinessOrdersView extends StatelessWidget {
             BusinessOrdersStatus.ready => Column(
               children: [
                 const SizedBox(height: AppSpacing.sm),
-                BusinessOrdersTabBar(
-                  selected: state.tab,
-                  countFor: (tab) => state.ordersFor(tab).length,
-                  onSelected: cubit.selectTab,
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.pagePadding,
+                  ),
+                  child: PillSegmentedControl(
+                    labels: [
+                      for (final tab in BusinessOrdersTab.values)
+                        '${tab.label} (${state.ordersFor(tab).length})',
+                    ],
+                    selectedIndex: state.tab.index,
+                    onSelected: (index) =>
+                        cubit.selectTab(BusinessOrdersTab.values[index]),
+                  ),
                 ),
                 Expanded(
                   child: BusinessOrdersList(

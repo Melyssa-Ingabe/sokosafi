@@ -3,7 +3,15 @@ part of 'business_orders_cubit.dart';
 enum BusinessOrdersStatus { loading, ready, failure }
 
 /// Incoming orders are paid and waiting to be picked up.
-enum BusinessOrdersTab { incoming, completed, cancelled }
+enum BusinessOrdersTab {
+  incoming('Incoming'),
+  completed('Completed'),
+  cancelled('Cancelled');
+
+  const BusinessOrdersTab(this.label);
+
+  final String label;
+}
 
 class BusinessOrdersState extends Equatable {
   const BusinessOrdersState({
