@@ -113,6 +113,7 @@ class _FeedTop extends StatelessWidget {
             userName: user?.name ?? '',
             photoUrl: user?.photoUrl ?? '',
             onProfileTap: () => context.go(AppRoutes.profile),
+            onSwitchToSelling: () => context.push(AppRoutes.switchToBusiness),
           ),
           if (message != null) ...[
             const SizedBox(height: AppSpacing.md),

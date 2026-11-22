@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
+import 'package:sokosafi/core/widgets/mode_switch_pill.dart';
 import 'package:sokosafi/core/widgets/app_snackbar.dart';
 import 'package:sokosafi/core/widgets/brand_header.dart';
 import 'package:sokosafi/core/widgets/empty_view.dart';
@@ -277,46 +278,10 @@ class _BusinessRow extends StatelessWidget {
           ),
         ),
         const SizedBox(width: AppSpacing.sm),
-        TapScale(
-          child: Tooltip(
-            message: 'Switch to buying',
-            child: Material(
-              color: scheme.surfaceContainerHighest,
-              shape: const StadiumBorder(),
-              child: InkWell(
-                customBorder: const StadiumBorder(),
-                onTap: () => context.go(AppRoutes.customerHome),
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    minHeight: AppSpacing.minTapTarget,
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.lg,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        HugeIcon(
-                          icon: HugeIcons
-                              .strokeRoundedArrowDataTransferHorizontal,
-                          size: 18,
-                          color: scheme.primary,
-                        ),
-                        const SizedBox(width: AppSpacing.sm),
-                        Text(
-                          'Selling',
-                          style: theme.textTheme.labelLarge?.copyWith(
-                            color: scheme.primary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
+        ModeSwitchPill(
+          label: 'Selling',
+          tooltip: 'Switch to buying',
+          onTap: () => context.go(AppRoutes.customerHome),
         ),
       ],
     );
