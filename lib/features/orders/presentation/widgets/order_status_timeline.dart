@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:sokosafi/core/constants/animation_constants.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
 import 'package:sokosafi/core/theme/app_colors.dart';
 import 'package:sokosafi/features/orders/domain/entities/order_status.dart';
 
-class OrderStatusTimeline extends StatelessWidget {
+/// The order's progress as a card that starts collapsed to the latest
+/// step and opens to show every step.
+///
+/// Stateful only to own the ExpansibleController.
+class OrderStatusTimeline extends StatefulWidget {
   const OrderStatusTimeline({
     super.key,
     required this.status,
@@ -16,35 +22,95 @@ class OrderStatusTimeline extends StatelessWidget {
   final DateTime? collectedAt;
 
   @override
+  State<OrderStatusTimeline> createState() => _OrderStatusTimelineState();
+}
+
+class _OrderStatusTimelineState extends State<OrderStatusTimeline> {
+  final _controller = ExpansibleController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final steps = _buildSteps();
+    final latest = steps.lastWhere((step) => step.isCompleted);
 
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Order status', style: theme.textTheme.titleMedium),
-            const SizedBox(height: AppSpacing.lg),
-            for (var i = 0; i < steps.length; i++) ...[
-              _TimelineStep(
-                label: steps[i].label,
-                subtitle: steps[i].subtitle,
-                isCompleted: steps[i].isCompleted,
-                isLast: i == steps.length - 1,
-              ),
+      clipBehavior: Clip.antiAlias,
+      child: Expansible(
+        controller: _controller,
+        animationStyle: AnimationStyle(
+          duration: AnimationConstants.pageTransition,
+          curve: AnimationConstants.pageCurve,
+        ),
+        headerBuilder: (context, animation) => InkWell(
+          onTap: () => _controller.isExpanded
+              ? _controller.collapse()
+              : _controller.expand(),
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Order status', style: theme.textTheme.titleMedium),
+                      const SizedBox(height: 2),
+                      Text(
+                        latest.label,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                RotationTransition(
+                  turns: animation.drive(Tween(begin: 0, end: 0.5)),
+                  child: const HugeIcon(
+                    icon: HugeIcons.strokeRoundedArrowDown01,
+                    size: 20,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        bodyBuilder: (context, animation) => Padding(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.lg,
+            0,
+            AppSpacing.lg,
+            AppSpacing.lg,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (var i = 0; i < steps.length; i++)
+                _TimelineStep(
+                  label: steps[i].label,
+                  subtitle: steps[i].subtitle,
+                  isCompleted: steps[i].isCompleted,
+                  isLast: i == steps.length - 1,
+                ),
             ],
-          ],
+          ),
         ),
       ),
     );
   }
 
   List<_Step> _buildSteps() {
-    final placed = _formatDate(createdAt);
-    return switch (status) {
+    final placed = _formatDate(widget.createdAt);
+    final collectedAt = widget.collectedAt;
+    return switch (widget.status) {
       OrderStatus.paid => [
         _Step('Order placed', placed, isCompleted: true),
         _Step(
@@ -59,7 +125,7 @@ class OrderStatusTimeline extends StatelessWidget {
         _Step('Ready for pickup', '', isCompleted: true),
         _Step(
           'Collected',
-          collectedAt != null ? _formatDate(collectedAt!) : '',
+          collectedAt != null ? _formatDate(collectedAt) : '',
           isCompleted: true,
         ),
       ],
