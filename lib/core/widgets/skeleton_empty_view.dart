@@ -12,11 +12,15 @@ class SkeletonEmptyView extends StatelessWidget {
     required this.title,
     this.message,
     this.rowCount = 3,
+    this.actionLabel,
+    this.onAction,
   });
 
   final String title;
   final String? message;
   final int rowCount;
+  final String? actionLabel;
+  final VoidCallback? onAction;
 
   @override
   Widget build(BuildContext context) {
@@ -73,6 +77,13 @@ class SkeletonEmptyView extends StatelessWidget {
                           style: textTheme.bodyMedium?.copyWith(
                             color: scheme.onSurfaceVariant,
                           ),
+                        ),
+                      ],
+                      if (actionLabel != null && onAction != null) ...[
+                        const SizedBox(height: AppSpacing.xl),
+                        FilledButton(
+                          onPressed: onAction,
+                          child: Text(actionLabel!),
                         ),
                       ],
                     ],
