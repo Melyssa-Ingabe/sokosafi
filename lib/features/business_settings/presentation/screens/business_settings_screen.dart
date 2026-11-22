@@ -14,7 +14,7 @@ import 'package:sokosafi/features/business_settings/domain/entities/business_set
 import 'package:sokosafi/features/business_settings/presentation/bloc/business_settings_cubit.dart';
 import 'package:sokosafi/features/business_settings/presentation/widgets/business_header_card.dart';
 import 'package:sokosafi/features/business_settings/presentation/widgets/landmark_sheet.dart';
-import 'package:sokosafi/features/business_settings/presentation/widgets/pickup_time_text.dart';
+import 'package:sokosafi/features/business_settings/presentation/widgets/pickup_time_format.dart';
 import 'package:sokosafi/features/business_setup/domain/entities/business.dart';
 import 'package:sokosafi/features/business_setup/presentation/widgets/owned_business_gate.dart';
 import 'package:sokosafi/features/settings/domain/entities/app_settings.dart';
@@ -104,18 +104,18 @@ class _SettingsBody extends StatelessWidget {
     final start = await showTimePicker(
       context: context,
       helpText: 'Pickup starts at',
-      initialTime: PickupTimeText.toTimeOfDay(settings.pickupStart),
+      initialTime: PickupTimeFormat.toTimeOfDay(settings.pickupStart),
     );
     if (start == null || !context.mounted) return;
     final end = await showTimePicker(
       context: context,
       helpText: 'Pickup ends at',
-      initialTime: PickupTimeText.toTimeOfDay(settings.pickupEnd),
+      initialTime: PickupTimeFormat.toTimeOfDay(settings.pickupEnd),
     );
     if (end == null) return;
     await cubit.setPickupWindow(
-      start: PickupTimeText.fromTimeOfDay(start),
-      end: PickupTimeText.fromTimeOfDay(end),
+      start: PickupTimeFormat.fromTimeOfDay(start),
+      end: PickupTimeFormat.fromTimeOfDay(end),
     );
   }
 

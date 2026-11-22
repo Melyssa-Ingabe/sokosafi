@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 /// Converts between the "HH:mm" text stored on businesses and the
 /// TimeOfDay used by the time picker.
-abstract final class PickupTimeText {
+abstract final class PickupTimeFormat {
   static TimeOfDay toTimeOfDay(String text) {
     final parts = text.split(':');
     final hour = parts.isNotEmpty ? int.tryParse(parts[0]) : null;
