@@ -50,15 +50,6 @@ void main() {
     expect(find.text('350 m away'), findsOneWidget);
   });
 
-  testWidgets('sends what is typed to the cubit', (tester) async {
-    when(() => cubit.state).thenReturn(withResults());
-
-    await pumpSearch(tester);
-    await tester.enterText(find.byType(TextField), 'bread');
-
-    verify(() => cubit.updateQuery('bread')).called(1);
-  });
-
   testWidgets('tapping a category chip filters by it', (tester) async {
     when(() => cubit.state).thenReturn(withResults());
 

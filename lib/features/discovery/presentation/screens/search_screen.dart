@@ -10,12 +10,12 @@ import 'package:sokosafi/core/widgets/staggered_entrance.dart';
 import 'package:sokosafi/features/discovery/presentation/bloc/search_cubit.dart';
 import 'package:sokosafi/features/discovery/presentation/widgets/category_chips.dart';
 import 'package:sokosafi/features/discovery/presentation/widgets/location_notice.dart';
-import 'package:sokosafi/features/discovery/presentation/widgets/search_field.dart';
 import 'package:sokosafi/features/discovery/presentation/widgets/search_filter_sheet.dart';
 import 'package:sokosafi/features/discovery/presentation/widgets/search_result_card.dart';
 import 'package:sokosafi/router/app_routes.dart';
 
-/// Search by food or shop name, filter by category, price and distance.
+/// Results for the search box in the bottom navigation, with category,
+/// price and distance filters.
 /// Laid out like the "Near you" frame in Figma.
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});
@@ -42,18 +42,24 @@ class SearchScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Near you', style: textTheme.headlineSmall),
-                      Text(
-                        'Surplus rescued nearby before closing',
-                        style: textTheme.bodySmall?.copyWith(
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.md),
                       Row(
                         children: [
                           Expanded(
-                            child: SearchField(onChanged: cubit.updateQuery),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Near you',
+                                  style: textTheme.headlineSmall,
+                                ),
+                                Text(
+                                  'Surplus rescued nearby before closing',
+                                  style: textTheme.bodySmall?.copyWith(
+                                    color: AppColors.textSecondary,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                           const SizedBox(width: AppSpacing.sm),
                           _FilterButton(isActive: state.hasCustomLimits),
