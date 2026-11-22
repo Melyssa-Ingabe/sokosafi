@@ -3,15 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
 import 'package:sokosafi/core/widgets/app_snackbar.dart';
 import 'package:sokosafi/core/widgets/empty_view.dart';
-import 'package:sokosafi/core/widgets/loading_view.dart';
 import 'package:sokosafi/core/widgets/section_header.dart';
+import 'package:sokosafi/core/widgets/skeleton_loading_list.dart';
+import 'package:sokosafi/core/widgets/stat_tile.dart';
 import 'package:sokosafi/features/business_analytics/domain/entities/analytics_summary.dart';
 import 'package:sokosafi/features/business_analytics/presentation/bloc/analytics_cubit.dart';
 import 'package:sokosafi/features/business_analytics/presentation/widgets/analytics_range_selector.dart';
 import 'package:sokosafi/features/business_analytics/presentation/widgets/revenue_chart_card.dart';
 import 'package:sokosafi/features/business_analytics/presentation/widgets/top_items_card.dart';
 import 'package:sokosafi/features/business_dashboard/presentation/widgets/compact_number.dart';
-import 'package:sokosafi/core/widgets/stat_tile.dart';
 import 'package:sokosafi/features/business_orders/data/repositories/firestore_business_orders_repository.dart';
 import 'package:sokosafi/features/business_setup/presentation/widgets/owned_business_gate.dart';
 import 'package:sokosafi/features/reviews/data/repositories/firestore_review_repository.dart';
@@ -66,7 +66,7 @@ class _AnalyticsView extends StatelessWidget {
               ),
               Expanded(
                 child: switch (state.status) {
-                  AnalyticsStatus.loading => const LoadingView(),
+                  AnalyticsStatus.loading => const SkeletonLoadingList(),
                   AnalyticsStatus.failure => EmptyView(
                     title: 'We could not load your analytics',
                     message: state.errorMessage,
@@ -76,7 +76,7 @@ class _AnalyticsView extends StatelessWidget {
                   AnalyticsStatus.ready when summary != null => _AnalyticsBody(
                     summary: summary,
                   ),
-                  AnalyticsStatus.ready => const LoadingView(),
+                  AnalyticsStatus.ready => const SkeletonLoadingList(),
                 },
               ),
             ],

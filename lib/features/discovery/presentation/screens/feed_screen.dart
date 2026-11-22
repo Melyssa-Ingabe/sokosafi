@@ -5,7 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
 import 'package:sokosafi/core/widgets/app_snackbar.dart';
 import 'package:sokosafi/core/widgets/empty_view.dart';
-import 'package:sokosafi/core/widgets/loading_view.dart';
+import 'package:sokosafi/core/widgets/skeleton_empty_view.dart';
+import 'package:sokosafi/core/widgets/skeleton_loading_list.dart';
 import 'package:sokosafi/core/widgets/staggered_entrance.dart';
 import 'package:sokosafi/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:sokosafi/features/discovery/presentation/bloc/feed_cubit.dart';
@@ -48,11 +49,7 @@ class FeedScreen extends StatelessWidget {
                 FeedStatus.loading => Column(
                   children: [
                     header,
-                    const Expanded(
-                      child: LoadingView(
-                        message: 'Finding surplus food nearby',
-                      ),
-                    ),
+                    const Expanded(child: SkeletonLoadingList()),
                   ],
                 ),
                 FeedStatus.failure => Column(
@@ -72,7 +69,7 @@ class FeedScreen extends StatelessWidget {
                   children: [
                     header,
                     const Expanded(
-                      child: EmptyView(
+                      child: SkeletonEmptyView(
                         title: 'No surplus food right now',
                         message:
                             'Shops post food through the day. New listings '

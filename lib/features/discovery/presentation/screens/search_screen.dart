@@ -5,7 +5,8 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
 import 'package:sokosafi/core/theme/app_colors.dart';
 import 'package:sokosafi/core/widgets/empty_view.dart';
-import 'package:sokosafi/core/widgets/loading_view.dart';
+import 'package:sokosafi/core/widgets/skeleton_empty_view.dart';
+import 'package:sokosafi/core/widgets/skeleton_loading_list.dart';
 import 'package:sokosafi/core/widgets/staggered_entrance.dart';
 import 'package:sokosafi/features/discovery/presentation/bloc/search_cubit.dart';
 import 'package:sokosafi/features/discovery/presentation/widgets/category_chips.dart';
@@ -100,7 +101,7 @@ class _Results extends StatelessWidget {
     final cubit = context.read<SearchCubit>();
     final results = state.results;
     return switch (state.status) {
-      SearchStatus.loading => const LoadingView(),
+      SearchStatus.loading => const SkeletonLoadingList(),
       SearchStatus.failure => EmptyView(
         title: 'We could not load the food',
         message: state.errorMessage,
@@ -108,13 +109,14 @@ class _Results extends StatelessWidget {
         onAction: cubit.watch,
       ),
       // Nothing is on sale at all, so the filters are not the reason.
-      SearchStatus.ready when state.availableCount == 0 => const EmptyView(
-        title: 'No surplus food right now',
-        message:
-            'Shops post food through the day. Search again once new '
-            'listings go live.',
-      ),
-      SearchStatus.ready when results.isEmpty => EmptyView(
+      SearchStatus.ready when state.availableCount == 0 =>
+        const SkeletonEmptyView(
+          title: 'No surplus food right now',
+          message:
+              'Shops post food through the day. Search again once new '
+              'listings go live.',
+        ),
+      SearchStatus.ready when results.isEmpty => SkeletonEmptyView(
         title: 'No food matches',
         message: state.canClearFilters
             ? 'Try another word or clear the filters.'

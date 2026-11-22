@@ -5,8 +5,8 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
 import 'package:sokosafi/core/widgets/app_snackbar.dart';
 import 'package:sokosafi/core/widgets/empty_view.dart';
-import 'package:sokosafi/core/widgets/loading_view.dart';
 import 'package:sokosafi/core/widgets/pill_segmented_control.dart';
+import 'package:sokosafi/core/widgets/skeleton_loading_list.dart';
 import 'package:sokosafi/features/business_orders/data/repositories/firestore_business_orders_repository.dart';
 import 'package:sokosafi/features/business_orders/presentation/bloc/business_orders_cubit.dart';
 import 'package:sokosafi/features/business_orders/presentation/widgets/business_orders_list.dart';
@@ -62,7 +62,7 @@ class _BusinessOrdersView extends StatelessWidget {
         builder: (context, state) {
           final cubit = context.read<BusinessOrdersCubit>();
           return switch (state.status) {
-            BusinessOrdersStatus.loading => const LoadingView(),
+            BusinessOrdersStatus.loading => const SkeletonLoadingList(),
             BusinessOrdersStatus.failure => EmptyView(
               title: 'We could not load your orders',
               message: state.errorMessage,
