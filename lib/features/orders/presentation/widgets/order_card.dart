@@ -5,6 +5,7 @@ import 'package:sokosafi/core/constants/app_spacing.dart';
 import 'package:sokosafi/core/utils/formatters.dart';
 import 'package:sokosafi/core/widgets/primary_button.dart';
 import 'package:sokosafi/core/widgets/tap_scale.dart';
+import 'package:sokosafi/features/discovery/presentation/widgets/store_contact_buttons.dart';
 import 'package:sokosafi/features/orders/domain/entities/order_details.dart';
 import 'package:sokosafi/features/orders/presentation/widgets/order_status_badge.dart';
 import 'package:sokosafi/features/orders/presentation/widgets/pickup_time_text.dart';
@@ -137,7 +138,8 @@ class _ExpandedDetails extends StatelessWidget {
     final details = card.details;
     final order = details.order;
     final pickupBy = details.listing?.pickupBy;
-    final address = details.business?.address ?? '';
+    final business = details.business;
+    final address = business?.address ?? '';
     final muted = theme.textTheme.bodySmall?.copyWith(
       color: scheme.onSurfaceVariant,
     );
@@ -174,7 +176,15 @@ class _ExpandedDetails extends StatelessWidget {
           ),
         ),
         if (order.isActive) ...[
-          const SizedBox(height: AppSpacing.md),
+          if (business != null) ...[
+            const SizedBox(height: AppSpacing.md),
+            StoreContactButtons(
+              latitude: business.latitude,
+              longitude: business.longitude,
+              phone: business.phone,
+            ),
+          ],
+          const SizedBox(height: AppSpacing.sm),
           PrimaryButton(label: 'Show pickup pass', onPressed: card.onShowPass),
           const SizedBox(height: AppSpacing.sm),
           SizedBox(
