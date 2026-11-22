@@ -13,7 +13,7 @@ import 'package:sokosafi/core/widgets/staggered_entrance.dart';
 import 'package:sokosafi/features/business_dashboard/domain/entities/dashboard_summary.dart';
 import 'package:sokosafi/features/business_dashboard/presentation/bloc/dashboard_cubit.dart';
 import 'package:sokosafi/features/business_dashboard/presentation/widgets/compact_number.dart';
-import 'package:sokosafi/features/business_dashboard/presentation/widgets/dashboard_stat_tile.dart';
+import 'package:sokosafi/core/widgets/stat_tile.dart';
 import 'package:sokosafi/features/business_dashboard/presentation/widgets/items_rescued_card.dart';
 import 'package:sokosafi/features/business_dashboard/presentation/widgets/listing_progress_card.dart';
 import 'package:sokosafi/features/business_orders/data/repositories/firestore_business_orders_repository.dart';
@@ -122,21 +122,21 @@ class _DashboardBody extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: DashboardStatTile(
+              child: StatTile(
                 value: '${summary.activeListings.length}',
                 label: 'Active listings',
               ),
             ),
             const SizedBox(width: AppSpacing.sm),
             Expanded(
-              child: DashboardStatTile(
+              child: StatTile(
                 value: '${summary.itemsSoldToday}',
                 label: 'Items sold',
               ),
             ),
             const SizedBox(width: AppSpacing.sm),
             Expanded(
-              child: DashboardStatTile(
+              child: StatTile(
                 value: compactNumber(summary.revenueToday),
                 label: 'RWF recovered',
               ),

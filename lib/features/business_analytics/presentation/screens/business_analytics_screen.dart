@@ -11,7 +11,7 @@ import 'package:sokosafi/features/business_analytics/presentation/widgets/analyt
 import 'package:sokosafi/features/business_analytics/presentation/widgets/revenue_chart_card.dart';
 import 'package:sokosafi/features/business_analytics/presentation/widgets/top_items_card.dart';
 import 'package:sokosafi/features/business_dashboard/presentation/widgets/compact_number.dart';
-import 'package:sokosafi/features/business_dashboard/presentation/widgets/dashboard_stat_tile.dart';
+import 'package:sokosafi/core/widgets/stat_tile.dart';
 import 'package:sokosafi/features/business_orders/data/repositories/firestore_business_orders_repository.dart';
 import 'package:sokosafi/features/business_setup/presentation/widgets/owned_business_gate.dart';
 import 'package:sokosafi/features/reviews/data/repositories/firestore_review_repository.dart';
@@ -103,21 +103,21 @@ class _AnalyticsBody extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: DashboardStatTile(
+              child: StatTile(
                 value: compactNumber(summary.itemsSold),
                 label: 'Items sold',
               ),
             ),
             const SizedBox(width: AppSpacing.sm),
             Expanded(
-              child: DashboardStatTile(
+              child: StatTile(
                 value: compactNumber(summary.orderCount),
                 label: 'Orders',
               ),
             ),
             const SizedBox(width: AppSpacing.sm),
             Expanded(
-              child: DashboardStatTile(
+              child: StatTile(
                 value: averageRating == null
                     ? '-'
                     : averageRating.toStringAsFixed(1),
