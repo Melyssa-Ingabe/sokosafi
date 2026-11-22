@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
-import 'package:sokosafi/core/widgets/loading_view.dart';
+import 'package:sokosafi/core/widgets/skeleton_loading_list.dart';
 import 'package:sokosafi/core/widgets/menu_group.dart';
 import 'package:sokosafi/core/widgets/menu_tile.dart';
 import 'package:sokosafi/core/widgets/staggered_entrance.dart';
@@ -23,7 +23,9 @@ class ProfileScreen extends StatelessWidget {
     final user = context.select<AuthBloc, AppUser?>((bloc) => bloc.state.user);
     return Scaffold(
       appBar: AppBar(title: const Text('Profile')),
-      body: user == null ? const LoadingView() : _ProfileContent(user: user),
+      body: user == null
+          ? const SkeletonLoadingList(rowCount: 4)
+          : _ProfileContent(user: user),
     );
   }
 }

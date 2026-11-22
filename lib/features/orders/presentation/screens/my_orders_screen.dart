@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
 import 'package:sokosafi/core/widgets/app_snackbar.dart';
 import 'package:sokosafi/core/widgets/empty_view.dart';
-import 'package:sokosafi/core/widgets/loading_view.dart';
 import 'package:sokosafi/core/widgets/pill_segmented_control.dart';
+import 'package:sokosafi/core/widgets/skeleton_loading_list.dart';
 import 'package:sokosafi/features/orders/presentation/cubit/my_orders_cubit.dart';
 import 'package:sokosafi/features/orders/presentation/widgets/orders_list.dart';
 
@@ -29,7 +29,7 @@ class MyOrdersScreen extends StatelessWidget {
         builder: (context, state) {
           final cubit = context.read<MyOrdersCubit>();
           return switch (state.status) {
-            MyOrdersStatus.loading => const LoadingView(),
+            MyOrdersStatus.loading => const SkeletonLoadingList(),
             MyOrdersStatus.failure => EmptyView(
               title: 'We could not load your orders',
               message: state.errorMessage,
