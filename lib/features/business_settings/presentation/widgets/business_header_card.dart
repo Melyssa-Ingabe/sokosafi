@@ -30,7 +30,7 @@ class BusinessHeaderCard extends StatelessWidget {
                 dimension: 56,
                 child: business.photoUrl.isEmpty
                     ? ColoredBox(
-                        color: AppColors.brandSubtle,
+                        color: Theme.of(context).colorScheme.primaryContainer,
                         child: Center(
                           child: Text(
                             initial,
@@ -58,7 +58,7 @@ class BusinessHeaderCard extends StatelessWidget {
                     Text(
                       details,
                       style: AppTextStyles.caption.copyWith(
-                        color: AppColors.textSecondary,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
