@@ -43,7 +43,6 @@ erDiagram
         boolean autoClose
         string landmark "optional pickup guide, max 120 chars"
         string phone "optional store phone for customers to call, max 20 chars"
-        string phone "optional store phone customers call, max 20 chars"
         timestamp createdAt
     }
 
