@@ -37,12 +37,12 @@ class CategorySelector extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: category == selected
                         ? AppColors.primary
-                        : AppColors.surface,
+                        : Theme.of(context).colorScheme.surfaceContainerLowest,
                     borderRadius: BorderRadius.circular(AppSpacing.md),
                     border: Border.all(
                       color: category == selected
                           ? AppColors.primary
-                          : AppColors.borderSubtle,
+                          : Theme.of(context).colorScheme.outlineVariant,
                     ),
                   ),
                   child: Material(
@@ -71,7 +71,7 @@ class CategorySelector extends StatelessWidget {
                                 style: textTheme.labelMedium?.copyWith(
                                   color: category == selected
                                       ? AppColors.surface
-                                      : AppColors.textPrimary,
+                                      : Theme.of(context).colorScheme.onSurface,
                                 ),
                               ),
                             ),

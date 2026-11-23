@@ -38,10 +38,10 @@ class ManagedListingCard extends StatelessWidget {
 
     return TapScale(
       child: Material(
-        color: AppColors.surface,
+        color: Theme.of(context).colorScheme.surfaceContainerLowest,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
-          side: const BorderSide(color: AppColors.borderSubtle),
+          side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
         ),
         clipBehavior: Clip.antiAlias,
         child: InkWell(

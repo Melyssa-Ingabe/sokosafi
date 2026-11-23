@@ -74,7 +74,7 @@ class PhotoStep extends StatelessWidget {
         Center(
           child: DecoratedBox(
             decoration: BoxDecoration(
-              color: AppColors.surfaceSubtle,
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
             ),
             child: Padding(

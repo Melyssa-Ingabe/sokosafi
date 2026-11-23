@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
-import 'package:sokosafi/core/theme/app_colors.dart';
 import 'package:sokosafi/core/widgets/app_badge.dart';
 
 /// Read-only row showing the neighborhood detected from the pin.
@@ -16,9 +15,9 @@ class NeighborhoodTile extends StatelessWidget {
     final isDetected = neighborhood.isNotEmpty;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: Theme.of(context).colorScheme.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
-        border: Border.all(color: AppColors.borderSubtle),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       ),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.lg),
@@ -41,10 +40,12 @@ class NeighborhoodTile extends StatelessWidget {
             ),
             if (isDetected) ...[
               const SizedBox(width: AppSpacing.sm),
-              const AppBadge(
+              AppBadge(
                 label: 'Detected',
-                backgroundColor: AppColors.surfaceSubtle,
-                foregroundColor: AppColors.textSecondary,
+                backgroundColor: Theme.of(context)
+                    .colorScheme
+                    .surfaceContainerHighest,
+                foregroundColor: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ],
           ],
