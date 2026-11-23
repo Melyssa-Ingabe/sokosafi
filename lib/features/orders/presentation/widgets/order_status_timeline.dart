@@ -73,10 +73,10 @@ class _OrderStatusTimelineState extends State<OrderStatusTimeline> {
                 ),
                 RotationTransition(
                   turns: animation.drive(Tween(begin: 0, end: 0.5)),
-                  child: const HugeIcon(
+                  child: HugeIcon(
                     icon: HugeIcons.strokeRoundedArrowDown01,
                     size: 20,
-                    color: AppColors.textSecondary,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],
@@ -181,8 +181,12 @@ class _TimelineStep extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final dotColor = isCompleted ? AppColors.primary : AppColors.borderSubtle;
-    final lineColor = isCompleted ? AppColors.primary : AppColors.borderSubtle;
+    final dotColor = isCompleted
+        ? AppColors.primary
+        : Theme.of(context).colorScheme.outlineVariant;
+    final lineColor = isCompleted
+        ? AppColors.primary
+        : Theme.of(context).colorScheme.outlineVariant;
 
     return IntrinsicHeight(
       child: Row(
@@ -216,8 +220,8 @@ class _TimelineStep extends StatelessWidget {
                     label,
                     style: theme.textTheme.labelLarge?.copyWith(
                       color: isCompleted
-                          ? AppColors.textPrimary
-                          : AppColors.textTertiary,
+                          ? Theme.of(context).colorScheme.onSurface
+                          : Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
                   if (subtitle.isNotEmpty) ...[
@@ -225,7 +229,7 @@ class _TimelineStep extends StatelessWidget {
                     Text(
                       subtitle,
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: AppColors.textSecondary,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ],
