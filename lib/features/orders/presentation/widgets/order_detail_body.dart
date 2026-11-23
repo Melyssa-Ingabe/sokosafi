@@ -5,6 +5,7 @@ import 'package:sokosafi/core/constants/app_spacing.dart';
 import 'package:sokosafi/core/theme/app_colors.dart';
 import 'package:sokosafi/core/widgets/staggered_entrance.dart';
 import 'package:sokosafi/core/utils/formatters.dart';
+import 'package:sokosafi/features/discovery/presentation/widgets/store_contact_buttons.dart';
 import 'package:sokosafi/features/orders/domain/entities/order_details.dart';
 import 'package:sokosafi/features/orders/presentation/widgets/order_receipt_card.dart';
 import 'package:sokosafi/features/orders/presentation/widgets/order_status_badge.dart';
@@ -27,6 +28,7 @@ class OrderDetailBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final order = details.order;
+    final business = details.business;
 
     final sections = <Widget>[
       Row(
@@ -76,6 +78,12 @@ class OrderDetailBody extends StatelessWidget {
               ],
             ),
           ),
+        ),
+      if (order.isActive && business != null)
+        StoreContactButtons(
+          latitude: business.latitude,
+          longitude: business.longitude,
+          phone: business.phone,
         ),
       OrderStatusTimeline(
         status: order.status,

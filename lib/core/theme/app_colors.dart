@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 
 /// Design tokens from the Figma file. Always use these instead of raw hex values.
 abstract final class AppColors {
-  static const Color primary = Color(0xFF006A35);
-  static const Color pressed = Color(0xFF005235);
+  static const Color primary = Color(0xFF3D9C5D);
+  static const Color pressed = Color(0xFF2F7D49);
 
-  // White text on accent is only about 3.4:1, so use it for borders,
-  // icons and large text, not for small labels on a filled background.
-  static const Color accent = Color(0xFF3D9C5D);
+  /// The app has one brand green. Kept so older call sites keep compiling.
+  static const Color accent = primary;
   static const Color brandSubtle = Color(0xFFDBE5DE);
 
   static const Color lime = Color(0xFFB5EE78);

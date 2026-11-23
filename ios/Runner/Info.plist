@@ -24,6 +24,12 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Sokosafi uses the camera to scan pickup codes and take photos of your food.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Sokosafi uses your photos so you can add pictures of your shop and food.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Sokosafi uses your location to place your shop on the map and show food near you.</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>

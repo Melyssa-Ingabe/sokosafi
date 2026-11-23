@@ -61,9 +61,6 @@ class TemplateChips extends StatelessWidget {
                 label: Text(template.title),
                 backgroundColor: AppColors.surface,
                 side: const BorderSide(color: AppColors.borderSubtle),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
-                ),
               );
             },
           ),

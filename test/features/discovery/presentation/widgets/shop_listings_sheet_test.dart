@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:sokosafi/core/utils/formatters.dart';
+import 'package:sokosafi/core/widgets/skeleton_loading_list.dart';
 import 'package:sokosafi/features/business_setup/domain/entities/business.dart';
 import 'package:sokosafi/features/discovery/domain/entities/feed_item.dart';
 import 'package:sokosafi/features/discovery/domain/failures/discovery_failure.dart';
@@ -74,11 +75,11 @@ void main() {
     await tester.pump(const Duration(seconds: 1));
   }
 
-  testWidgets('shows a spinner until the shop loads', (tester) async {
+  testWidgets('shows placeholder rows until the shop loads', (tester) async {
     await openSheet(tester);
 
     expect(find.text('On sale at Boulangerie de Kigali'), findsOneWidget);
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(find.byType(SkeletonLoadingList), findsOneWidget);
   });
 
   testWidgets('lists the food on sale with its price and stock', (
@@ -139,6 +140,6 @@ void main() {
     await tester.pump();
 
     verify(() => repository.watchShopItems(shop)).called(2);
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(find.byType(SkeletonLoadingList), findsOneWidget);
   });
 }

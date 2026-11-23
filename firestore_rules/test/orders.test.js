@@ -217,6 +217,30 @@ describe('cancelling an order', () => {
     );
   });
 
+  // Mirrors cancelOrder in FirestoreBusinessOrdersRepository.
+  test('the shop cancels a paid order and restocks the listing', async () => {
+    const db = dbAs(env, OWNER);
+    const batch = writeBatch(db);
+    batch.update(doc(db, 'orders/order1'), { status: 'cancelled' });
+    batch.update(doc(db, 'listings/listing1'), { quantity: 7 });
+    await assertSucceeds(batch.commit());
+  });
+
+  test('another shop cannot cancel it', async () => {
+    const db = dbAs(env, RIVAL_OWNER);
+    await assertFails(
+      updateDoc(doc(db, 'orders/order1'), { status: 'cancelled' }),
+    );
+  });
+
+  test('the shop cannot cancel a collected order', async () => {
+    await seed(env, { 'orders/order1': order({ status: 'collected' }) });
+    const db = dbAs(env, OWNER);
+    await assertFails(
+      updateDoc(doc(db, 'orders/order1'), { status: 'cancelled' }),
+    );
+  });
+
   test('cancelling cannot also change the total', async () => {
     const db = dbAs(env, CUSTOMER);
     await assertFails(

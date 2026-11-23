@@ -20,25 +20,37 @@ class MyOrdersCubit extends Cubit<MyOrdersState> {
   void watch() {
     _subscription?.cancel();
     emit(state.copyWith(status: MyOrdersStatus.loading));
-    _subscription = _repository
-        .watchCustomerOrders(_customerId)
-        .listen(
-          (orders) => emit(
-            state.copyWith(status: MyOrdersStatus.ready, orders: orders),
-          ),
-          onError: (Object error) => emit(
-            state.copyWith(
-              status: MyOrdersStatus.failure,
-              errorMessage: error is OrdersFailure
-                  ? error.message
-                  : OrdersFailure.genericMessage,
-            ),
-          ),
+    _subscription = _repository.watchCustomerOrders(_customerId).listen(
+      (orders) {
+        final isFirstLoad = state.status != MyOrdersStatus.ready;
+        final next = state.copyWith(
+          status: MyOrdersStatus.ready,
+          orders: orders,
         );
+        // Opens the newest active order once, on the first load, so a
+        // later collapse is not undone by the next stream update.
+        final latest = isFirstLoad ? next.latestActiveOrderId : null;
+        emit(latest == null ? next : next.copyWith(expandedOrderId: latest));
+      },
+      onError: (Object error) => emit(
+        state.copyWith(
+          status: MyOrdersStatus.failure,
+          errorMessage: error is OrdersFailure
+              ? error.message
+              : OrdersFailure.genericMessage,
+        ),
+      ),
+    );
   }
 
   void selectTab(OrdersTab tab) {
-    if (tab != state.tab) emit(state.copyWith(tab: tab, clearExpanded: true));
+    if (tab == state.tab) return;
+    final latest = tab == OrdersTab.active ? state.latestActiveOrderId : null;
+    emit(
+      latest == null
+          ? state.copyWith(tab: tab, clearExpanded: true)
+          : state.copyWith(tab: tab, expandedOrderId: latest),
+    );
   }
 
   void toggleExpanded(String orderId) {

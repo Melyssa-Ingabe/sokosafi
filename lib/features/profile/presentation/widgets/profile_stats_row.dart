@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
 import 'package:sokosafi/features/orders/presentation/cubit/my_orders_cubit.dart';
-import 'package:sokosafi/features/profile/presentation/widgets/stat_tile.dart';
+import 'package:sokosafi/core/widgets/stat_tile.dart';
 
 /// Orders, money saved and meals rescued, worked out from the orders.
 class ProfileStatsRow extends StatelessWidget {

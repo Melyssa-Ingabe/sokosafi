@@ -4,7 +4,8 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
 import 'package:sokosafi/core/theme/app_colors.dart';
 import 'package:sokosafi/core/widgets/empty_view.dart';
-import 'package:sokosafi/core/widgets/loading_view.dart';
+import 'package:sokosafi/core/widgets/skeleton_empty_view.dart';
+import 'package:sokosafi/core/widgets/skeleton_loading_list.dart';
 import 'package:sokosafi/core/widgets/staggered_entrance.dart';
 import 'package:sokosafi/features/discovery/domain/entities/saved_merchant.dart';
 import 'package:sokosafi/features/discovery/domain/repositories/discovery_repository.dart';
@@ -41,18 +42,13 @@ class SavedMerchantsScreen extends StatelessWidget {
                 Expanded(
                   child: switch (state.status) {
                     SavedMerchantsStatus.signedOut ||
-                    SavedMerchantsStatus.loading => const LoadingView(),
+                    SavedMerchantsStatus.loading => const SkeletonLoadingList(),
                     SavedMerchantsStatus.failure => EmptyView(
                       title: 'We could not load your saved shops',
                       message: state.errorMessage,
                     ),
                     SavedMerchantsStatus.ready when count == 0 =>
-                      const EmptyView(
-                        icon: HugeIcon(
-                          icon: HugeIcons.strokeRoundedFavourite,
-                          size: 40,
-                          color: AppColors.textSecondary,
-                        ),
+                      const SkeletonEmptyView(
                         title: 'No saved shops yet',
                         message:
                             'Tap the heart on any food to save its shop here.',

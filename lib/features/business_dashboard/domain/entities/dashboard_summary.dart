@@ -39,8 +39,8 @@ class DashboardSummary extends Equatable {
     required this.ordersToday,
     required this.itemsSoldToday,
     required this.revenueToday,
-    required this.itemsRescued,
     required this.recentOrders,
+    required this.totalOrders,
   });
 
   factory DashboardSummary.from({
@@ -88,11 +88,9 @@ class DashboardSummary extends Equatable {
         0,
         (sum, item) => sum + item.order.total,
       ),
-      itemsRescued: _sumQuantity(
-        keptOrders.where((item) => item.order.status == OrderStatus.collected),
-      ),
       // Orders arrive newest first, so the first few are the most recent.
       recentOrders: orders.take(recentOrderLimit).toList(),
+      totalOrders: orders.length,
     );
   }
 
@@ -103,9 +101,10 @@ class DashboardSummary extends Equatable {
   final int itemsSoldToday;
   final num revenueToday;
 
-  /// Portions customers actually collected, so food that did not go to waste
-  final int itemsRescued;
   final List<BusinessOrder> recentOrders;
+
+  /// Every order, for the "View all (n)" link.
+  final int totalOrders;
 
   static int _sumQuantity(Iterable<BusinessOrder> orders) {
     return orders.fold<int>(0, (sum, item) => sum + item.order.quantity);
@@ -117,7 +116,7 @@ class DashboardSummary extends Equatable {
     ordersToday,
     itemsSoldToday,
     revenueToday,
-    itemsRescued,
     recentOrders,
+    totalOrders,
   ];
 }

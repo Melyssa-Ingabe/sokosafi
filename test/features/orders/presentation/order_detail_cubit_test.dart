@@ -20,8 +20,9 @@ void main() {
 
   blocTest<OrderDetailCubit, OrderDetailState>(
     'emits ready when the order stream yields data',
-    setUp: () => when(() => repository.watchOrder('order-1'))
-        .thenAnswer((_) => Stream.value(details)),
+    setUp: () =>
+        when(() => repository.watchOrder('order-1'))
+            .thenAnswer((_) => Stream.value(details)),
     build: buildCubit,
     act: (cubit) => cubit.watch(),
     expect: () => [
@@ -32,9 +33,9 @@ void main() {
 
   blocTest<OrderDetailCubit, OrderDetailState>(
     'emits failure when the order stream errors',
-    setUp: () => when(() => repository.watchOrder('order-1')).thenAnswer(
-      (_) => Stream.error(const OrdersFailure('Not found')),
-    ),
+    setUp: () =>
+        when(() => repository.watchOrder('order-1'))
+            .thenAnswer((_) => Stream.error(const OrdersFailure('Not found'))),
     build: buildCubit,
     act: (cubit) => cubit.watch(),
     expect: () => [
@@ -48,22 +49,20 @@ void main() {
     setUp: () {
       when(() => repository.watchOrder('order-1'))
           .thenAnswer((_) => Stream.value(details));
-      when(() => repository.cancelOrder('order-1'))
-          .thenAnswer((_) async {});
+      when(() => repository.cancelOrder('order-1')).thenAnswer((_) async {});
     },
     build: buildCubit,
     seed: () => OrderDetailState.ready(details),
     act: (cubit) => cubit.cancel(),
-    expect: () => [
-      OrderDetailReady(details, isCancelling: true),
-    ],
+    expect: () => [OrderDetailReady(details, isCancelling: true)],
   );
 
   blocTest<OrderDetailCubit, OrderDetailState>(
     'cancel resets isCancelling and stores error on failure',
     setUp: () {
-      when(() => repository.cancelOrder('order-1'))
-          .thenThrow(const OrdersFailure('Only active orders can be cancelled'));
+      when(
+        () => repository.cancelOrder('order-1'),
+      ).thenThrow(const OrdersFailure('Only active orders can be cancelled'));
     },
     build: buildCubit,
     seed: () => OrderDetailState.ready(details),
@@ -71,10 +70,7 @@ void main() {
     verify: (cubit) {
       expect(cubit.state, isA<OrderDetailReady>());
       expect((cubit.state as OrderDetailReady).isCancelling, isFalse);
-      expect(
-        cubit.consumeCancelError(),
-        'Only active orders can be cancelled',
-      );
+      expect(cubit.consumeCancelError(), 'Only active orders can be cancelled');
     },
   );
 

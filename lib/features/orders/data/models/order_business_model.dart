@@ -11,6 +11,9 @@ abstract final class OrderBusinessModel {
       id: doc.id,
       name: data.readString('name'),
       address: data.readString('address'),
+      latitude: (data['lat'] as num?)?.toDouble() ?? 0,
+      longitude: (data['lng'] as num?)?.toDouble() ?? 0,
+      phone: data.readString('phone'),
     );
   }
 }

@@ -6,20 +6,15 @@ import 'package:sokosafi/core/theme/app_text_styles.dart';
 import 'package:sokosafi/core/utils/date_formatters.dart';
 import 'package:sokosafi/core/utils/formatters.dart';
 import 'package:sokosafi/features/business_orders/domain/entities/business_order.dart';
+import 'package:sokosafi/features/business_orders/presentation/widgets/order_action_pill.dart';
+import 'package:sokosafi/features/orders/domain/entities/order_status.dart';
 import 'package:sokosafi/features/orders/presentation/widgets/order_status_badge.dart';
 
 /// One order as the business sees it.
 class BusinessOrderCard extends StatelessWidget {
-  const BusinessOrderCard({
-    super.key,
-    required this.item,
-    this.onConfirmPickup,
-  });
+  const BusinessOrderCard({super.key, required this.item});
 
   final BusinessOrder item;
-
-  /// Only passed for orders still waiting to be picked up.
-  final VoidCallback? onConfirmPickup;
 
   @override
   Widget build(BuildContext context) {
@@ -76,17 +71,8 @@ class BusinessOrderCard extends StatelessWidget {
               children: [
                 OrderStatusBadge(status: order.status),
                 const Spacer(),
-                if (onConfirmPickup != null)
-                  TextButton(
-                    onPressed: onConfirmPickup,
-                    style: TextButton.styleFrom(
-                      minimumSize: const Size(
-                        AppSpacing.minTapTarget,
-                        AppSpacing.minTapTarget,
-                      ),
-                    ),
-                    child: const Text('Confirm pickup'),
-                  ),
+                if (order.status == OrderStatus.paid)
+                  OrderActionPill(item: item),
               ],
             ),
           ],

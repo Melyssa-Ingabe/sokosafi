@@ -35,6 +35,7 @@ OrderDetails orderDetails({
   String id = 'order-1',
   OrderStatus status = OrderStatus.paid,
   int quantity = 2,
+  DateTime? createdAt,
 }) {
   return OrderDetails(
     order: CustomerOrder(
@@ -47,7 +48,7 @@ OrderDetails orderDetails({
       pickupCode: 'SKS-4A7F2B',
       paymentMethod: PaymentMethod.mtnMomo,
       status: status,
-      createdAt: fixtureNow,
+      createdAt: createdAt ?? fixtureNow,
     ),
     listing: breadListing(),
     business: bakery,

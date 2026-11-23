@@ -14,12 +14,10 @@ class SearchResultCard extends StatelessWidget {
   const SearchResultCard({
     super.key,
     required this.result,
-    required this.heroTag,
     required this.onTap,
   });
 
   final SearchResult result;
-  final Object heroTag;
   final VoidCallback onTap;
 
   static const double _radius = 18;
@@ -53,10 +51,7 @@ class SearchResultCard extends StatelessWidget {
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    Hero(
-                      tag: heroTag,
-                      child: _Photo(url: listing.imageUrl),
-                    ),
+                    _Photo(url: listing.imageUrl),
                     if (percentOff > 0)
                       Positioned(
                         left: AppSpacing.sm,

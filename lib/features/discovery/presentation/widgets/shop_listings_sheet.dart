@@ -6,7 +6,8 @@ import 'package:sokosafi/core/theme/app_colors.dart';
 import 'package:sokosafi/core/utils/date_formatters.dart';
 import 'package:sokosafi/core/utils/formatters.dart';
 import 'package:sokosafi/core/widgets/empty_view.dart';
-import 'package:sokosafi/core/widgets/loading_view.dart';
+import 'package:sokosafi/core/widgets/skeleton_empty_view.dart';
+import 'package:sokosafi/core/widgets/skeleton_loading_list.dart';
 import 'package:sokosafi/features/business_setup/domain/entities/business.dart';
 import 'package:sokosafi/features/discovery/domain/entities/feed_item.dart';
 import 'package:sokosafi/features/discovery/domain/repositories/discovery_repository.dart';
@@ -59,7 +60,9 @@ class ShopListingsSheet extends StatelessWidget {
           Expanded(
             child: BlocBuilder<ShopListingsCubit, ShopListingsState>(
               builder: (context, state) => switch (state.status) {
-                ShopListingsStatus.loading => const LoadingView(),
+                ShopListingsStatus.loading => const SkeletonLoadingList(
+                  rowCount: 3,
+                ),
                 ShopListingsStatus.failure => EmptyView(
                   title: 'We could not load this shop',
                   message: state.errorMessage,
@@ -67,7 +70,7 @@ class ShopListingsSheet extends StatelessWidget {
                   onAction: context.read<ShopListingsCubit>().watch,
                 ),
                 ShopListingsStatus.ready when state.items.isEmpty =>
-                  const EmptyView(
+                  const SkeletonEmptyView(
                     title: 'Nothing on sale right now',
                     message:
                         'New food from this shop shows up here and in '

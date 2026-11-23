@@ -13,8 +13,8 @@ import 'package:sokosafi/features/business_settings/data/repositories/firestore_
 import 'package:sokosafi/features/business_settings/domain/entities/business_settings.dart';
 import 'package:sokosafi/features/business_settings/presentation/bloc/business_settings_cubit.dart';
 import 'package:sokosafi/features/business_settings/presentation/widgets/business_header_card.dart';
-import 'package:sokosafi/features/business_settings/presentation/widgets/landmark_sheet.dart';
-import 'package:sokosafi/features/business_settings/presentation/widgets/pickup_time_text.dart';
+import 'package:sokosafi/features/business_settings/presentation/widgets/setting_text_sheet.dart';
+import 'package:sokosafi/features/business_settings/presentation/widgets/pickup_time_format.dart';
 import 'package:sokosafi/features/business_setup/domain/entities/business.dart';
 import 'package:sokosafi/features/business_setup/presentation/widgets/owned_business_gate.dart';
 import 'package:sokosafi/features/settings/domain/entities/app_settings.dart';
@@ -104,25 +104,47 @@ class _SettingsBody extends StatelessWidget {
     final start = await showTimePicker(
       context: context,
       helpText: 'Pickup starts at',
-      initialTime: PickupTimeText.toTimeOfDay(settings.pickupStart),
+      initialTime: PickupTimeFormat.toTimeOfDay(settings.pickupStart),
     );
     if (start == null || !context.mounted) return;
     final end = await showTimePicker(
       context: context,
       helpText: 'Pickup ends at',
-      initialTime: PickupTimeText.toTimeOfDay(settings.pickupEnd),
+      initialTime: PickupTimeFormat.toTimeOfDay(settings.pickupEnd),
     );
     if (end == null) return;
     await cubit.setPickupWindow(
-      start: PickupTimeText.fromTimeOfDay(start),
-      end: PickupTimeText.fromTimeOfDay(end),
+      start: PickupTimeFormat.fromTimeOfDay(start),
+      end: PickupTimeFormat.fromTimeOfDay(end),
     );
   }
 
   Future<void> _editLandmark(BuildContext context) async {
     final cubit = context.read<BusinessSettingsCubit>();
-    final landmark = await LandmarkSheet.show(context, settings.landmark);
+    final landmark = await SettingTextSheet(
+      title: 'Pickup landmark',
+      description: 'Something customers can spot when they arrive.',
+      label: 'Landmark',
+      hint: 'Green awning next to the pharmacy',
+      initialValue: settings.landmark,
+      maxLength: BusinessSettings.maxLandmarkLength,
+      textCapitalization: TextCapitalization.sentences,
+    ).show(context);
     if (landmark != null) await cubit.setLandmark(landmark);
+  }
+
+  Future<void> _editPhone(BuildContext context) async {
+    final cubit = context.read<BusinessSettingsCubit>();
+    final phone = await SettingTextSheet(
+      title: 'Store phone',
+      description: 'Customers can call this number about their order.',
+      label: 'Phone number',
+      hint: '0788 123 456',
+      initialValue: settings.phone,
+      maxLength: BusinessSettings.maxPhoneLength,
+      keyboardType: TextInputType.phone,
+    ).show(context);
+    if (phone != null) await cubit.setPhone(phone);
   }
 
   @override
@@ -167,6 +189,12 @@ class _SettingsBody extends StatelessWidget {
               title: 'Pickup landmark',
               value: settings.landmark.isEmpty ? 'Add' : settings.landmark,
               onTap: () => _editLandmark(context),
+            ),
+            MenuTile(
+              icon: HugeIcons.strokeRoundedCall,
+              title: 'Store phone',
+              value: settings.phone.isEmpty ? 'Add' : settings.phone,
+              onTap: () => _editPhone(context),
             ),
             MenuTile(
               icon: HugeIcons.strokeRoundedPackageRemove,

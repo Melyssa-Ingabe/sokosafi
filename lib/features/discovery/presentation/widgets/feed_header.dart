@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:hugeicons/hugeicons.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
 import 'package:sokosafi/core/theme/app_colors.dart';
+import 'package:sokosafi/core/widgets/brand_header.dart';
+import 'package:sokosafi/core/widgets/mode_switch_pill.dart';
 
 /// The top of the feed from Figma: logo, where the customer is browsing
-/// from, and their avatar, which opens Profile.
+/// from, a pill to switch to selling, and their avatar, which opens
+/// Profile.
 class FeedHeader extends StatelessWidget {
   const FeedHeader({
     super.key,
@@ -12,76 +14,33 @@ class FeedHeader extends StatelessWidget {
     required this.userName,
     required this.photoUrl,
     required this.onProfileTap,
+    required this.onSwitchToSelling,
   });
 
   final String locationLabel;
   final String userName;
   final String photoUrl;
   final VoidCallback onProfileTap;
+  final VoidCallback onSwitchToSelling;
 
-  static const String logoAsset = 'assets/images/sokosafi_logo.png';
-  static const double _height = 64;
-  static const double _logoSize = 32;
-  static const double _logoRadius = 8;
   static const double _avatarRadius = 16;
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final scheme = Theme.of(context).colorScheme;
     final initial = userName.trim().isEmpty
         ? '?'
         : userName.trim()[0].toUpperCase();
 
-    return SizedBox(
-      height: _height,
-      child: Row(
+    return BrandHeader(
+      locationLabel: locationLabel,
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(_logoRadius),
-            child: Image.asset(
-              logoAsset,
-              width: _logoSize,
-              height: _logoSize,
-              semanticLabel: 'SokoSafi',
-            ),
-          ),
-          const SizedBox(width: AppSpacing.sm),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'SokoSafi',
-                  style: textTheme.bodyMedium?.copyWith(
-                    color: AppColors.accent,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Row(
-                  children: [
-                    HugeIcon(
-                      icon: HugeIcons.strokeRoundedLocation01,
-                      size: 12,
-                      color: scheme.onSurface,
-                    ),
-                    const SizedBox(width: 2),
-                    Flexible(
-                      child: Text(
-                        locationLabel,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: textTheme.bodySmall?.copyWith(
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+          ModeSwitchPill(
+            label: 'Buying',
+            tooltip: 'Switch to selling',
+            onTap: onSwitchToSelling,
           ),
           Semantics(
             button: true,

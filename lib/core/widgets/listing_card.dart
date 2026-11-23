@@ -82,12 +82,6 @@ class ListingCard extends StatelessWidget {
                     child: Stack(
                       children: [
                         _buildImage(scheme),
-                        if (!isSoldOut)
-                          const Positioned(
-                            top: 8,
-                            right: 8,
-                            child: _AddBadge(),
-                          ),
                         Positioned(
                           left: 8,
                           bottom: 8,
@@ -201,40 +195,6 @@ class ListingCard extends StatelessWidget {
       child: content,
     );
     return heroTag == null ? image : Hero(tag: heroTag!, child: image);
-  }
-}
-
-/// The white "+" in the photo's corner. Decorative: the whole card is the
-/// button, so screen readers skip it.
-class _AddBadge extends StatelessWidget {
-  const _AddBadge();
-
-  static const double _size = 28;
-
-  @override
-  Widget build(BuildContext context) {
-    return ExcludeSemantics(
-      child: Container(
-        width: _size,
-        height: _size,
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.15),
-              blurRadius: 3,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: const HugeIcon(
-          icon: HugeIcons.strokeRoundedAdd01,
-          size: 14,
-          color: AppColors.textPrimary,
-        ),
-      ),
-    );
   }
 }
 

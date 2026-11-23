@@ -5,7 +5,8 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
 import 'package:sokosafi/core/widgets/app_snackbar.dart';
 import 'package:sokosafi/core/widgets/empty_view.dart';
-import 'package:sokosafi/core/widgets/loading_view.dart';
+import 'package:sokosafi/core/widgets/skeleton_empty_view.dart';
+import 'package:sokosafi/core/widgets/skeleton_loading_list.dart';
 import 'package:sokosafi/core/widgets/staggered_entrance.dart';
 import 'package:sokosafi/features/business_setup/presentation/widgets/owned_business_gate.dart';
 import 'package:sokosafi/features/listings/data/repositories/firestore_listing_repository.dart';
@@ -76,7 +77,7 @@ class _MyListingsView extends StatelessWidget {
           final iconColor = Theme.of(context).colorScheme.onSurfaceVariant;
           switch (state.status) {
             case ListingsStatus.loading:
-              return const LoadingView(message: 'Loading your listings...');
+              return const SkeletonLoadingList();
             case ListingsStatus.failure:
               return EmptyView(
                 icon: HugeIcon(
@@ -92,12 +93,7 @@ class _MyListingsView extends StatelessWidget {
                 ),
               );
             case ListingsStatus.success when state.listings.isEmpty:
-              return EmptyView(
-                icon: HugeIcon(
-                  icon: HugeIcons.strokeRoundedPackage,
-                  size: 48,
-                  color: iconColor,
-                ),
+              return SkeletonEmptyView(
                 title: 'No listings yet',
                 message: 'Post your surplus food and nearby customers can reserve it.',
                 actionLabel: 'Create a listing',

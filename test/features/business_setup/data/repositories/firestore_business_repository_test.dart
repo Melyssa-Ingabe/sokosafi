@@ -50,6 +50,7 @@ void main() {
       'pickupEnd',
       'autoClose',
       'landmark',
+      'phone',
       'createdAt',
     });
     expect(stored.data()!['type'], 'bakery');

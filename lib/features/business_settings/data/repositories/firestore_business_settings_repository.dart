@@ -44,6 +44,7 @@ class FirestoreBusinessSettingsRepository
             pickupEnd: pickupEnd.isEmpty ? _defaultPickupEnd : pickupEnd,
             // Businesses created before landmark existed have no such field.
             landmark: data.readString('landmark'),
+            phone: data.readString('phone'),
           );
         })
         .handleError((Object error) => throw _toFailure(error));
@@ -71,6 +72,7 @@ class FirestoreBusinessSettingsRepository
     String? pickupStart,
     String? pickupEnd,
     String? landmark,
+    String? phone,
   }) async {
     // A '?' before a value leaves that entry out when the value is null,
     // so only the fields the owner changed are written.
@@ -80,6 +82,7 @@ class FirestoreBusinessSettingsRepository
       'pickupStart': ?pickupStart,
       'pickupEnd': ?pickupEnd,
       if (landmark != null) 'landmark': landmark.trim(),
+      if (phone != null) 'phone': phone.trim(),
     };
     if (changes.isEmpty) return;
     try {

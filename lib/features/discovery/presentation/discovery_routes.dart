@@ -9,6 +9,7 @@ import 'package:sokosafi/features/discovery/domain/repositories/discovery_reposi
 import 'package:sokosafi/features/discovery/domain/repositories/food_preferences_repository.dart';
 import 'package:sokosafi/features/discovery/presentation/bloc/feed_cubit.dart';
 import 'package:sokosafi/features/discovery/presentation/bloc/food_preferences_cubit.dart';
+import 'package:sokosafi/features/discovery/presentation/bloc/nav_search_cubit.dart';
 import 'package:sokosafi/features/discovery/presentation/bloc/product_detail_cubit.dart';
 import 'package:sokosafi/features/discovery/presentation/bloc/search_cubit.dart';
 import 'package:sokosafi/features/discovery/presentation/screens/feed_screen.dart';
@@ -22,6 +23,7 @@ import 'package:sokosafi/features/profile/presentation/profile_routes.dart';
 import 'package:sokosafi/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:sokosafi/router/app_page.dart';
 import 'package:sokosafi/router/app_routes.dart';
+import 'package:sokosafi/router/bottom_sheet_page.dart';
 
 /// The customer side: the bottom navigation with its tabs, and the listing
 /// detail and food preferences that open over it. The redirect only lets signed-in users reach
@@ -39,8 +41,28 @@ List<RouteBase> buildDiscoveryRoutes({
 
   return [
     StatefulShellRoute.indexedStack(
-      builder: (context, state, navigationShell) =>
-          CustomerShell(navigationShell: navigationShell),
+      // Search lives above the tabs because the search box replaces the
+      // bottom navigation while the results show in the Search tab.
+      builder: (context, state, navigationShell) => MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) =>
+                SearchCubit(
+                    repository: createRepository(),
+                    locationRepository: createLocationRepository(),
+                    // The default distance comes from Prince's settings.
+                    defaultRadiusKm: context
+                        .read<SettingsCubit>()
+                        .state
+                        .searchRadiusKm,
+                  )
+                  ..watch()
+                  ..locate(),
+          ),
+          BlocProvider(create: (_) => NavSearchCubit()),
+        ],
+        child: CustomerShell(navigationShell: navigationShell),
+      ),
       branches: [
         StatefulShellBranch(
           routes: [
@@ -74,24 +96,8 @@ List<RouteBase> buildDiscoveryRoutes({
           routes: [
             GoRoute(
               path: AppRoutes.search,
-              pageBuilder: (context, state) => buildAppPage(
-                state: state,
-                child: BlocProvider(
-                  create: (context) =>
-                      SearchCubit(
-                          repository: createRepository(),
-                          locationRepository: createLocationRepository(),
-                          // The default distance comes from Prince's settings.
-                          defaultRadiusKm: context
-                              .read<SettingsCubit>()
-                              .state
-                              .searchRadiusKm,
-                        )
-                        ..watch()
-                        ..locate(),
-                  child: const SearchScreen(),
-                ),
-              ),
+              pageBuilder: (context, state) =>
+                  buildAppPage(state: state, child: const SearchScreen()),
             ),
           ],
         ),
@@ -113,14 +119,14 @@ List<RouteBase> buildDiscoveryRoutes({
     ),
     GoRoute(
       path: AppRoutes.listingDetail,
-      pageBuilder: (context, state) => buildAppPage(
+      pageBuilder: (context, state) => buildBottomSheetPage(
         state: state,
         child: BlocProvider(
           create: (context) => ProductDetailCubit(
             repository: createRepository(),
             listingId: state.pathParameters['listingId'] ?? '',
           )..watch(),
-          child: ProductDetailScreen(heroTag: state.extra),
+          child: const ProductDetailScreen(),
         ),
       ),
     ),

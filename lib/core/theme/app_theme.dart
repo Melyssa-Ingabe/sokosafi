@@ -15,9 +15,8 @@ abstract final class AppTheme {
     brightness: Brightness.light,
     primary: AppColors.primary,
     onPrimary: Colors.white,
-    secondary: AppColors.accent,
-    // Dark text, because white on the accent green is below 4.5:1.
-    onSecondary: AppColors.textPrimary,
+    secondary: AppColors.primary,
+    onSecondary: Colors.white,
     error: AppColors.error,
     onError: Colors.white,
     surface: AppColors.background,
@@ -32,8 +31,8 @@ abstract final class AppTheme {
   // Dark palette is not in Figma. These values are our own choices.
   static const ColorScheme _darkScheme = ColorScheme(
     brightness: Brightness.dark,
-    primary: AppColors.accent,
-    onPrimary: AppColors.textPrimary,
+    primary: AppColors.primary,
+    onPrimary: Colors.white,
     secondary: AppColors.lime,
     onSecondary: AppColors.onLime,
     error: Color(0xFFFFB4AB),
@@ -123,6 +122,21 @@ abstract final class AppTheme {
         focusedErrorBorder: inputBorder.copyWith(
           borderSide: BorderSide(color: scheme.error, width: 2),
         ),
+      ),
+      chipTheme: ChipThemeData(
+        shape: const StadiumBorder(),
+        side: BorderSide(color: scheme.outlineVariant),
+        backgroundColor: scheme.surfaceContainerLowest,
+        selectedColor: scheme.primary,
+        showCheckmark: false,
+        labelStyle: textTheme.labelMedium?.copyWith(
+          color: WidgetStateColor.resolveWith(
+            (states) => states.contains(WidgetState.selected)
+                ? scheme.onPrimary
+                : scheme.onSurface,
+          ),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,

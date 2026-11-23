@@ -1,22 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:hugeicons/hugeicons.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
-import 'package:sokosafi/core/theme/app_colors.dart';
-import 'package:sokosafi/core/widgets/empty_view.dart';
+import 'package:sokosafi/core/widgets/skeleton_empty_view.dart';
 import 'package:sokosafi/core/widgets/staggered_entrance.dart';
 import 'package:sokosafi/features/business_orders/presentation/bloc/business_orders_cubit.dart';
 import 'package:sokosafi/features/business_orders/presentation/widgets/business_order_card.dart';
 
 class BusinessOrdersList extends StatelessWidget {
-  const BusinessOrdersList({
-    super.key,
-    required this.state,
-    required this.onConfirmPickup,
-  });
+  const BusinessOrdersList({super.key, required this.state});
 
   final BusinessOrdersState state;
-
-  final VoidCallback onConfirmPickup;
 
   @override
   Widget build(BuildContext context) {
@@ -36,12 +28,8 @@ class BusinessOrdersList extends StatelessWidget {
           'Orders a customer cancels show up here.',
         ),
       };
-      return EmptyView(
-        icon: HugeIcon(
-          icon: HugeIcons.strokeRoundedShoppingBag01,
-          size: 48,
-          color: AppColors.textTertiary,
-        ),
+      return SkeletonEmptyView(
+        key: ValueKey(state.tab),
         title: title,
         message: message,
       );
@@ -56,12 +44,7 @@ class BusinessOrdersList extends StatelessWidget {
         return StaggeredEntrance(
           key: ValueKey('${state.tab.name}-${item.order.id}'),
           index: index,
-          child: BusinessOrderCard(
-            item: item,
-            onConfirmPickup: state.tab == BusinessOrdersTab.incoming
-                ? onConfirmPickup
-                : null,
-          ),
+          child: BusinessOrderCard(item: item),
         );
       },
     );

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hugeicons/hugeicons.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
-import 'package:sokosafi/core/widgets/empty_view.dart';
+import 'package:sokosafi/core/widgets/skeleton_empty_view.dart';
 import 'package:sokosafi/core/widgets/staggered_entrance.dart';
 import 'package:sokosafi/features/orders/presentation/cubit/my_orders_cubit.dart';
 import 'package:sokosafi/features/orders/presentation/widgets/order_card.dart';
@@ -47,16 +46,13 @@ class OrdersList extends StatelessWidget {
     final orders = state.visibleOrders;
     if (orders.isEmpty) {
       final isActiveTab = state.tab == OrdersTab.active;
-      return EmptyView(
-        icon: HugeIcon(
-          icon: HugeIcons.strokeRoundedShoppingBag01,
-          size: 48,
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
-        ),
+      return SkeletonEmptyView(
+        // A key per tab replays the entrance when switching tabs.
+        key: ValueKey(state.tab),
         title: isActiveTab ? 'No active orders' : 'No past orders yet',
         message: isActiveTab
-            ? 'Reserve a surplus bag and its pickup pass will show up here.'
-            : 'Orders you collect or cancel will show up here.',
+            ? 'Reserve a surplus bag and its pickup pass shows up here'
+            : 'Orders you collect or cancel show up here',
       );
     }
     final cubit = context.read<MyOrdersCubit>();

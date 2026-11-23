@@ -5,11 +5,13 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
 import 'package:sokosafi/core/widgets/app_snackbar.dart';
 import 'package:sokosafi/core/widgets/empty_view.dart';
-import 'package:sokosafi/core/widgets/loading_view.dart';
+import 'package:sokosafi/core/widgets/pill_segmented_control.dart';
+import 'package:sokosafi/core/widgets/skeleton_loading_list.dart';
 import 'package:sokosafi/features/business_orders/data/repositories/firestore_business_orders_repository.dart';
 import 'package:sokosafi/features/business_orders/presentation/bloc/business_orders_cubit.dart';
+import 'package:sokosafi/features/business_orders/presentation/bloc/order_actions_cubit.dart';
 import 'package:sokosafi/features/business_orders/presentation/widgets/business_orders_list.dart';
-import 'package:sokosafi/features/business_orders/presentation/widgets/business_orders_tab_bar.dart';
+import 'package:sokosafi/features/business_orders/presentation/widgets/order_actions_feedback.dart';
 import 'package:sokosafi/features/business_setup/presentation/widgets/owned_business_gate.dart';
 import 'package:sokosafi/router/app_routes.dart';
 
@@ -24,13 +26,26 @@ class BusinessOrdersScreen extends StatelessWidget {
     return OwnedBusinessGate(
       ownerId: ownerId,
       title: 'Orders',
-      builder: (context, business) => BlocProvider(
-        create: (_) => BusinessOrdersCubit(
-          repository: FirestoreBusinessOrdersRepository(),
-          businessId: business.id,
-        )..watch(),
-        child: const _BusinessOrdersView(),
-      ),
+      builder: (context, business) {
+        final repository = FirestoreBusinessOrdersRepository();
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (_) => BusinessOrdersCubit(
+                repository: repository,
+                businessId: business.id,
+              )..watch(),
+            ),
+            BlocProvider(
+              create: (_) => OrderActionsCubit(
+                repository: repository,
+                businessId: business.id,
+              ),
+            ),
+          ],
+          child: const OrderActionsFeedback(child: _BusinessOrdersView()),
+        );
+      },
     );
   }
 }
@@ -62,7 +77,7 @@ class _BusinessOrdersView extends StatelessWidget {
         builder: (context, state) {
           final cubit = context.read<BusinessOrdersCubit>();
           return switch (state.status) {
-            BusinessOrdersStatus.loading => const LoadingView(),
+            BusinessOrdersStatus.loading => const SkeletonLoadingList(),
             BusinessOrdersStatus.failure => EmptyView(
               title: 'We could not load your orders',
               message: state.errorMessage,
@@ -72,18 +87,21 @@ class _BusinessOrdersView extends StatelessWidget {
             BusinessOrdersStatus.ready => Column(
               children: [
                 const SizedBox(height: AppSpacing.sm),
-                BusinessOrdersTabBar(
-                  selected: state.tab,
-                  countFor: (tab) => state.ordersFor(tab).length,
-                  onSelected: cubit.selectTab,
-                ),
-                Expanded(
-                  child: BusinessOrdersList(
-                    state: state,
-                    onConfirmPickup: () =>
-                        context.push(AppRoutes.confirmPickup),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.pagePadding,
+                  ),
+                  child: PillSegmentedControl(
+                    labels: [
+                      for (final tab in BusinessOrdersTab.values)
+                        '${tab.label} (${state.ordersFor(tab).length})',
+                    ],
+                    selectedIndex: state.tab.index,
+                    onSelected: (index) =>
+                        cubit.selectTab(BusinessOrdersTab.values[index]),
                   ),
                 ),
+                Expanded(child: BusinessOrdersList(state: state)),
               ],
             ),
           };

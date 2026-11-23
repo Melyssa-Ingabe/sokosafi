@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
+import 'package:sokosafi/core/widgets/tap_scale.dart';
 
-/// Minus and plus buttons around a number, each a full 48px tap target.
+/// The outlined pill from Figma: a grey minus circle, the count, and a
+/// filled green plus circle. Each circle sits in a full 48px tap target.
 class QuantityStepper extends StatelessWidget {
   const QuantityStepper({
     super.key,
@@ -21,10 +23,11 @@ class QuantityStepper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
     return DecoratedBox(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
+      decoration: ShapeDecoration(
+        color: scheme.surfaceContainerLowest,
+        shape: StadiumBorder(side: BorderSide(color: scheme.outlineVariant)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -32,19 +35,29 @@ class QuantityStepper extends StatelessWidget {
           _StepButton(
             icon: HugeIcons.strokeRoundedRemove01,
             label: 'Fewer',
+            isFilled: false,
             onPressed: onDecrease,
           ),
-          SizedBox(
-            width: AppSpacing.xl,
-            child: Text(
-              '$quantity',
-              textAlign: TextAlign.center,
-              style: theme.textTheme.titleMedium,
+          ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: AppSpacing.xl),
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 200),
+              transitionBuilder: (child, animation) => FadeTransition(
+                opacity: animation,
+                child: ScaleTransition(scale: animation, child: child),
+              ),
+              child: Text(
+                '$quantity',
+                key: ValueKey(quantity),
+                textAlign: TextAlign.center,
+                style: theme.textTheme.titleMedium,
+              ),
             ),
           ),
           _StepButton(
             icon: HugeIcons.strokeRoundedAdd01,
             label: 'More',
+            isFilled: true,
             onPressed: onIncrease,
           ),
         ],
@@ -57,33 +70,64 @@ class _StepButton extends StatelessWidget {
   const _StepButton({
     required this.icon,
     required this.label,
+    required this.isFilled,
     required this.onPressed,
   });
 
   final List<List<dynamic>> icon;
   final String label;
+  final bool isFilled;
   final VoidCallback? onPressed;
+
+  static const double _circle = 40;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final action = onPressed;
-    return IconButton(
-      tooltip: label,
-      constraints: const BoxConstraints.tightFor(
-        width: AppSpacing.minTapTarget,
-        height: AppSpacing.minTapTarget,
-      ),
-      onPressed: action == null
-          ? null
-          : () {
-              HapticFeedback.selectionClick();
-              action();
-            },
-      icon: HugeIcon(
-        icon: icon,
-        size: 20,
-        color: action == null ? scheme.outline : scheme.primary,
+    final isEnabled = action != null;
+    final background = isFilled && isEnabled
+        ? scheme.primary
+        : scheme.surfaceContainerHighest;
+    final foreground = !isEnabled
+        ? scheme.outline
+        : isFilled
+        ? scheme.onPrimary
+        : scheme.onSurface;
+
+    return Semantics(
+      button: true,
+      enabled: isEnabled,
+      label: label,
+      excludeSemantics: true,
+      child: TapScale(
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: isEnabled
+              ? () {
+                  HapticFeedback.selectionClick();
+                  action();
+                }
+              : null,
+          child: SizedBox.square(
+            dimension: AppSpacing.minTapTarget,
+            child: Center(
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.easeOutCubic,
+                width: _circle,
+                height: _circle,
+                decoration: BoxDecoration(
+                  color: background,
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: HugeIcon(icon: icon, size: 18, color: foreground),
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
