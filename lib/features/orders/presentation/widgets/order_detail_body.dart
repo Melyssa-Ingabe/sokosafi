@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
 import 'package:sokosafi/core/theme/app_colors.dart';
+import 'package:sokosafi/core/widgets/primary_button.dart';
 import 'package:sokosafi/core/widgets/staggered_entrance.dart';
 import 'package:sokosafi/core/utils/formatters.dart';
 import 'package:sokosafi/features/discovery/presentation/widgets/store_contact_buttons.dart';
 import 'package:sokosafi/features/orders/domain/entities/order_details.dart';
+import 'package:sokosafi/features/orders/domain/entities/order_status.dart';
 import 'package:sokosafi/features/orders/presentation/widgets/order_receipt_card.dart';
 import 'package:sokosafi/features/orders/presentation/widgets/order_status_badge.dart';
 import 'package:sokosafi/features/orders/presentation/widgets/order_status_timeline.dart';
 import 'package:sokosafi/features/orders/presentation/widgets/pickup_pass_card.dart';
+import 'package:sokosafi/router/app_routes.dart';
 
 class OrderDetailBody extends StatelessWidget {
   const OrderDetailBody({
@@ -110,6 +114,13 @@ class OrderDetailBody extends StatelessWidget {
                   ),
                 )
               : const Text('Cancel order'),
+        ),
+      // A collected order opens Rate Experience, which also refuses an order
+      // that was already rated.
+      if (order.status == OrderStatus.collected)
+        PrimaryButton(
+          label: 'Rate your pickup',
+          onPressed: () => context.push(AppRoutes.rateOrderFor(order.id)),
         ),
     ];
 
