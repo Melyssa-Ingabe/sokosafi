@@ -53,7 +53,9 @@ class FeedHeader extends StatelessWidget {
                 child: Center(
                   child: CircleAvatar(
                     radius: _avatarRadius,
-                    backgroundColor: AppColors.brandSubtle,
+                    backgroundColor: Theme.of(context)
+                        .colorScheme
+                        .primaryContainer,
                     foregroundImage: photoUrl.isEmpty
                         ? null
                         : NetworkImage(photoUrl),

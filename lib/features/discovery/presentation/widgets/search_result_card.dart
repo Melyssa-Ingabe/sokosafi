@@ -35,11 +35,11 @@ class SearchResultCard extends StatelessWidget {
 
     return TapScale(
       child: Material(
-        color: AppColors.surface,
+        color: Theme.of(context).colorScheme.surfaceContainerLowest,
         clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(_radius),
-          side: const BorderSide(color: AppColors.borderSubtle),
+          side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
         ),
         child: InkWell(
           onTap: onTap,
@@ -82,7 +82,9 @@ class SearchResultCard extends StatelessWidget {
                           Text(
                             GeoDistance.label(distance),
                             style: textTheme.bodySmall?.copyWith(
-                              color: AppColors.textSecondary,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
                             ),
                           ),
                       ],
@@ -111,7 +113,9 @@ class SearchResultCard extends StatelessWidget {
                               Text(
                                 Formatters.rwf(listing.originalPrice),
                                 style: textTheme.bodySmall?.copyWith(
-                                  color: AppColors.textSecondary,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurfaceVariant,
                                   decoration: TextDecoration.lineThrough,
                                 ),
                               ),
@@ -146,10 +150,14 @@ class _TimeLeftChip extends StatelessWidget {
       builder: (context, now) {
         final remaining = pickupBy.difference(now);
         final isUrgent = remaining < _urgentWithin;
-        final color = isUrgent ? AppColors.error : AppColors.textSecondary;
+        final color = isUrgent
+            ? AppColors.error
+            : Theme.of(context).colorScheme.onSurfaceVariant;
         return DecoratedBox(
           decoration: BoxDecoration(
-            color: isUrgent ? AppColors.errorSubtle : AppColors.surfaceSubtle,
+            color: isUrgent
+                ? AppColors.errorSubtle
+                : Theme.of(context).colorScheme.surfaceContainerHighest,
             borderRadius: BorderRadius.circular(AppSpacing.chipRadius),
           ),
           child: Padding(
@@ -184,7 +192,9 @@ class _Photo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const placeholder = ColoredBox(color: AppColors.surfaceSubtle);
+    final placeholder = ColoredBox(
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+    );
     if (url.isEmpty) return placeholder;
     return Image.network(
       url,

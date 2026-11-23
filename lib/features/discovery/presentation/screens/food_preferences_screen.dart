@@ -66,7 +66,7 @@ class FoodPreferencesScreen extends StatelessWidget {
                   'We show these first in your feed. Leave them all off to '
                   'see every category in the usual order.',
                   style: textTheme.bodyMedium?.copyWith(
-                    color: AppColors.textSecondary,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
                 const SizedBox(height: 22),
@@ -109,7 +109,7 @@ class _SelectedCount extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: AppColors.brandSubtle,
+        color: Theme.of(context).colorScheme.primaryContainer,
         borderRadius: BorderRadius.circular(999),
       ),
       child: Padding(
@@ -117,7 +117,7 @@ class _SelectedCount extends StatelessWidget {
         child: Text(
           '$count selected',
           style: Theme.of(context).textTheme.labelSmall
-              ?.copyWith(color: AppColors.textSecondary),
+              ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
         ),
       ),
     );
@@ -131,7 +131,7 @@ class _ImpactNote extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: AppColors.background,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.hairline),
       ),
@@ -161,7 +161,7 @@ class _ImpactNote extends StatelessWidget {
                 'Food you like comes first, so you spot it before it is '
                 'gone.',
                 style: Theme.of(context).textTheme.bodySmall
-                    ?.copyWith(color: AppColors.textPrimary),
+                    ?.copyWith(color: Theme.of(context).colorScheme.onSurface),
               ),
             ),
           ],
@@ -179,8 +179,8 @@ class _SaveBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final state = context.watch<FoodPreferencesCubit>().state;
     return DecoratedBox(
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainerLowest,
         border: Border(top: BorderSide(color: AppColors.hairline)),
       ),
       child: SafeArea(

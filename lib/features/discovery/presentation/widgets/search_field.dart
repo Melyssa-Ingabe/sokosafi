@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
-import 'package:sokosafi/core/theme/app_colors.dart';
 
 /// The search box. Stateful only to own its TextEditingController; what
 /// is being searched lives in the SearchCubit. With [onBack] the search
@@ -46,23 +45,23 @@ class _SearchFieldState extends State<SearchField> {
       decoration: InputDecoration(
         hintText: 'Search food or shops',
         filled: true,
-        fillColor: AppColors.surface,
+        fillColor: Theme.of(context).colorScheme.surfaceContainerLowest,
         prefixIcon: widget.onBack == null
-            ? const Padding(
+            ? Padding(
                 padding: EdgeInsets.all(AppSpacing.md),
                 child: HugeIcon(
                   icon: HugeIcons.strokeRoundedSearch01,
                   size: 20,
-                  color: AppColors.textSecondary,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               )
             : IconButton(
                 tooltip: 'Close search',
                 onPressed: widget.onBack,
-                icon: const HugeIcon(
+                icon: HugeIcon(
                   icon: HugeIcons.strokeRoundedArrowLeft01,
                   size: 22,
-                  color: AppColors.textPrimary,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
         // Rebuilds only the clear button as the text changes.
@@ -73,20 +72,24 @@ class _SearchFieldState extends State<SearchField> {
               : IconButton(
                   tooltip: 'Clear search',
                   onPressed: _clear,
-                  icon: const HugeIcon(
+                  icon: HugeIcon(
                     icon: HugeIcons.strokeRoundedCancel01,
                     size: 18,
-                    color: AppColors.textSecondary,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSpacing.chipRadius * 2),
-          borderSide: const BorderSide(color: AppColors.borderSubtle),
+          borderSide: BorderSide(
+            color: Theme.of(context).colorScheme.outlineVariant,
+          ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSpacing.chipRadius * 2),
-          borderSide: const BorderSide(color: AppColors.borderSubtle),
+          borderSide: BorderSide(
+            color: Theme.of(context).colorScheme.outlineVariant,
+          ),
         ),
       ),
     );

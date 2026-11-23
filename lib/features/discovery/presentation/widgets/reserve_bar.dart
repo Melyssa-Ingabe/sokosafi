@@ -29,9 +29,11 @@ class ReserveBar extends StatelessWidget {
     final itemLabel = quantity == 1 ? '1 item' : '$quantity items';
     final isAvailable = onReserve != null;
     return DecoratedBox(
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
-        border: Border(top: BorderSide(color: AppColors.borderSubtle)),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainerLowest,
+        border: Border(
+          top: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
+        ),
       ),
       child: SafeArea(
         top: false,
@@ -47,7 +49,7 @@ class ReserveBar extends StatelessWidget {
                     Text(
                       'Total ($itemLabel)',
                       style: textTheme.labelSmall?.copyWith(
-                        color: AppColors.textSecondary,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
                     Text(Formatters.rwf(total), style: textTheme.titleLarge),
@@ -74,7 +76,7 @@ class ReserveBar extends StatelessWidget {
                       size: 18,
                       color: isAvailable
                           ? Colors.white
-                          : AppColors.textSecondary,
+                          : Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                     label: Text(isAvailable ? 'Reserve' : 'Not available'),
                   ),

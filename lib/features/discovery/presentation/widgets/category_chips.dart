@@ -61,14 +61,18 @@ class _CategoryChip extends StatelessWidget {
       onSelected: (_) => onTap(),
       showCheckmark: false,
       selectedColor: AppColors.primary,
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainerLowest,
       side: BorderSide(
-        color: isSelected ? AppColors.primary : AppColors.borderSubtle,
+        color: isSelected
+            ? AppColors.primary
+            : Theme.of(context).colorScheme.outlineVariant,
       ),
       shape: const StadiumBorder(),
       labelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
         fontWeight: FontWeight.w500,
-        color: isSelected ? Colors.white : AppColors.textPrimary,
+        color: isSelected
+            ? Colors.white
+            : Theme.of(context).colorScheme.onSurface,
       ),
       // Keeps every chip a full 48px tall to tap.
       materialTapTargetSize: MaterialTapTargetSize.padded,

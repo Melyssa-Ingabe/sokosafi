@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
-import 'package:sokosafi/core/theme/app_colors.dart';
 import 'package:sokosafi/core/utils/formatters.dart';
 import 'package:sokosafi/features/discovery/domain/entities/search_filter.dart';
 import 'package:sokosafi/features/discovery/presentation/bloc/search_cubit.dart';
@@ -61,7 +60,7 @@ class SearchFilterSheet extends StatelessWidget {
                   Text(
                     'Allow location to use this filter',
                     style: textTheme.bodySmall?.copyWith(
-                      color: AppColors.textSecondary,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
                 const SizedBox(height: AppSpacing.sm),
