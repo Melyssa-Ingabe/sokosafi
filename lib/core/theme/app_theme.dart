@@ -15,6 +15,8 @@ abstract final class AppTheme {
     brightness: Brightness.light,
     primary: AppColors.primary,
     onPrimary: Colors.white,
+    primaryContainer: AppColors.brandSubtle,
+    onPrimaryContainer: AppColors.pressed,
     secondary: AppColors.primary,
     onSecondary: Colors.white,
     error: AppColors.error,
@@ -33,6 +35,9 @@ abstract final class AppTheme {
     brightness: Brightness.dark,
     primary: AppColors.primary,
     onPrimary: Colors.white,
+    // A deep green tint, so selected tiles and badges stay readable on dark.
+    primaryContainer: Color(0xFF1F3A28),
+    onPrimaryContainer: Color(0xFFB7E4C3),
     secondary: AppColors.lime,
     onSecondary: AppColors.onLime,
     error: Color(0xFFFFB4AB),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
-import 'package:sokosafi/core/theme/app_colors.dart';
 import 'package:sokosafi/core/utils/date_formatters.dart';
 import 'package:sokosafi/core/utils/formatters.dart';
 import 'package:sokosafi/core/widgets/empty_view.dart';
@@ -105,10 +104,10 @@ class _ShopListingTile extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final listing = item.listing;
     return Material(
-      color: AppColors.surface,
+      color: Theme.of(context).colorScheme.surfaceContainerLowest,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
-        side: const BorderSide(color: AppColors.borderSubtle),
+        side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
       ),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
@@ -125,12 +124,20 @@ class _ShopListingTile extends StatelessWidget {
                 child: SizedBox.square(
                   dimension: _thumbSize,
                   child: listing.imageUrl.isEmpty
-                      ? const ColoredBox(color: AppColors.surfaceSubtle)
+                      ? ColoredBox(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .surfaceContainerHighest,
+                        )
                       : Image.network(
                           listing.imageUrl,
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) =>
-                              const ColoredBox(color: AppColors.surfaceSubtle),
+                              ColoredBox(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .surfaceContainerHighest,
+                              ),
                         ),
                 ),
               ),
@@ -151,7 +158,7 @@ class _ShopListingTile extends StatelessWidget {
                       'Until ${DateFormatters.time(listing.pickupBy)} · '
                       '${listing.quantity} left',
                       style: textTheme.bodySmall?.copyWith(
-                        color: AppColors.textSecondary,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ],

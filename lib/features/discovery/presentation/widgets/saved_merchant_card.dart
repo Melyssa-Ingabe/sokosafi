@@ -25,7 +25,7 @@ class SavedMerchantCard extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: Theme.of(context).colorScheme.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(_radius),
         border: Border.all(color: AppColors.hairlineFaint),
         boxShadow: [
@@ -110,7 +110,7 @@ class SavedMerchantCard extends StatelessWidget {
                     Text(
                       type.label,
                       style: textTheme.bodyMedium?.copyWith(
-                        color: AppColors.textSecondary,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
                   const SizedBox(height: AppSpacing.md),
@@ -128,7 +128,9 @@ class SavedMerchantCard extends StatelessWidget {
                           child: TextButton(
                             onPressed: onExplore,
                             style: TextButton.styleFrom(
-                              backgroundColor: AppColors.background,
+                              backgroundColor: Theme.of(context)
+                                  .colorScheme
+                                  .surface,
                               foregroundColor: AppColors.primary,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(
@@ -181,7 +183,9 @@ class _Photo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const placeholder = ColoredBox(color: AppColors.surfaceSubtle);
+    final placeholder = ColoredBox(
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+    );
     if (url.isEmpty) return placeholder;
     return Image.network(
       url,

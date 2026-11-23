@@ -56,7 +56,9 @@ class SearchScreen extends StatelessWidget {
                                 Text(
                                   'Surplus rescued nearby before closing',
                                   style: textTheme.bodySmall?.copyWith(
-                                    color: AppColors.textSecondary,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
                                   ),
                                 ),
                               ],
@@ -166,14 +168,14 @@ class _FilterButton extends StatelessWidget {
         tooltip: 'Filters',
         style: IconButton.styleFrom(
           fixedSize: const Size.square(AppSpacing.minTapTarget),
-          backgroundColor: AppColors.surface,
-          side: const BorderSide(color: AppColors.borderSubtle),
+          backgroundColor: Theme.of(context).colorScheme.surfaceContainerLowest,
+          side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
         ),
         onPressed: () => showSearchFilterSheet(context),
-        icon: const HugeIcon(
+        icon: HugeIcon(
           icon: HugeIcons.strokeRoundedFilter,
           size: 20,
-          color: AppColors.textPrimary,
+          color: Theme.of(context).colorScheme.onSurface,
         ),
       ),
     );

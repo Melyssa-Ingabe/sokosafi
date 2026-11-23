@@ -14,9 +14,9 @@ class TopItemsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: Theme.of(context).colorScheme.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
-        border: Border.all(color: AppColors.borderSubtle),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
@@ -26,7 +26,7 @@ class TopItemsCard extends StatelessWidget {
                 child: Text(
                   'Nothing sold in this period yet.',
                   style: AppTextStyles.body.copyWith(
-                    color: AppColors.textSecondary,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
               )
@@ -36,7 +36,9 @@ class TopItemsCard extends StatelessWidget {
                     ListTile(
                       leading: CircleAvatar(
                         radius: 14,
-                        backgroundColor: AppColors.brandSubtle,
+                        backgroundColor: Theme.of(context)
+                            .colorScheme
+                            .primaryContainer,
                         child: Text(
                           '${index + 1}',
                           style: AppTextStyles.caption.copyWith(
@@ -53,7 +55,7 @@ class TopItemsCard extends StatelessWidget {
                       trailing: Text(
                         '${item.sold} sold',
                         style: AppTextStyles.caption.copyWith(
-                          color: AppColors.textSecondary,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ),

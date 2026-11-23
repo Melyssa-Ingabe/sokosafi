@@ -46,7 +46,7 @@ class DirectionsButton extends StatelessWidget {
         tooltip: 'Directions to ${business.name}',
         style: IconButton.styleFrom(
           fixedSize: const Size.square(AppSpacing.minTapTarget),
-          side: const BorderSide(color: AppColors.borderSubtle),
+          side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSpacing.buttonRadius),
           ),
@@ -61,7 +61,7 @@ class DirectionsButton extends StatelessWidget {
         onPressed: () => _open(context),
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.primary,
-          side: const BorderSide(color: AppColors.borderSubtle),
+          side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSpacing.buttonRadius),
           ),

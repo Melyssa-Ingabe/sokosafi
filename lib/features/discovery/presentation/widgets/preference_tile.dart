@@ -24,12 +24,16 @@ class PreferenceTile extends StatelessWidget {
   Widget build(BuildContext context) {
     // The green text on the light green tile is the brand primary rather
     // than Figma's accent, which is too light to read at this size.
-    final foreground = isSelected ? AppColors.primary : AppColors.textSecondary;
+    final foreground = isSelected
+        ? AppColors.primary
+        : Theme.of(context).colorScheme.onSurfaceVariant;
     return Semantics(
       button: true,
       selected: isSelected,
       child: Material(
-        color: isSelected ? AppColors.brandSubtle : AppColors.surface,
+        color: isSelected
+            ? Theme.of(context).colorScheme.primaryContainer
+            : Theme.of(context).colorScheme.surfaceContainerLowest,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(_radius),
           side: const BorderSide(color: AppColors.hairline),

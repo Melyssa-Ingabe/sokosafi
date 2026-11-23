@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
-import 'package:sokosafi/core/theme/app_colors.dart';
 import 'package:sokosafi/core/theme/app_text_styles.dart';
 import 'package:sokosafi/core/widgets/app_snackbar.dart';
 import 'package:sokosafi/features/business_orders/data/repositories/firestore_business_orders_repository.dart';
@@ -85,7 +84,7 @@ class _ConfirmPickupView extends StatelessWidget {
                     Text(
                       'Or type the code',
                       style: AppTextStyles.label.copyWith(
-                        color: AppColors.textSecondary,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
                     const SizedBox(height: AppSpacing.sm),

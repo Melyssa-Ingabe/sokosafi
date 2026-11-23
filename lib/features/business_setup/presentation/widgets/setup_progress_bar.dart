@@ -21,7 +21,9 @@ class SetupProgressBar extends StatelessWidget {
           curve: AnimationConstants.pageCurve,
           builder: (context, value, _) => LinearProgressIndicator(
             value: value,
-            backgroundColor: AppColors.surfaceSubtle,
+            backgroundColor: Theme.of(context)
+                .colorScheme
+                .surfaceContainerHighest,
             color: AppColors.accent,
           ),
         ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hugeicons/hugeicons.dart';
 import 'package:sokosafi/core/constants/animation_constants.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
 import 'package:sokosafi/core/theme/app_colors.dart';
@@ -7,7 +6,7 @@ import 'package:sokosafi/core/widgets/app_badge.dart';
 import 'package:sokosafi/core/widgets/countdown_text.dart';
 import 'package:sokosafi/core/widgets/tap_scale.dart';
 import 'package:sokosafi/features/business_dashboard/domain/entities/dashboard_summary.dart';
-import 'package:sokosafi/features/listings/presentation/widgets/listing_category_icon.dart';
+import 'package:sokosafi/features/listings/presentation/widgets/listing_thumbnail.dart';
 
 /// An active listing with how much is left, a progress bar, the time left
 /// to pick up and how many portions are reserved.
@@ -36,7 +35,10 @@ class ListingProgressCard extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    _IconCircle(icon: listing.category.icon),
+                    ListingThumbnail(
+                      imageUrl: listing.imageUrl,
+                      category: listing.category,
+                    ),
                     const SizedBox(width: AppSpacing.md),
                     Expanded(
                       child: Text(
@@ -96,29 +98,6 @@ class ListingProgressCard extends StatelessWidget {
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _IconCircle extends StatelessWidget {
-  const _IconCircle({required this.icon});
-
-  final List<List<dynamic>> icon;
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return SizedBox.square(
-      dimension: 40,
-      child: DecoratedBox(
-        decoration: ShapeDecoration(
-          color: scheme.surfaceContainerHighest,
-          shape: const CircleBorder(),
-        ),
-        child: Center(
-          child: HugeIcon(icon: icon, size: 20, color: scheme.primary),
         ),
       ),
     );

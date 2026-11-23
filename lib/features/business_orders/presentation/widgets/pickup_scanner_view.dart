@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
-import 'package:sokosafi/core/theme/app_colors.dart';
 import 'package:sokosafi/core/theme/app_text_styles.dart';
 
 /// Square camera preview that reports every QR code it reads.
@@ -41,7 +40,8 @@ class PickupScannerView extends StatelessWidget {
             ),
             if (isChecking)
               ColoredBox(
-                color: AppColors.textPrimary.withValues(alpha: 0.6),
+                color: Theme.of(context).colorScheme.onSurface
+                    .withValues(alpha: 0.6),
                 child: const Center(child: CircularProgressIndicator()),
               ),
           ],
@@ -62,24 +62,24 @@ class _ScannerError extends StatelessWidget {
         ? 'Allow camera access in your phone settings, or type the code below.'
         : 'The camera is not available. Type the code below instead.';
     return ColoredBox(
-      color: AppColors.surfaceSubtle,
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
       child: Center(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.xl),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const HugeIcon(
+              HugeIcon(
                 icon: HugeIcons.strokeRoundedCameraOff01,
                 size: 40,
-                color: AppColors.textSecondary,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
               const SizedBox(height: AppSpacing.md),
               Text(
                 message,
                 textAlign: TextAlign.center,
                 style: AppTextStyles.body.copyWith(
-                  color: AppColors.textSecondary,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
             ],

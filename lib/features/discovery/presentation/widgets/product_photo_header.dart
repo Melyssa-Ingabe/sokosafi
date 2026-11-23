@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:sokosafi/core/constants/animation_constants.dart';
 import 'package:sokosafi/core/constants/app_spacing.dart';
-import 'package:sokosafi/core/theme/app_colors.dart';
 
 /// The listing photo as a rounded card at the top of the detail sheet,
 /// with an optional round button in its top-right corner.
@@ -19,12 +18,12 @@ class ProductPhotoHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const placeholder = ColoredBox(
-      color: AppColors.surfaceSubtle,
+    final placeholder = ColoredBox(
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
       child: Center(
         child: HugeIcon(
           icon: HugeIcons.strokeRoundedImage01,
-          color: AppColors.textSecondary,
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
           size: 40,
         ),
       ),

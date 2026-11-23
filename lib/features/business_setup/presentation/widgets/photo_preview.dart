@@ -36,10 +36,14 @@ class PhotoPreview extends StatelessWidget {
                   width: size,
                   height: size,
                   decoration: BoxDecoration(
-                    color: AppColors.surfaceSubtle,
+                    color: Theme.of(context)
+                        .colorScheme
+                        .surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(radius),
                     border: Border.all(
-                      color: path == null ? AppColors.border : AppColors.accent,
+                      color: path == null
+                          ? Theme.of(context).colorScheme.outline
+                          : AppColors.accent,
                       width: 2,
                     ),
                   ),
@@ -81,7 +85,9 @@ class PhotoPreview extends StatelessWidget {
                     right: 0,
                     bottom: 0,
                     child: Material(
-                      color: AppColors.surface,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .surfaceContainerLowest,
                       shape: const CircleBorder(),
                       elevation: 3,
                       child: Padding(

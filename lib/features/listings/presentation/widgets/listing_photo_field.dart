@@ -31,7 +31,7 @@ class ListingPhotoField extends StatelessWidget {
       fit: StackFit.expand,
       children: [
         if (frame == null)
-          const ColoredBox(
+          ColoredBox(
             color: AppColors.surfaceSubtle,
             child: Center(
               child: SizedBox.square(
@@ -68,12 +68,12 @@ class ListingPhotoField extends StatelessWidget {
             frameBuilder: (_, child, frame, wasSync) =>
                 _fadeIn(child, frame, wasSync),
             errorBuilder: (_, _, _) => ColoredBox(
-              color: AppColors.surfaceSubtle,
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
               child: Center(
                 child: Text(
                   'Photo could not load. Tap to change it',
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: AppColors.textSecondary,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
               ),
@@ -86,10 +86,12 @@ class ListingPhotoField extends StatelessWidget {
       label: image == null ? 'Add product photo' : 'Change product photo',
       child: TapScale(
         child: Material(
-          color: AppColors.surface,
+          color: Theme.of(context).colorScheme.surfaceContainerLowest,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
-            side: const BorderSide(color: AppColors.borderSubtle),
+            side: BorderSide(
+              color: Theme.of(context).colorScheme.outlineVariant,
+            ),
           ),
           clipBehavior: Clip.antiAlias,
           child: InkWell(
@@ -106,7 +108,9 @@ class ListingPhotoField extends StatelessWidget {
                           right: AppSpacing.md,
                           bottom: AppSpacing.md,
                           child: Material(
-                            color: AppColors.surface,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .surfaceContainerLowest,
                             shape: const CircleBorder(),
                             elevation: 3,
                             child: Padding(
@@ -124,16 +128,20 @@ class ListingPhotoField extends StatelessWidget {
                   : Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const DecoratedBox(
+                        DecoratedBox(
                           decoration: BoxDecoration(
-                            color: AppColors.surfaceSubtle,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .surfaceContainerHighest,
                             shape: BoxShape.circle,
                           ),
                           child: Padding(
                             padding: EdgeInsets.all(AppSpacing.md),
                             child: HugeIcon(
                               icon: HugeIcons.strokeRoundedCamera01,
-                              color: AppColors.textSecondary,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
                             ),
                           ),
                         ),

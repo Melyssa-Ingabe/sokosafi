@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:sokosafi/core/constants/animation_constants.dart';
-import 'package:sokosafi/core/theme/app_colors.dart';
 import 'package:sokosafi/core/utils/date_formatters.dart';
 import 'package:sokosafi/core/utils/formatters.dart';
 import 'package:sokosafi/core/widgets/tap_scale.dart';
@@ -67,7 +66,9 @@ class ListingCard extends StatelessWidget {
           clipBehavior: Clip.antiAlias,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(_radius),
-            side: const BorderSide(color: AppColors.borderSubtle),
+            side: BorderSide(
+              color: Theme.of(context).colorScheme.outlineVariant,
+            ),
           ),
           child: InkWell(
             onTap: isSoldOut ? null : onTap,
@@ -131,10 +132,10 @@ class ListingCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: _padding),
-                  const Divider(
+                  Divider(
                     height: 1,
                     thickness: 1,
-                    color: AppColors.borderSubtle,
+                    color: Theme.of(context).colorScheme.outlineVariant,
                   ),
                   const SizedBox(height: 9),
                   Padding(
@@ -171,7 +172,7 @@ class ListingCard extends StatelessWidget {
   }
 
   Widget _buildImage(ColorScheme scheme) {
-    const placeholder = ColoredBox(color: AppColors.surfaceSubtle);
+    final placeholder = ColoredBox(color: scheme.surfaceContainerHighest);
     final url = imageUrl;
     final Widget content = (url == null || url.isEmpty)
         ? placeholder
