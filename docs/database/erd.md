@@ -23,7 +23,7 @@ erDiagram
         string email
         string phone
         string role "customer or business"
-        array foodPreferences "list of category names"
+        array foodPreferences "bakery, meals, cafe, grocery (up to 4)"
         string photoUrl
         timestamp createdAt
     }
@@ -42,7 +42,7 @@ erDiagram
         string pickupEnd "HH:mm"
         boolean autoClose
         string landmark "optional pickup guide, max 120 chars"
-        string phone "optional store phone customers call, max 20 chars"
+        string phone "optional store phone for customers to call, max 20 chars"
         timestamp createdAt
     }
 
@@ -72,7 +72,7 @@ erDiagram
         int total "RWF, discountPrice x quantity"
         string pickupCode "SKS- plus 6 letters or digits, e.g. SKS-4A7F2B"
         string paymentMethod "mtnMomo or airtelMoney"
-        string status "paid, collected, cancelled"
+        string status "paid, collected (by the shop), cancelled (by the customer or the shop)"
         timestamp createdAt
         timestamp collectedAt "null until picked up"
     }
@@ -138,3 +138,4 @@ Listed in `firestore.indexes.json`.
 | listings | businessId asc, createdAt desc | My listings |
 | orders | customerId asc, createdAt desc | My orders |
 | orders | businessId asc, createdAt desc | Business orders list |
+| reviews | businessId asc, createdAt desc | Business analytics and ratings |
