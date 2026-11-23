@@ -81,14 +81,15 @@ class SettingsScreen extends StatelessWidget {
         ],
       ),
       const PreferencesGroup(),
-      if (user?.role == UserRole.customer)
+      // Business owners shop too, so everyone can set food preferences.
+      if (user != null)
         MenuGroup(
           title: 'Your feed',
           children: [
             MenuTile(
               icon: HugeIcons.strokeRoundedFavourite,
               title: 'Food preferences',
-              value: _foodPreferencesSummary(user!.foodPreferences),
+              value: _foodPreferencesSummary(user.foodPreferences),
               onTap: () => context.push(AppRoutes.foodPreferences),
             ),
           ],

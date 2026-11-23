@@ -28,9 +28,9 @@ class BusinessOrderCard extends StatelessWidget {
     );
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: Theme.of(context).colorScheme.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
-        border: Border.all(color: AppColors.borderSubtle),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       ),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.lg),
@@ -56,7 +56,7 @@ class BusinessOrderCard extends StatelessWidget {
                       Text(
                         '${order.pickupCode} · $orderedAt',
                         style: AppTextStyles.caption.copyWith(
-                          color: AppColors.textSecondary,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ],
@@ -91,7 +91,7 @@ class _OrderIcon extends StatelessWidget {
       dimension: 40,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: AppColors.brandSubtle,
+          color: Theme.of(context).colorScheme.primaryContainer,
           borderRadius: BorderRadius.circular(AppSpacing.badgeRadius),
         ),
         child: const Center(

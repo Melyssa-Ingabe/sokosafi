@@ -11,16 +11,16 @@ class OrderStatusBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return switch (status) {
-      OrderStatus.paid => const AppBadge(
+      OrderStatus.paid => AppBadge(
         label: 'Ready for pickup',
-        backgroundColor: AppColors.brandSubtle,
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
         foregroundColor: AppColors.primary,
       ),
       OrderStatus.collected => const AppBadge(label: 'Collected'),
-      OrderStatus.cancelled => const AppBadge(
+      OrderStatus.cancelled => AppBadge(
         label: 'Cancelled',
-        backgroundColor: AppColors.surfaceSubtle,
-        foregroundColor: AppColors.textSecondary,
+        backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+        foregroundColor: Theme.of(context).colorScheme.onSurfaceVariant,
       ),
     };
   }

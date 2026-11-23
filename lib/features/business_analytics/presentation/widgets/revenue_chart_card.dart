@@ -59,9 +59,9 @@ class RevenueChartCard extends StatelessWidget {
     final lastIndex = points.length - 1;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: Theme.of(context).colorScheme.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
-        border: Border.all(color: AppColors.borderSubtle),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       ),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.lg),
@@ -71,7 +71,7 @@ class RevenueChartCard extends StatelessWidget {
             Text(
               'Revenue recovered',
               style: AppTextStyles.caption.copyWith(
-                color: AppColors.textSecondary,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
             const SizedBox(height: AppSpacing.xs),
@@ -119,7 +119,9 @@ class RevenueChartCard extends StatelessWidget {
                               style: AppTextStyles.caption.copyWith(
                                 color: index == lastIndex
                                     ? AppColors.primary
-                                    : AppColors.textSecondary,
+                                    : Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant,
                               ),
                             ),
                           );

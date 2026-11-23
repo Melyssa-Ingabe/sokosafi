@@ -12,19 +12,19 @@ class ListingStatusBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return switch (status) {
-      ListingStatus.active => const AppBadge(
+      ListingStatus.active => AppBadge(
         label: 'Active',
-        backgroundColor: AppColors.brandSubtle,
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
         foregroundColor: AppColors.primary,
       ),
-      ListingStatus.soldOut => const AppBadge(
+      ListingStatus.soldOut => AppBadge(
         label: 'Sold out',
-        backgroundColor: AppColors.surfaceSubtle,
-        foregroundColor: AppColors.textSecondary,
+        backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+        foregroundColor: Theme.of(context).colorScheme.onSurfaceVariant,
       ),
-      ListingStatus.expired => const AppBadge(
+      ListingStatus.expired => AppBadge(
         label: 'Expired',
-        backgroundColor: AppColors.surfaceSubtle,
+        backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
         foregroundColor: AppColors.error,
       ),
     };

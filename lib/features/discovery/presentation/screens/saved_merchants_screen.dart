@@ -90,7 +90,7 @@ class _Header extends StatelessWidget {
           Text(
             subtitle,
             style: textTheme.bodySmall?.copyWith(
-              color: AppColors.textSecondary,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
         ],

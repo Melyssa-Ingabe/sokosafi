@@ -21,7 +21,7 @@ class ReviewBusinessHeader extends StatelessWidget {
       children: [
         CircleAvatar(
           radius: 32,
-          backgroundColor: AppColors.brandSubtle,
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
           foregroundImage: target.businessPhotoUrl.isEmpty
               ? null
               : NetworkImage(target.businessPhotoUrl),
@@ -40,14 +40,16 @@ class ReviewBusinessHeader extends StatelessWidget {
         Text(
           target.businessName,
           textAlign: TextAlign.center,
-          style: AppTextStyles.body.copyWith(color: AppColors.textSecondary),
+          style: AppTextStyles.body.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
         ),
         if (collectedAt != null)
           Text(
             'Picked up ${DateFormatters.dayAndTime(collectedAt, now: DateTime.now())}',
             textAlign: TextAlign.center,
             style: AppTextStyles.caption.copyWith(
-              color: AppColors.textSecondary,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
       ],

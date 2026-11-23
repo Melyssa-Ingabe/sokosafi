@@ -42,7 +42,7 @@ class OrderDetailBody extends StatelessWidget {
                 Text(
                   details.businessName,
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: AppColors.textSecondary,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],
@@ -55,7 +55,7 @@ class OrderDetailBody extends StatelessWidget {
           details.listing!.pickupBy.isAfter(DateTime.now()) &&
           order.isActive)
         Card(
-          color: AppColors.brandSubtle,
+          color: Theme.of(context).colorScheme.primaryContainer,
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.md),
             child: Row(

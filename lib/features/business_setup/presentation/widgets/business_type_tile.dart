@@ -34,10 +34,14 @@ class BusinessTypeTile extends StatelessWidget {
           duration: AnimationConstants.listItem,
           curve: AnimationConstants.pageCurve,
           decoration: BoxDecoration(
-            color: isSelected ? AppColors.brandSubtle : AppColors.surface,
+            color: isSelected
+                ? Theme.of(context).colorScheme.primaryContainer
+                : Theme.of(context).colorScheme.surfaceContainerLowest,
             borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
             border: Border.all(
-              color: isSelected ? AppColors.accent : AppColors.borderSubtle,
+              color: isSelected
+                  ? AppColors.accent
+                  : Theme.of(context).colorScheme.outlineVariant,
               width: isSelected ? 2 : 1,
             ),
           ),

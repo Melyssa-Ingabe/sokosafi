@@ -30,7 +30,7 @@ class ListingThumbnail extends StatelessWidget {
       child: SizedBox.square(
         dimension: size,
         child: ColoredBox(
-          color: AppColors.surfaceSubtle,
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
           child: imageUrl.isEmpty
               ? icon
               : Image.network(

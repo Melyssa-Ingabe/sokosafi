@@ -129,8 +129,10 @@ class _RateForm extends StatelessWidget {
               Center(
                 child: AppBadge(
                   label: state.ratingLabel,
-                  backgroundColor: AppColors.surfaceSubtle,
-                  foregroundColor: AppColors.textPrimary,
+                  backgroundColor: Theme.of(context)
+                      .colorScheme
+                      .surfaceContainerHighest,
+                  foregroundColor: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               if (state.ratingMissing) ...[

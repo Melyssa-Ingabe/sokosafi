@@ -42,11 +42,13 @@ class DateTimeTile extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.xs),
         Material(
-          color: AppColors.surface,
+          color: Theme.of(context).colorScheme.surfaceContainerLowest,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
             side: BorderSide(
-              color: error != null ? AppColors.error : AppColors.borderSubtle,
+              color: error != null
+                  ? AppColors.error
+                  : Theme.of(context).colorScheme.outlineVariant,
             ),
           ),
           clipBehavior: Clip.antiAlias,
@@ -70,8 +72,12 @@ class DateTimeTile extends StatelessWidget {
                   if (chip != null) ...[
                     AppBadge(
                       label: chip,
-                      backgroundColor: AppColors.surfaceSubtle,
-                      foregroundColor: AppColors.textSecondary,
+                      backgroundColor: Theme.of(context)
+                          .colorScheme
+                          .surfaceContainerHighest,
+                      foregroundColor: Theme.of(context)
+                          .colorScheme
+                          .onSurfaceVariant,
                     ),
                     const SizedBox(width: AppSpacing.xs),
                   ],

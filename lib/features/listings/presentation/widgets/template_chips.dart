@@ -59,8 +59,12 @@ class TemplateChips extends StatelessWidget {
                   color: AppColors.primary,
                 ),
                 label: Text(template.title),
-                backgroundColor: AppColors.surface,
-                side: const BorderSide(color: AppColors.borderSubtle),
+                backgroundColor: Theme.of(context)
+                    .colorScheme
+                    .surfaceContainerLowest,
+                side: BorderSide(
+                  color: Theme.of(context).colorScheme.outlineVariant,
+                ),
               );
             },
           ),

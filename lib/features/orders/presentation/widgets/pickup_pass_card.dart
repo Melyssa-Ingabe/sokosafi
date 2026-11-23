@@ -38,13 +38,13 @@ class PickupPassCard extends StatelessWidget {
                 size: 180,
                 padding: const EdgeInsets.all(AppSpacing.md),
                 semanticsLabel: 'Pickup QR code',
-                eyeStyle: const QrEyeStyle(
+                eyeStyle: QrEyeStyle(
                   eyeShape: QrEyeShape.square,
-                  color: AppColors.textPrimary,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
-                dataModuleStyle: const QrDataModuleStyle(
+                dataModuleStyle: QrDataModuleStyle(
                   dataModuleShape: QrDataModuleShape.square,
-                  color: AppColors.textPrimary,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
             ),

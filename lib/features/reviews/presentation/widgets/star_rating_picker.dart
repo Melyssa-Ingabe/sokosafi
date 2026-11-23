@@ -47,7 +47,7 @@ class StarRatingPicker extends StatelessWidget {
                       strokeWidth: star <= rating ? 2.5 : 1.5,
                       color: star <= rating
                           ? AppColors.primary
-                          : AppColors.border,
+                          : Theme.of(context).colorScheme.outline,
                     ),
                   ),
                 ),
